@@ -17,12 +17,10 @@ user-friendly in-line messages, notes, and warnings.
 ## Installation
 
 `iwillsurvive` is hosted at
-<https://git.the.flatiron.com/qs_r_packages/iwillsurvive>. Here is how
-to install it:
+<https://github.com/ndphillips/iwillsurvive>. Here is how to install it:
 
 ``` r
-devtools::install_gitlab(repo = "qs_r_packages/iwillsurvive", 
-                         host = "git.the.flatiron.com",
+devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
                          build_vignettes = TRUE)
 ```
 
@@ -133,7 +131,7 @@ as a categorical covariate.
 cohort_fit <- fit_survival(cohort, 
                            follow_up_time = "follow_up_days", 
                            terms = "group")
-#> ── fit_survival ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── fit_survival ────────────────────────────────────────────────────────────────
 #> - survival::survfit(survival::Surv(follow_up_days, event_status, type = 'right') ~ group, data = cohort)
 #> - 39 of 100 (39%) patient(s) experienced the event.
 ```
