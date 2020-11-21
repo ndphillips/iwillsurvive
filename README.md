@@ -33,8 +33,7 @@ library(iwillsurvive)
 #> -----------------------------------------------------------------------
 #> iwillsurvive 0.1.0 'Gloria'
 #> Intro   : vignette('introduction', 'iwillsurvive')
-#> Repo    : https://git.the.flatiron.com/qs_r_packages/iwillsurvive
-#> Contact : #TBD
+#> Repo    : https://github.com/ndphillips/iwillsurvive
 #> .......................................................................
 library(dplyr)
 #> 

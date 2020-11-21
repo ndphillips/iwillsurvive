@@ -17,7 +17,8 @@ Depends:
 Imports: 
     survival,
     survminer,
-    magrittr
+    magrittr,
+    dplyr
 Suggests: 
     testthat,
     knitr,

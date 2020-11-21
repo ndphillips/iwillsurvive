@@ -35,7 +35,6 @@ get_codename <- function(version) {
     "'"
   ))
   packageStartupMessage("Intro   : vignette('introduction', 'iwillsurvive')")
-  packageStartupMessage("Repo    : https://git.the.flatiron.com/qs_r_packages/iwillsurvive")
-  packageStartupMessage("Contact : #TBD")
+  packageStartupMessage("Repo    : https://github.com/ndphillips/iwillsurvive")
   packageStartupMessage(".......................................................................")
 }

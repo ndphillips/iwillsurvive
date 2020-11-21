@@ -22,11 +22,10 @@ The goal of iwillsurvive is to make it easy to fit and visualize survival models
 
 ## Installation
 
-`iwillsurvive` is hosted at https://git.the.flatiron.com/qs_r_packages/iwillsurvive. Here is how to install it:
+`iwillsurvive` is hosted at https://github.com/ndphillips/iwillsurvive. Here is how to install it:
 
 ```{r, echo = TRUE, eval = FALSE}
-devtools::install_gitlab(repo = "qs_r_packages/iwillsurvive", 
-                         host = "git.the.flatiron.com",
+devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
                          build_vignettes = TRUE)
 ```
 
