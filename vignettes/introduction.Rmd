@@ -1,0 +1,76 @@
+---
+title: "introduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ezsurvival)
+```
+
+It's best to start with one-row-per-patient (ORPP) cohort object.
+
+For this example, we'll `ez_cohort`, a dataframe of simulated patients contained in `ezsurvival`:
+
+```{r}
+ez_cohort
+```
+
+
+Use `derive
+
+```{r}
+ez_cohort <- ez_cohort %>%
+  derive_follow_up_date(event_date = "DateOfDeath",
+                      censor_date = "CensorDate") %>%
+  
+  derive_follow_up_time(index_date = "LOT1StartDate") %>%
+  
+  derive_event_status(event_date = "DateOfDeath")
+```
+
+
+Use `plot_follow_up_time` to visualize the time at risk data
+
+```{r, fig.width = 7, fig.height = 4, out.width = "85%"}
+plot_follow_up_time(ez_cohort, 
+                   follow_up_time = "follow_up_days", 
+                   event_status = "event_status")
+```
+
+Use `fit_survival()` to fit the survival model. You can do this in two ways:
+
+If you already have time at risk and the event status calculated (as we do in the `ez_cohort` object), you can simply point the function to those columns:
+
+```{r}
+cohort_fit <- fit_survival(ez_cohort, 
+                           follow_up_time = "follow_up_days", 
+                           event_status = "event_status")
+```
+
+You should get the same result using both methods.
+
+The result is a `survfit` object (from the `survival` package)
+
+```{r}
+class(cohort_fit)
+
+cohort_fit
+```
+
+Use `plot_survival()` to plot the result.
+
+```{r, fig.width = 7, fig.height = 5, out.width = "85%"}
+plot_survival(cohort_fit, 
+              cohort = ez_cohort)
+```
