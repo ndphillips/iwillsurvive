@@ -11,22 +11,22 @@
 #'
 #'
 derive_follow_up_date <- function(cohort = NULL,
-                                event_date = NULL,
-                                censor_date = "censor_date") {
+                                  event_date = NULL,
+                                  censor_date = "censor_date") {
+  testthat::expect_true(!is.null(cohort))
+  testthat::expect_true(!is.null(event_date))
+  testthat::expect_true(censor_date %in% names(cohort))
 
-testthat::expect_true(!is.null(cohort))
-testthat::expect_true(!is.null(event_date))
-testthat::expect_true(censor_date %in% names(cohort))
+  event_date_sym <- rlang::sym(event_date)
+  censor_date_sym <- rlang::sym(censor_date)
 
-event_date_sym <- rlang::sym(event_date)
-censor_date_sym <- rlang::sym(censor_date)
+  cohort <- cohort %>%
+    dplyr::mutate(follow_up_date = dplyr::coalesce(
+      !!event_date_sym,
+      !!censor_date_sym
+    ))
 
-cohort <- cohort %>%
-  dplyr::mutate(follow_up_date = dplyr::coalesce(!!event_date_sym,
-                                                       !!censor_date_sym))
-
-cohort
-
+  cohort
 }
 
 #' Calculate follow_up_time, the number of days from index to follow up in days
@@ -40,24 +40,22 @@ cohort
 #' @export
 #'
 derive_follow_up_time <- function(cohort,
-                                index_date = "index_date",
-                                follow_up_date = "follow_up_date",
-                                follow_up_time_rename = "follow_up_days") {
+                                  index_date = "index_date",
+                                  follow_up_date = "follow_up_date",
+                                  follow_up_time_rename = "follow_up_days") {
+  testthat::expect_true(!is.null(cohort))
+  testthat::expect_true(index_date %in% names(cohort))
+  testthat::expect_true(follow_up_date %in% names(cohort))
 
-testthat::expect_true(!is.null(cohort))
-testthat::expect_true(index_date %in% names(cohort))
-testthat::expect_true(follow_up_date %in% names(cohort))
+  index_date_sym <- rlang::sym(index_date)
+  follow_up_date_sym <- rlang::sym(follow_up_date)
 
-index_date_sym <- rlang::sym(index_date)
-follow_up_date_sym <- rlang::sym(follow_up_date)
+  follow_up_time_rename_sym <- rlang::sym(follow_up_time_rename)
 
-follow_up_time_rename_sym <- rlang::sym(follow_up_time_rename)
+  cohort <- cohort %>%
+    dplyr::mutate(!!follow_up_time_rename := as.numeric(!!follow_up_date_sym - !!index_date_sym))
 
-cohort <- cohort %>%
-  dplyr::mutate(!!follow_up_time_rename := as.numeric(!!follow_up_date_sym - !!index_date_sym))
-
-cohort
-
+  cohort
 }
 
 
@@ -70,11 +68,9 @@ cohort
 #' @return dataframe.
 #' @export
 #'
-derive_event_status<- function(cohort = NULL,
-                             event_date = NULL,
-                             event_status_rename = "event_status") {
-
-
+derive_event_status <- function(cohort = NULL,
+                                event_date = NULL,
+                                event_status_rename = "event_status") {
   testthat::expect_true(!is.null(cohort))
   testthat::expect_true(!is.null(event_date))
   testthat::expect_true(event_date %in% names(cohort))
@@ -87,8 +83,4 @@ derive_event_status<- function(cohort = NULL,
     dplyr::mutate(!!event_status_sym := !is.na(!!event_date_sym))
 
   cohort
-
 }
-
-
-

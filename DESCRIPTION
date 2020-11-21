@@ -18,7 +18,13 @@ Imports:
     survival,
     survminer,
     magrittr,
-    dplyr
+    dplyr,
+    rlang,
+    ggplot2,
+    scales,
+    cli,
+    stringr,
+    tibble
 Suggests: 
     testthat,
     knitr,

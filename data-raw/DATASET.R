@@ -17,7 +17,7 @@ last_contact_date <- dplyr::coalesce(event_date, censor_date)
 
 ez_cohort <- tibble::tibble(
   patientid = sprintf("F%05d", 1:patient_n),
-  group = sample(c("a", "b"), size = patient_n, replace = TRUE),
+  group = sample(c("placebo", "drug"), size = patient_n, replace = TRUE),
   lotstartdate = index_date,
   censordate = censor_date,
   dateofdeath = event_date

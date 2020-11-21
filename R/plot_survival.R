@@ -8,6 +8,10 @@
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. Colors for the color palette
 #'
+#'
+#' @import ggplot2
+#' @import scales
+#'
 #' @return ggplot2
 #' @export
 #'

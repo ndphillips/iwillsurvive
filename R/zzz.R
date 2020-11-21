@@ -8,6 +8,14 @@
   )
 }
 
+#' Title
+#'
+#' @param version
+#'
+#' @import tibble
+#' @import dplyr
+#' @return
+#'
 get_codename <- function(version) {
   codename_tbl <- tibble::tribble(
     ~version, ~codename,
@@ -26,7 +34,7 @@ get_codename <- function(version) {
 
 
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("-----------------------------------------------------------------------")
+  packageStartupMessage("-----------------------------------------------------")
   packageStartupMessage(paste0(
     "iwillsurvive ",
     utils::packageVersion("iwillsurvive"),
@@ -34,7 +42,7 @@ get_codename <- function(version) {
     get_codename(utils::packageVersion("iwillsurvive")),
     "'"
   ))
-  packageStartupMessage("Intro   : vignette('introduction', 'iwillsurvive')")
-  packageStartupMessage("Repo    : https://github.com/ndphillips/iwillsurvive")
-  packageStartupMessage(".......................................................................")
+  packageStartupMessage("Intro  : vignette('introduction', 'iwillsurvive')")
+  packageStartupMessage("Repo   : https://github.com/ndphillips/iwillsurvive")
+  packageStartupMessage(".....................................................")
 }

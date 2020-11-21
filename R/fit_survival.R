@@ -10,6 +10,8 @@
 #' @param verbose logical. If TRUE, return messages
 #'
 #' @importFrom magrittr '%>%'
+#' @import scales
+#' @import cli
 #'
 #' @return survfit. See ?survival::survfit.object to learn more
 #' @export
@@ -47,7 +49,6 @@ fit_survival <- function(cohort,
                          terms = NULL,
                          type = "right",
                          verbose = TRUE) {
-
   testthat::expect_true(follow_up_time %in% names(cohort))
   testthat::expect_true(event_status %in% names(cohort))
   testthat::expect_is(cohort[[event_status]], "logical")

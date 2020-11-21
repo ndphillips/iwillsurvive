@@ -12,6 +12,11 @@
 #' @param line_size numeric.
 #' @param theme A ggplot2 theme
 #'
+#' @import ggplot2
+#' @import scales
+#' @import stringr
+#' @importFrom stats median
+#'
 #' @return ggplot2
 #' @export
 #'
@@ -35,15 +40,15 @@
 #'   index_name = "LOT1 Start"
 #' )
 plot_follow_up_time <- function(cohort = NULL,
-                          follow_up_time = "follow_up_time",
-                          event_status = "event_status",
-                          follow_up_time_units = NULL,
-                          event_name = NULL,
-                          index_name = "index",
-                          add_median = TRUE,
-                          point_size = 1,
-                          line_size = .5,
-                          theme = ggplot2::theme_minimal()) {
+                                follow_up_time = "follow_up_time",
+                                event_status = "event_status",
+                                follow_up_time_units = NULL,
+                                event_name = NULL,
+                                index_name = "index",
+                                add_median = TRUE,
+                                point_size = 1,
+                                line_size = .5,
+                                theme = ggplot2::theme_minimal()) {
   follow_up_time_col <- follow_up_time
   event_status_col <- event_status
   patientid_col <- names(cohort)[tolower(names(cohort)) == "patientid"]
@@ -123,7 +128,7 @@ plot_follow_up_time <- function(cohort = NULL,
 
 
   if (add_median) {
-    median_follow_up_time <- median(cohort$follow_up_time)
+    median_follow_up_time <- stats::median(cohort$follow_up_time)
 
     p <- p +
       ggplot2::geom_vline(xintercept = median_follow_up_time, lty = 3) +

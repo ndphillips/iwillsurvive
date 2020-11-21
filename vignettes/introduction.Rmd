@@ -74,3 +74,18 @@ Use `plot_survival()` to plot the result.
 plot_survival(cohort_fit, 
               cohort = ez_cohort)
 ```
+
+# derive_*() functions
+
+Placeholder for in depth descriptions of derive functions
+
+# plot_*() functions
+
+Placeholder for in depth descriptions of plot functions
+
+# filter_*() functions
+
+Placeholder for in depth descriptions of filter functions
+
+
+
