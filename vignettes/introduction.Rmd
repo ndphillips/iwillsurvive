@@ -15,12 +15,12 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(ezsurvival)
+library(iwillsurvive)
 ```
 
 It's best to start with one-row-per-patient (ORPP) cohort object.
 
-For this example, we'll `ez_cohort`, a dataframe of simulated patients contained in `ezsurvival`:
+For this example, we'll `ez_cohort`, a dataframe of simulated patients contained in `iwillsurvive`:
 
 ```{r}
 ez_cohort
@@ -31,12 +31,12 @@ Use `derive
 
 ```{r}
 ez_cohort <- ez_cohort %>%
-  derive_follow_up_date(event_date = "DateOfDeath",
-                      censor_date = "CensorDate") %>%
+  derive_follow_up_date(event_date = "dateofdeath",
+                      censor_date = "censordate") %>%
   
-  derive_follow_up_time(index_date = "LOT1StartDate") %>%
+  derive_follow_up_time(index_date = "lotstartdate") %>%
   
-  derive_event_status(event_date = "DateOfDeath")
+  derive_event_status(event_date = "dateofdeath")
 ```
 
 

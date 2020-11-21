@@ -4,6 +4,8 @@
 #' @param event_date character. The name of a column in cohort indicating event dates.
 #' @param censor_date character. The name of a date column in cohort indicating censor dates.
 #'
+#' @importFrom rlang .data
+#'
 #' @return dataframe.
 #' @export
 #'
@@ -20,7 +22,8 @@ event_date_sym <- rlang::sym(event_date)
 censor_date_sym <- rlang::sym(censor_date)
 
 cohort <- cohort %>%
-  dplyr::mutate(follow_up_date = dplyr::coalesce(!!event_date_sym, !!censor_date_sym))
+  dplyr::mutate(follow_up_date = dplyr::coalesce(!!event_date_sym,
+                                                       !!censor_date_sym))
 
 cohort
 

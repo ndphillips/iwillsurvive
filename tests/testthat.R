@@ -1,4 +1,4 @@
 library(testthat)
-library(ezsurvival)
+library(iwillsurvive)
 
-test_check("ezsurvival")
+test_check("iwillsurvive")

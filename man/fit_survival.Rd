@@ -35,7 +35,7 @@ This is a wrapper around survival::survfit() with a cleaner interface.
 \examples{
 
 cohort <- data.frame(
-  PatientID = 1:20,
+  patientid = 1:20,
   follow_up_time = c(
     6.1, 15.4, 22, 24.6, 25.6, 26.1, 28.7, 46.9, 54.5, 55, 62.2,
     65.5, 88.1, 108.5, 116, 119.1, 119.6, 169.1, 317.8, 381.7

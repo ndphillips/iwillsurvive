@@ -13,19 +13,19 @@ knitr::opts_chunk$set(
 )
 ```
 
-# ezsurvival `r packageVersion("ezsurvival")` <img src="https://cdn.iconscout.com/icon/free/png-512/disco-1-62616.png" align="right" height="139"/>
+# iwillsurvive `r packageVersion("iwillsurvive")` <img src="https://cdn.iconscout.com/icon/free/png-512/disco-1-62616.png" align="right" height="139"/>
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Codename: shuffled](https://img.shields.io/badge/version-0.1_'Gloria'-yellow.svg)](https://en.wikipedia.org/wiki/Gloria_Gaynor)
 
-The goal of ezsurvival is to make it easy to fit and visualize survival models. Essentially, it provides wrapper functions around commonly used functions from survival packages such as `survival::survfit()` and `survminer::ggsurvplot()`, while providing user-friendly in-line messages, notes, and warnings.
+The goal of iwillsurvive is to make it easy to fit and visualize survival models. Essentially, it provides wrapper functions around commonly used functions from survival packages such as `survival::survfit()` and `survminer::ggsurvplot()`, while providing user-friendly in-line messages, notes, and warnings.
 
 ## Installation
 
-`ezsurvival` is hosted at https://git.the.flatiron.com/qs_r_packages/ezsurvival. Here is how to install it:
+`iwillsurvive` is hosted at https://git.the.flatiron.com/qs_r_packages/iwillsurvive. Here is how to install it:
 
 ```{r, echo = TRUE, eval = FALSE}
-devtools::install_gitlab(repo = "qs_r_packages/ezsurvival", 
+devtools::install_gitlab(repo = "qs_r_packages/iwillsurvive", 
                          host = "git.the.flatiron.com",
                          build_vignettes = TRUE)
 ```
@@ -33,13 +33,13 @@ devtools::install_gitlab(repo = "qs_r_packages/ezsurvival",
 ## Example
 
 ```{r example}
-library(ezsurvival)
+library(iwillsurvive)
 library(dplyr)
 ```
 
-It's best to start with one-row-per-patient (ORPP) cohort object that contains columns corresponding to PatientID, IndexDate (like `LOT1StartDate`), CensorDate, and an EventDate (like `DateOfDeath`)
+It's best to start with one-row-per-patient (ORPP) cohort object that contains columns corresponding to patientid, IndexDate (like `lotstartdate`), censordate, and an EventDate (like `dateofdeath`)
 
-For this example, we'll `ez_cohort`, a dataframe of simulated patients contained in `ezsurvival`:
+For this example, we'll `ez_cohort`, a dataframe of simulated patients contained in `iwillsurvive`:
 
 ```{r}
 ez_cohort
@@ -47,26 +47,26 @@ ez_cohort
 
 Use the derive_ functions to calculate key derived columns:
 
-* `follow_up_date` - DateOfDeath, if known, and censordate, otherwise
-* `follow_up_days` - Days from LOT1StartDate to follow_up_date
+* `follow_up_date` - dateofdeath, if known, and censordate, otherwise
+* `follow_up_days` - Days from lotstartdate to follow_up_date
 * `Death` - A logical column indicating whether or not the event (death) is known
 
 ```{r}
 cohort <- ez_cohort %>%
   
-  derive_follow_up_date(event_date = "DateOfDeath",
-                      censor_date = "CensorDate") %>%
+  derive_follow_up_date(event_date = "dateofdeath",
+                      censor_date = "censordate") %>%
   
-  derive_follow_up_time(index_date = "LOT1StartDate") %>%
+  derive_follow_up_time(index_date = "lotstartdate") %>%
   
-  derive_event_status(event_date = "DateOfDeath")
+  derive_event_status(event_date = "dateofdeath")
 ```
 
 Here is our updated cohort object:
 
 ```{r}
 cohort %>%
-  select(PatientID, follow_up_date, follow_up_days, event_status, everything())
+  select(patientid, follow_up_date, follow_up_days, event_status, everything())
 ```
 
 Use `plot_follow_up_time` to visualize the time at risk data

@@ -8,15 +8,16 @@ Description: Provides a user-friendly set of wrapper functions
     and informative user messaging around common implimentations
     of survival models for the purpose of reducing errors and
     increasing transparency.
-License: What license is it under?
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-Depends: 
+Depends:
+    R (>= 2.10)
+Imports: 
     survival,
     survminer,
-    magrittr,
-    R (>= 2.10)
+    magrittr
 Suggests: 
     testthat,
     knitr,
