@@ -16,7 +16,6 @@
 #' @import dplyr
 #'
 get_codename <- function(version) {
-
   codename_tbl <- tibble::tribble(
     ~version, ~codename,
     "0.1", "Gloria",
@@ -33,7 +32,6 @@ get_codename <- function(version) {
 }
 
 .onAttach <- function(libname, pkgname) {
-
   packageStartupMessage("-----------------------------------------------------")
   packageStartupMessage(paste0(
     "iwillsurvive ",
