@@ -10,17 +10,17 @@
 
 #' Title
 #'
-#' @param version
+#' @param version package version number
 #'
 #' @import tibble
 #' @import dplyr
-#' @return
 #'
 get_codename <- function(version) {
+
   codename_tbl <- tibble::tribble(
     ~version, ~codename,
     "0.1", "Gloria",
-    "0.2", "TBD",
+    "0.2", "Stu",
     "0.3", "TBD",
     "0.4", "TBD"
   )
@@ -32,8 +32,8 @@ get_codename <- function(version) {
     dplyr::pull(codename)
 }
 
-
 .onAttach <- function(libname, pkgname) {
+
   packageStartupMessage("-----------------------------------------------------")
   packageStartupMessage(paste0(
     "iwillsurvive ",

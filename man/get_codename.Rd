@@ -7,10 +7,7 @@
 get_codename(version)
 }
 \arguments{
-\item{version}{}
-}
-\value{
-
+\item{version}{package version number}
 }
 \description{
 Title

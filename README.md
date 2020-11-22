@@ -28,11 +28,11 @@ devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
 
 ``` r
 library(iwillsurvive)
-#> -----------------------------------------------------------------------
+#> -----------------------------------------------------
 #> iwillsurvive 0.1.0 'Gloria'
-#> Intro   : vignette('introduction', 'iwillsurvive')
-#> Repo    : https://github.com/ndphillips/iwillsurvive
-#> .......................................................................
+#> Intro  : vignette('introduction', 'iwillsurvive')
+#> Repo   : https://github.com/ndphillips/iwillsurvive
+#> .....................................................
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -58,20 +58,20 @@ simulated patients:
 
 ``` r
 ez_cohort
-#> # A tibble: 100 x 5
-#>    patientid group   lotstartdate censordate dateofdeath
-#>    <chr>     <chr>   <date>       <date>     <date>     
-#>  1 F00001    placebo 2020-07-20   2020-09-15 NA         
-#>  2 F00002    drug    2020-04-21   2020-07-27 NA         
-#>  3 F00003    drug    2020-07-24   NA         2020-08-09 
-#>  4 F00004    placebo 2020-01-04   2020-08-14 NA         
-#>  5 F00005    placebo 2020-04-07   2020-08-22 NA         
-#>  6 F00006    drug    2020-01-07   2020-04-23 NA         
-#>  7 F00007    drug    2020-07-01   NA         2020-07-10 
-#>  8 F00008    placebo 2020-10-25   NA         2020-11-30 
-#>  9 F00009    placebo 2020-05-25   2020-06-20 NA         
-#> 10 F00010    placebo 2020-10-07   2020-11-07 NA         
-#> # … with 90 more rows
+#> # A tibble: 250 x 5
+#>    patientid condition lotstartdate lastvisitdate dateofdeath
+#>    <chr>     <chr>     <date>       <date>        <date>     
+#>  1 F00001    placebo   2016-05-17   2020-12-01    NA         
+#>  2 F00002    placebo   2020-07-27   2020-08-25    2020-10-05 
+#>  3 F00003    drug      2016-04-14   2017-02-16    2017-03-13 
+#>  4 F00004    drug      2020-06-12   2020-11-25    NA         
+#>  5 F00005    placebo   2019-03-20   2020-01-13    2020-02-21 
+#>  6 F00006    placebo   2017-04-02   2017-10-18    2017-11-19 
+#>  7 F00007    placebo   2018-01-26   2019-01-12    2019-02-17 
+#>  8 F00008    placebo   2015-07-02   2015-11-20    2015-12-23 
+#>  9 F00009    drug      2019-03-08   2020-07-18    2020-08-17 
+#> 10 F00010    placebo   2018-08-23   2019-02-14    2019-03-08 
+#> # … with 240 more rows
 ```
 
 Use the `derive_*()` functions to calculate key derived columns:
@@ -87,7 +87,7 @@ Use the `derive_*()` functions to calculate key derived columns:
 cohort <- ez_cohort %>%
   
   derive_follow_up_date(event_date = "dateofdeath",
-                        censor_date = "censordate") %>%
+                        censor_date = "lastvisitdate") %>%
   
   derive_follow_up_time(index_date = "lotstartdate") %>%
   
@@ -101,20 +101,20 @@ front) for visibility
 cohort %>%
   select(patientid, follow_up_date, follow_up_days, event_status, 
          everything())
-#> # A tibble: 100 x 8
-#>    patientid follow_up_date follow_up_days event_status group lotstartdate
-#>    <chr>     <date>                  <dbl> <lgl>        <chr> <date>      
-#>  1 F00001    2020-09-15              57.1  FALSE        plac… 2020-07-20  
-#>  2 F00002    2020-07-27              97.1  FALSE        drug  2020-04-21  
-#>  3 F00003    2020-08-09              16.5  TRUE         drug  2020-07-24  
-#>  4 F00004    2020-08-14             224.   FALSE        plac… 2020-01-04  
-#>  5 F00005    2020-08-22             138.   FALSE        plac… 2020-04-07  
-#>  6 F00006    2020-04-23             107.   FALSE        drug  2020-01-07  
-#>  7 F00007    2020-07-10               9.87 TRUE         drug  2020-07-01  
-#>  8 F00008    2020-11-30              36.6  TRUE         plac… 2020-10-25  
-#>  9 F00009    2020-06-20              26.4  FALSE        plac… 2020-05-25  
-#> 10 F00010    2020-11-07              31.7  FALSE        plac… 2020-10-07  
-#> # … with 90 more rows, and 2 more variables: censordate <date>,
+#> # A tibble: 250 x 8
+#>    patientid follow_up_date follow_up_days event_status condition lotstartdate
+#>    <chr>     <date>                  <dbl> <lgl>        <chr>     <date>      
+#>  1 F00001    2020-12-01             1660.  FALSE        placebo   2016-05-17  
+#>  2 F00002    2020-10-05               70.1 TRUE         placebo   2020-07-27  
+#>  3 F00003    2017-03-13              333.  TRUE         drug      2016-04-14  
+#>  4 F00004    2020-11-25              167.  FALSE        drug      2020-06-12  
+#>  5 F00005    2020-02-21              338.  TRUE         placebo   2019-03-20  
+#>  6 F00006    2017-11-19              232.  TRUE         placebo   2017-04-02  
+#>  7 F00007    2019-02-17              388.  TRUE         placebo   2018-01-26  
+#>  8 F00008    2015-12-23              175.  TRUE         placebo   2015-07-02  
+#>  9 F00009    2020-08-17              528.  TRUE         drug      2019-03-08  
+#> 10 F00010    2019-03-08              197.  TRUE         placebo   2018-08-23  
+#> # … with 240 more rows, and 2 more variables: lastvisitdate <date>,
 #> #   dateofdeath <date>
 ```
 
@@ -130,7 +130,7 @@ plot_follow_up_time(cohort,
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="85%" />
 
 Use `fit_survival()` to fit the survival model. We’ll set the follow up
-time to be `follow_up_days` and specify “group” as a term (i.e.;
+time to be `follow_up_days` and specify “condition” as a term (i.e.;
 covariate) to be used in the model
 
 <!-- If we were using `survival::survfit()` we'd need to specify this nasty 
@@ -142,10 +142,10 @@ and let the function take care of the formula: -->
 ``` r
 cohort_fit <- fit_survival(cohort, 
                            follow_up_time = "follow_up_days", 
-                           terms = "group")
+                           terms = "condition")
 #> ── fit_survival ────────────────────────────────────────────────────────────────
-#> - survival::survfit(survival::Surv(follow_up_days, event_status, type = 'right') ~ group, data = cohort)
-#> - 39 of 100 (39%) patient(s) experienced the event.
+#> - survival::survfit(survival::Surv(follow_up_days, event_status, type = 'right') ~ condition, data = cohort)
+#> - 202 of 250 (81%) patient(s) experienced the event.
 ```
 
 The result is a `survfit` object (from the `survival` package)
@@ -156,11 +156,11 @@ class(cohort_fit)
 
 cohort_fit
 #> Call: survfit(formula = survival::Surv(follow_up_days, event_status, 
-#>     type = "right") ~ group, data = cohort)
+#>     type = "right") ~ condition, data = cohort)
 #> 
-#>                n events median 0.95LCL 0.95UCL
-#> group=drug    47     20   83.8    55.9      NA
-#> group=placebo 53     19   91.0    46.5      NA
+#>                     n events median 0.95LCL 0.95UCL
+#> condition=drug    132    105    410     329     590
+#> condition=placebo 118     97    232     184     313
 ```
 
 Use `plot_survival()` to plot the result. Use the `index_name` and

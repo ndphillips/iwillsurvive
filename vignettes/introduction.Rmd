@@ -18,6 +18,15 @@ knitr::opts_chunk$set(
 library(iwillsurvive)
 ```
 
+
+Imagine you have the following dataframe
+
+```{r}
+ez_cohort
+```
+
+
+
 It's best to start with one-row-per-patient (ORPP) cohort object.
 
 For this example, we'll `ez_cohort`, a dataframe of simulated patients contained in `iwillsurvive`:
@@ -32,7 +41,7 @@ Use `derive
 ```{r}
 ez_cohort <- ez_cohort %>%
   derive_follow_up_date(event_date = "dateofdeath",
-                      censor_date = "censordate") %>%
+                        censor_date = "lastvisitdate") %>%
   
   derive_follow_up_time(index_date = "lotstartdate") %>%
   
@@ -55,7 +64,8 @@ If you already have time at risk and the event status calculated (as we do in th
 ```{r}
 cohort_fit <- fit_survival(ez_cohort, 
                            follow_up_time = "follow_up_days", 
-                           event_status = "event_status")
+                           event_status = "event_status", 
+                           terms = "condition")
 ```
 
 You should get the same result using both methods.

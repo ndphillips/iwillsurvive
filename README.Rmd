@@ -69,7 +69,7 @@ Use the `derive_*()` functions to calculate key derived columns:
 cohort <- ez_cohort %>%
   
   derive_follow_up_date(event_date = "dateofdeath",
-                        censor_date = "censordate") %>%
+                        censor_date = "lastvisitdate") %>%
   
   derive_follow_up_time(index_date = "lotstartdate") %>%
   
@@ -95,7 +95,7 @@ plot_follow_up_time(cohort,
 ```
 
 Use `fit_survival()` to fit the survival model. We'll set the follow up time to
-be `follow_up_days` and specify "group" as a term (i.e.; covariate) to be used 
+be `follow_up_days` and specify "condition" as a term (i.e.; covariate) to be used 
 in the model
 
 <!-- If we were using `survival::survfit()` we'd need to specify this nasty 
@@ -108,7 +108,7 @@ and let the function take care of the formula: -->
 ```{r}
 cohort_fit <- fit_survival(cohort, 
                            follow_up_time = "follow_up_days", 
-                           terms = "group")
+                           terms = "condition")
 ```
 
 The result is a `survfit` object (from the `survival` package)
@@ -119,7 +119,7 @@ class(cohort_fit)
 cohort_fit
 ```
 
-Use `plot_survival()` to plot the result. Use the `index_name` and `event_name` 
+Use `plot_survival()` to plot the result. Use the `index_name` and `event_name`
 to give descriptive names to the key events:
 
 ```{r, fig.width = 7, fig.height = 5, out.width = "85%"}
