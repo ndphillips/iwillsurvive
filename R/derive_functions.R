@@ -11,8 +11,8 @@
 #'
 #'
 derive_followup_date <- function(cohort = NULL,
-                                  event_date = NULL,
-                                  censor_date = "censor_date") {
+                                 event_date = NULL,
+                                 censor_date = "censor_date") {
   testthat::expect_true(!is.null(cohort))
   testthat::expect_true(!is.null(event_date))
   testthat::expect_true(censor_date %in% names(cohort))
@@ -40,9 +40,9 @@ derive_followup_date <- function(cohort = NULL,
 #' @export
 #'
 derive_followup_time <- function(cohort,
-                                  index_date = "index_date",
-                                  followup_date = "followup_date",
-                                  followup_time_rename = "followup_days") {
+                                 index_date = "index_date",
+                                 followup_date = "followup_date",
+                                 followup_time_rename = "followup_days") {
   testthat::expect_true(!is.null(cohort))
   testthat::expect_true(index_date %in% names(cohort))
   testthat::expect_true(followup_date %in% names(cohort))

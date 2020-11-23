@@ -16,6 +16,8 @@ plot_followup(
 \arguments{
 \item{object}{iwillsurvive. An iwillsurvive object}
 
+\item{followup_time_units}{= "days",}
+
 \item{add_median}{logical. If TRUE, add a line showing median.}
 
 \item{point_size}{numeric.}

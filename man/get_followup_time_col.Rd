@@ -7,7 +7,7 @@
 get_followup_time_col(object)
 }
 \arguments{
-\item{object}{}
+\item{object}{iwillsurvive.}
 }
 \value{
 character.

@@ -1,13 +1,10 @@
 #' Plot the results of a survival analysis
 #'
-#' @param fit survfit. A survfit object created from survival::survfit()
+#' @param object iwillsurvive. An iwillsurvivel object created from fit_survival
 #' @param cohort dataframe. A one-row-per-patient cohort used in generating fit.
-#' @param event_name character. Name of the event such as "death", "next treatment"
-#' @param index_name character. Name of the index such as "LOT1 Start" or "Metastatic Diagnosis"
 #' @param followup_time_units character. The units that time at risk are calculated in
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. Colors for the color palette
-#'
 #'
 #' @import ggplot2
 #' @import scales
@@ -15,17 +12,15 @@
 #' @return ggplot2
 #' @export
 #'
-#' @examples
 plot_survival <- function(object = NULL,
                           cohort = NULL,
                           followup_time_units = NULL,
                           ggtheme = ggplot2::theme_bw(),
                           palette = c("#4941D1", "#00B6DA")) {
+  patient_n <- sum(object$fit$n)
 
-   patient_n <- sum(object$fit$n)
-
-   index_name <- get_index_name(object)
-   event_name <- get_event_name(object)
+  index_title <- get_index_title(object)
+  event_title <- get_event_title(object)
 
   p <- survminer::ggsurvplot(
     fit = object$fit,
@@ -40,10 +35,10 @@ plot_survival <- function(object = NULL,
   )
 
 
-  my_title <- paste0("Survival: From ", index_name)
+  my_title <- paste0("Survival: From ", index_title)
 
-  if (!is.null(event_name)) {
-    my_title <- paste0("Survival: From ", index_name, " to ", event_name)
+  if (!is.null(event_title)) {
+    my_title <- paste0("Survival: From ", index_title, " to ", event_title)
   }
 
   p <- p +

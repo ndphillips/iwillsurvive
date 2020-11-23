@@ -13,6 +13,8 @@ plot_survival(
 )
 }
 \arguments{
+\item{object}{iwillsurvive. An iwillsurvivel object created from fit_survival}
+
 \item{cohort}{dataframe. A one-row-per-patient cohort used in generating fit.}
 
 \item{followup_time_units}{character. The units that time at risk are calculated in}
@@ -20,12 +22,6 @@ plot_survival(
 \item{ggtheme}{theme. A ggplot2 theme}
 
 \item{palette}{character. Colors for the color palette}
-
-\item{fit}{survfit. A survfit object created from survival::survfit()}
-
-\item{event_name}{character. Name of the event such as "death", "next treatment"}
-
-\item{index_name}{character. Name of the index such as "LOT1 Start" or "Metastatic Diagnosis"}
 }
 \value{
 ggplot2

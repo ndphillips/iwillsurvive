@@ -78,8 +78,8 @@ cohort_fit <- fit_survival(cohort,
 
 plot_survival(cohort_fit,
   cohort = cohort,
-  index_name = "LOT1 Start",
-  event_name = "Death"
+  index_title = "LOT1 Start",
+  event_title = "Death"
 )
 
 surv_pvalue(cohort_fit)

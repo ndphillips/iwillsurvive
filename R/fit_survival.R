@@ -5,8 +5,12 @@
 #' @param cohort dataframe. A one-row-per-patient dataframe
 #' @param followup_time character.
 #' @param event_status character.
+#' @param patient_id character.
 #' @param terms character.
 #' @param type character. See ?survival::survfit.formula
+#' @param event_title character.
+#' @param index_title character.
+#' @param title character.
 #' @param verbose logical. If TRUE, return messages
 #'
 #' @importFrom magrittr '%>%'
@@ -49,11 +53,10 @@ fit_survival <- function(cohort,
                          patient_id = "patientid",
                          terms = NULL,
                          type = "right",
-                         event_name = NULL,
-                         index_name = NULL,
+                         event_title = NULL,
+                         index_title = NULL,
                          title = NULL,
                          verbose = TRUE) {
-
   testthat::expect_true(followup_time %in% names(cohort))
   testthat::expect_true(event_status %in% names(cohort))
   testthat::expect_is(cohort[[event_status]], "logical")
@@ -103,15 +106,17 @@ fit_survival <- function(cohort,
 
   patientid_col <- names(cohort)[tolower(names(cohort)) == "patientid"]
 
-  out <- list(cohort = cohort,
-              fit = cohort_surv,
-              event_name = event_name,
-              index_name = index_name,
-              followup_time_col = followup_time,
-              timeatrisk_col = followup_time,
-              event_status_col = event_status,
-              patientid_col = patientid_col,
-              title = title)
+  out <- list(
+    cohort = cohort,
+    fit = cohort_surv,
+    event_title = event_title,
+    index_title = index_title,
+    followup_time_col = followup_time,
+    timeatrisk_col = followup_time,
+    event_status_col = event_status,
+    patientid_col = patientid_col,
+    title = title
+  )
 
   class(out) <- "iwillsurvive"
 

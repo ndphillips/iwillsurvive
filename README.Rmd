@@ -69,7 +69,7 @@ Use the `derive_*()` functions to calculate key derived columns:
 cohort <- ez_cohort %>%
   
   derive_followup_date(event_date = "dateofdeath",
-                        censor_date = "lastvisitdate") %>%
+                       censor_date = "lastvisitdate") %>%
   
   derive_followup_time(index_date = "lotstartdate") %>%
   
@@ -100,8 +100,8 @@ and let the function take care of the formula: -->
 cohort_iws <- fit_survival(cohort, 
                            followup_time = "followup_days", 
                            terms = "condition",
-                           event_name = "Death", 
-                           index_name = "LOT1 Start")
+                           event_title = "Death", 
+                           index_title = "LOT1 Start")
 ```
 
 The result is an `iwillsurvive` object
@@ -116,7 +116,7 @@ Use `plot_followup()` to visualize the time at risk data
 plot_followup(cohort_iws)
 ```
 
-Use `plot_survival()` to plot the result. Use the `index_name` and `event_name`
+Use `plot_survival()` to plot the result. Use the `index_title` and `event_title`
 to give descriptive names to the key events:
 
 ```{r, fig.width = 7, fig.height = 5, out.width = "85%"}

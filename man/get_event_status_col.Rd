@@ -7,7 +7,7 @@
 get_event_status_col(object)
 }
 \arguments{
-\item{object}{}
+\item{object}{iwillsurvive.}
 }
 \value{
 character.

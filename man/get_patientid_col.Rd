@@ -7,7 +7,7 @@
 get_patientid_col(object)
 }
 \arguments{
-\item{object}{}
+\item{object}{iwillsurvive.}
 }
 \value{
 character.

@@ -11,8 +11,8 @@ fit_survival(
   patient_id = "patientid",
   terms = NULL,
   type = "right",
-  event_name = NULL,
-  index_name = NULL,
+  event_title = NULL,
+  index_title = NULL,
   title = NULL,
   verbose = TRUE
 )
@@ -24,9 +24,17 @@ fit_survival(
 
 \item{event_status}{character.}
 
+\item{patient_id}{character.}
+
 \item{terms}{character.}
 
 \item{type}{character. See ?survival::survfit.formula}
+
+\item{event_title}{character.}
+
+\item{index_title}{character.}
+
+\item{title}{character.}
 
 \item{verbose}{logical. If TRUE, return messages}
 }

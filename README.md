@@ -132,8 +132,8 @@ and let the function take care of the formula: -->
 cohort_iws <- fit_survival(cohort, 
                            followup_time = "followup_days", 
                            terms = "condition",
-                           event_name = "Death", 
-                           index_name = "LOT1 Start")
+                           event_title = "Death", 
+                           index_title = "LOT1 Start")
 #> ── fit_survival ────────────────────────────────────────────────────────────────
 #> - survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)
 #> - 202 of 250 (81%) patient(s) experienced the event.
@@ -154,8 +154,8 @@ plot_followup(cohort_iws)
 
 <img src="man/figures/README-unnamed-chunk-8-1.png" width="85%" />
 
-Use `plot_survival()` to plot the result. Use the `index_name` and
-`event_name` to give descriptive names to the key events:
+Use `plot_survival()` to plot the result. Use the `index_title` and
+`event_title` to give descriptive names to the key events:
 
 ``` r
 plot_survival(cohort_iws)

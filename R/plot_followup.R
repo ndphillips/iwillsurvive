@@ -1,6 +1,7 @@
 #' Plot a patient timeline containing
 #'
 #' @param object iwillsurvive. An iwillsurvive object
+#' @param followup_time_units = "days",
 #' @param add_median logical. If TRUE, add a line showing median.
 #' @param point_size numeric.
 #' @param line_size numeric.
@@ -16,15 +17,12 @@
 #'
 #' @examples
 #'
-
 plot_followup <- function(object = NULL,
-                               followup_time_units = "days",
-                               add_median = TRUE,
-                               point_size = 1,
-                               line_size = .5,
-                               theme = ggplot2::theme_minimal()) {
-
-
+                          followup_time_units = "days",
+                          add_median = TRUE,
+                          point_size = 1,
+                          line_size = .5,
+                          theme = ggplot2::theme_minimal()) {
   followup_time_sym <- rlang::sym(get_followup_time_col(object))
   event_status_sym <- rlang::sym(get_event_status_col(object))
   patientid_sym <- rlang::sym(get_patientid_col(object))
@@ -51,14 +49,13 @@ plot_followup <- function(object = NULL,
 
   # Create title
 
-  index_name <- get_index_name(object)
-  event_name <- get_event_name(object)
+  index_title <- get_index_title(object)
+  event_title <- get_event_title(object)
 
+  my_title <- paste0("Time at risk: From ", index_title)
 
-  my_title <- paste0("Time at risk: From ", index_name)
-
-  if (!is.null(event_name)) {
-    my_title <- paste0("Time at risk: From ", index_name, " to ", event_name)
+  if (!is.null(event_title)) {
+    my_title <- paste0("Time at risk: From ", index_title, " to ", event_title)
   }
 
   p <- ggplot2::ggplot(cohort, ggplot2::aes(
@@ -90,14 +87,13 @@ plot_followup <- function(object = NULL,
     )
 
 
-  if (!is.null(event_name)) {
+  if (!is.null(event_title)) {
     p <- p +
-      ggplot2::labs(color = event_name, shape = event_name)
+      ggplot2::labs(color = event_title, shape = event_title)
   }
 
 
   if (add_median) {
-
     median_followup_time <- stats::median(cohort$t_followup_time)
 
     p <- p +
