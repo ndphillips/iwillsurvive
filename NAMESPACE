@@ -2,10 +2,10 @@
 
 export("%>%")
 export(derive_event_status)
-export(derive_follow_up_date)
-export(derive_follow_up_time)
+export(derive_followup_date)
+export(derive_followup_time)
 export(fit_survival)
-export(plot_follow_up_time)
+export(plot_followup_time)
 export(plot_survival)
 import(cli)
 import(dplyr)

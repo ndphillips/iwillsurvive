@@ -4,7 +4,7 @@
 #' @param cohort dataframe. A one-row-per-patient cohort used in generating fit.
 #' @param event_name character. Name of the event such as "death", "next treatment"
 #' @param index_name character. Name of the index such as "LOT1 Start" or "Metastatic Diagnosis"
-#' @param follow_up_time_units character. The units that time at risk are calculated in
+#' @param followup_time_units character. The units that time at risk are calculated in
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. Colors for the color palette
 #'
@@ -16,32 +16,11 @@
 #' @export
 #'
 #' @examples
-#'
-#' cohort <- data.frame(
-#'   patientid = 1:20,
-#'   follow_up_time = c(
-#'     6.1, 15.4, 22, 24.6, 25.6, 26.1, 28.7, 46.9, 54.5, 55, 62.2,
-#'     65.5, 88.1, 108.5, 116, 119.1, 119.6, 169.1, 317.8, 381.7
-#'   ),
-#'   event_status = c(
-#'     FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE,
-#'     TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE
-#'   )
-#' )
-#'
-#' cohort_fit <- fit_survival(cohort)
-#'
-#' plot_survival(
-#'   fit = cohort_fit,
-#'   cohort = cohort,
-#'   event_name = "Death",
-#'   index_name = "Metastatic Diagnosis"
-#' )
 plot_survival <- function(fit = NULL,
                           cohort = NULL,
                           event_name = NULL,
                           index_name = "index",
-                          follow_up_time_units = NULL,
+                          followup_time_units = NULL,
                           ggtheme = ggplot2::theme_bw(),
                           palette = c("#4941D1", "#00B6DA")) {
   patient_n <- sum(fit$n)
@@ -70,8 +49,8 @@ plot_survival <- function(fit = NULL,
       subtitle = paste0("Cohort N = ", scales::comma(patient_n))
     )
 
-  if (!is.null(follow_up_time_units)) {
-    p <- p + ggplot2::labs(x = paste0("Time (in ", follow_up_time_units, ")"))
+  if (!is.null(followup_time_units)) {
+    p <- p + ggplot2::labs(x = paste0("Time (in ", followup_time_units, ")"))
   }
 
   p

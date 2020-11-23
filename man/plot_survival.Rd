@@ -9,7 +9,7 @@ plot_survival(
   cohort = NULL,
   event_name = NULL,
   index_name = "index",
-  follow_up_time_units = NULL,
+  followup_time_units = NULL,
   ggtheme = ggplot2::theme_bw(),
   palette = c("#4941D1", "#00B6DA")
 )
@@ -23,7 +23,7 @@ plot_survival(
 
 \item{index_name}{character. Name of the index such as "LOT1 Start" or "Metastatic Diagnosis"}
 
-\item{follow_up_time_units}{character. The units that time at risk are calculated in}
+\item{followup_time_units}{character. The units that time at risk are calculated in}
 
 \item{ggtheme}{theme. A ggplot2 theme}
 
@@ -34,27 +34,4 @@ ggplot2
 }
 \description{
 Plot the results of a survival analysis
-}
-\examples{
-
-cohort <- data.frame(
-  patientid = 1:20,
-  follow_up_time = c(
-    6.1, 15.4, 22, 24.6, 25.6, 26.1, 28.7, 46.9, 54.5, 55, 62.2,
-    65.5, 88.1, 108.5, 116, 119.1, 119.6, 169.1, 317.8, 381.7
-  ),
-  event_status = c(
-    FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE,
-    TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE
-  )
-)
-
-cohort_fit <- fit_survival(cohort)
-
-plot_survival(
-  fit = cohort_fit,
-  cohort = cohort,
-  event_name = "Death",
-  index_name = "Metastatic Diagnosis"
-)
 }

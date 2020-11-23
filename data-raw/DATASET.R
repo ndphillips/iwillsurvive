@@ -64,15 +64,15 @@ ez_cohort <- tibble::tibble(
 )
 #
 cohort <- ez_cohort %>%
-  derive_follow_up_date(
+  derive_followup_date(
     event_date = "dateofdeath",
     censor_date = "lastvisitdate"
   ) %>%
-  derive_follow_up_time(index_date = "lotstartdate") %>%
+  derive_followup_time(index_date = "lotstartdate") %>%
   derive_event_status(event_date = "dateofdeath")
 
 cohort_fit <- fit_survival(cohort,
-  follow_up_time = "follow_up_days",
+  followup_time = "followup_days",
   terms = "condition"
 )
 

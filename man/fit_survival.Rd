@@ -6,17 +6,21 @@
 \usage{
 fit_survival(
   cohort,
-  follow_up_time = "follow_up_time",
+  followup_time = "followup_time",
   event_status = "event_status",
+  patient_id = "patientid",
   terms = NULL,
   type = "right",
+  event_name = NULL,
+  index_name = NULL,
+  title = NULL,
   verbose = TRUE
 )
 }
 \arguments{
 \item{cohort}{dataframe. A one-row-per-patient dataframe}
 
-\item{follow_up_time}{character.}
+\item{followup_time}{character.}
 
 \item{event_status}{character.}
 
@@ -36,7 +40,7 @@ This is a wrapper around survival::survfit() with a cleaner interface.
 
 cohort <- data.frame(
   patientid = 1:20,
-  follow_up_time = c(
+  followup_time = c(
     6.1, 15.4, 22, 24.6, 25.6, 26.1, 28.7, 46.9, 54.5, 55, 62.2,
     65.5, 88.1, 108.5, 116, 119.1, 119.6, 169.1, 317.8, 381.7
   ),

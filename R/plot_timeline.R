@@ -1,12 +1,6 @@
 #' Plot a patient timeline containing
 #'
-#' @param cohort dataframe. A ORPP dataframe containing columns representing time at
-#' risk and event status
-#' @param follow_up_time character. Name of a column in cohort
-#' @param event_status character. Name of a column in cohort
-#' @param follow_up_time_units character. The units that time at risk are calculated in
-#' @param event_name character. Name of the event such as "death", "next treatment"
-#' @param index_name character. Name of the index such as "LOT1 Start" or "Metastatic Diagnosis"
+#' @param object iwillsurvive. An iwillsurvive object
 #' @param add_median logical. If TRUE, add a line showing median.
 #' @param point_size numeric.
 #' @param line_size numeric.
@@ -22,68 +16,43 @@
 #'
 #' @examples
 #'
-#' cohort <- data.frame(
-#'   patientid = 1:20,
-#'   follow_up_time = c(
-#'     6.1, 15.4, 22, 24.6, 25.6, 26.1, 28.7, 46.9, 54.5, 55, 62.2,
-#'     65.5, 88.1, 108.5, 116, 119.1, 119.6, 169.1, 317.8, 381.7
-#'   ),
-#'   event_status = c(
-#'     FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE,
-#'     TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE
-#'   )
-#' )
-#'
-#' plot_follow_up_time(cohort,
-#'   follow_up_time_units = "days",
-#'   event_name = "Death",
-#'   index_name = "LOT1 Start"
-#' )
-plot_follow_up_time <- function(cohort = NULL,
-                                follow_up_time = "follow_up_time",
-                                event_status = "event_status",
-                                follow_up_time_units = NULL,
-                                event_name = NULL,
-                                index_name = "index",
-                                add_median = TRUE,
-                                point_size = 1,
-                                line_size = .5,
-                                theme = ggplot2::theme_minimal()) {
-  follow_up_time_col <- follow_up_time
-  event_status_col <- event_status
-  patientid_col <- names(cohort)[tolower(names(cohort)) == "patientid"]
 
-  if (length(patientid_col) == 0) {
-    stop("I couldn't find a column like 'patientid'")
-  }
+plot_followup_time <- function(object = NULL,
+                               followup_time_units = "days",
+                               add_median = TRUE,
+                               point_size = 1,
+                               line_size = .5,
+                               theme = ggplot2::theme_minimal()) {
 
-  cohort <- cohort %>%
-    dplyr::mutate(patientid = !!rlang::sym(patientid_col))
 
-  testthat::expect_true("data.frame" %in% class(cohort))
-  testthat::expect_true("patientid" %in% tolower(names(cohort)))
+  followup_time_sym <- rlang::sym(get_followup_time_col(object))
+  event_status_sym <- rlang::sym(get_event_status_col(object))
+  patientid_sym <- rlang::sym(get_patientid_col(object))
 
   patient_n <- nrow(cohort)
 
-  cohort <- cohort %>%
+  cohort <- object$cohort %>%
     dplyr::mutate(
-      follow_up_time = !!rlang::sym(follow_up_time_col),
-      event_status = !!rlang::sym(event_status_col)
+      t_followup_time = !!rlang::sym(followup_time_sym),
+      t_event_status = !!rlang::sym(event_status_sym)
     ) %>%
-    dplyr::arrange(follow_up_time) %>%
-    dplyr::mutate(patientid = as.numeric(factor(patientid,
+    dplyr::arrange(t_followup_time) %>%
+    dplyr::mutate(t_patientid = as.numeric(factor(!!patientid_sym,
       ordered = TRUE,
-      levels = patientid
+      levels = !!patientid_sym
     )))
 
 
-  if (!is.null(follow_up_time_units)) {
-    x_lab <- paste0("Time at Risk (", stringr::str_to_title(follow_up_time_units), ")")
+  if (!is.null(followup_time_units)) {
+    x_lab <- paste0("Time at Risk (", stringr::str_to_title(followup_time_units), ")")
   } else {
     x_lab <- "Time at Risk"
   }
 
   # Create title
+
+  index_name <- get_index_name(object)
+  event_name <- get_event_name(object)
 
 
   my_title <- paste0("Time at risk: From ", index_name)
@@ -93,16 +62,16 @@ plot_follow_up_time <- function(cohort = NULL,
   }
 
   p <- ggplot2::ggplot(cohort, ggplot2::aes(
-    x = follow_up_time,
-    y = patientid,
-    shape = event_status,
-    col = event_status
+    x = t_followup_time,
+    y = t_patientid,
+    shape = t_event_status,
+    col = t_event_status
   )) +
     ggplot2::geom_segment(ggplot2::aes(
       x = 0,
-      y = patientid,
-      xend = follow_up_time,
-      yend = patientid
+      y = t_patientid,
+      xend = t_followup_time,
+      yend = t_patientid
     ),
     size = line_size
     ) +
@@ -128,17 +97,18 @@ plot_follow_up_time <- function(cohort = NULL,
 
 
   if (add_median) {
-    median_follow_up_time <- stats::median(cohort$follow_up_time)
+
+    median_followup_time <- stats::median(cohort$t_followup_time)
 
     p <- p +
-      ggplot2::geom_vline(xintercept = median_follow_up_time, lty = 3) +
+      ggplot2::geom_vline(xintercept = median_followup_time, lty = 3) +
       ggplot2::annotate("label",
-        x = median_follow_up_time,
+        x = median_followup_time,
         y = .1 * patient_n,
-        label = round(median_follow_up_time, 1), size = 3
+        label = round(median_followup_time, 1), size = 3
       ) +
       ggplot2::annotate("text",
-        x = median_follow_up_time + .05 * max(cohort$follow_up_time),
+        x = median_followup_time + .05 * max(cohort$t_followup_time),
         y = .1 * patient_n, adj = 0,
         label = "Median Time at Risk", size = 3
       )
@@ -149,3 +119,9 @@ plot_follow_up_time <- function(cohort = NULL,
 
   p
 }
+
+
+
+
+plot_followup_time(object)
+

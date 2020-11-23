@@ -3,7 +3,7 @@
 #' This is a wrapper around survival::survfit() with a cleaner interface.
 #'
 #' @param cohort dataframe. A one-row-per-patient dataframe
-#' @param follow_up_time character.
+#' @param followup_time character.
 #' @param event_status character.
 #' @param terms character.
 #' @param type character. See ?survival::survfit.formula
@@ -20,7 +20,7 @@
 #'
 #' cohort <- data.frame(
 #'   patientid = 1:20,
-#'   follow_up_time = c(
+#'   followup_time = c(
 #'     6.1, 15.4, 22, 24.6, 25.6, 26.1, 28.7, 46.9, 54.5, 55, 62.2,
 #'     65.5, 88.1, 108.5, 116, 119.1, 119.6, 169.1, 317.8, 381.7
 #'   ),
@@ -44,25 +44,30 @@
 #' cohort_fit <- fit_survival(cohort, terms = "group")
 #' cohort_fit
 fit_survival <- function(cohort,
-                         follow_up_time = "follow_up_time",
+                         followup_time = "followup_time",
                          event_status = "event_status",
+                         patient_id = "patientid",
                          terms = NULL,
                          type = "right",
+                         event_name = NULL,
+                         index_name = NULL,
+                         title = NULL,
                          verbose = TRUE) {
-  testthat::expect_true(follow_up_time %in% names(cohort))
+
+  testthat::expect_true(followup_time %in% names(cohort))
   testthat::expect_true(event_status %in% names(cohort))
   testthat::expect_is(cohort[[event_status]], "logical")
 
   if (is.null(terms)) {
     my_expr <- paste0(
       "survival::survfit(survival::Surv(",
-      follow_up_time, ", ",
+      followup_time, ", ",
       event_status, ", type = '", type, "') ~ 1, data = cohort)"
     )
   } else {
     my_expr <- paste0(
       "survival::survfit(survival::Surv(",
-      follow_up_time, ", ",
+      followup_time, ", ",
       event_status, ", type = '", type, "') ~ ",
       paste(terms, collapse = " + "),
       ", data = cohort)"
@@ -96,5 +101,19 @@ fit_survival <- function(cohort,
     }
   }
 
-  cohort_surv
+  patientid_col <- names(cohort)[tolower(names(cohort)) == "patientid"]
+
+  out <- list(cohort = cohort,
+              fit = cohort_surv,
+              event_name = event_name,
+              index_name = index_name,
+              followup_time_col = followup_time,
+              timeatrisk_col = followup_time,
+              event_status_col = event_status,
+              patientid_col = patientid_col,
+              title = title)
+
+  class(out) <- "iwillsurvive"
+
+  out
 }
