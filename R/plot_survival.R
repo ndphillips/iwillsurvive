@@ -16,17 +16,19 @@
 #' @export
 #'
 #' @examples
-plot_survival <- function(fit = NULL,
+plot_survival <- function(object = NULL,
                           cohort = NULL,
-                          event_name = NULL,
-                          index_name = "index",
                           followup_time_units = NULL,
                           ggtheme = ggplot2::theme_bw(),
                           palette = c("#4941D1", "#00B6DA")) {
-  patient_n <- sum(fit$n)
+
+   patient_n <- sum(object$fit$n)
+
+   index_name <- get_index_name(object)
+   event_name <- get_event_name(object)
 
   p <- survminer::ggsurvplot(
-    fit = fit,
+    fit = object$fit,
     data = cohort,
     surv.median.line = "hv",
     conf.int = TRUE,
@@ -36,6 +38,7 @@ plot_survival <- function(fit = NULL,
     palette = palette,
     ggtheme = ggtheme
   )
+
 
   my_title <- paste0("Survival: From ", index_name)
 

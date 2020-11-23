@@ -118,17 +118,6 @@ cohort %>%
 #> #   dateofdeath <date>
 ```
 
-Use `plot_followup_time()` to visualize the time at risk data
-
-``` r
-plot_followup_time(cohort, 
-                    followup_time = "followup_days", 
-                    event_name = "Death", 
-                    index_name = "LOT1 Start")
-```
-
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="85%" />
-
 Use `fit_survival()` to fit the survival model. We’ll set the follow up
 time to be `followup_days` and specify “condition” as a term (i.e.;
 covariate) to be used in the model
@@ -140,37 +129,36 @@ type = 'right') ~ group, data = cohort)` directly.  -->
 and let the function take care of the formula: -->
 
 ``` r
-cohort_fit <- fit_survival(cohort, 
+cohort_iws <- fit_survival(cohort, 
                            followup_time = "followup_days", 
-                           terms = "condition")
+                           terms = "condition",
+                           event_name = "Death", 
+                           index_name = "LOT1 Start")
 #> ── fit_survival ────────────────────────────────────────────────────────────────
 #> - survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)
 #> - 202 of 250 (81%) patient(s) experienced the event.
 ```
 
-The result is a `survfit` object (from the `survival` package)
+The result is an `iwillsurvive` object
 
 ``` r
-class(cohort_fit)
-#> [1] "survfit"
-
-cohort_fit
-#> Call: survfit(formula = survival::Surv(followup_days, event_status, 
-#>     type = "right") ~ condition, data = cohort)
-#> 
-#>                     n events median 0.95LCL 0.95UCL
-#> condition=drug    132    105    410     329     590
-#> condition=placebo 118     97    232     184     313
+class(cohort_iws)
+#> [1] "iwillsurvive"
 ```
+
+Use `plot_followup()` to visualize the time at risk data
+
+``` r
+plot_followup(cohort_iws)
+```
+
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="85%" />
 
 Use `plot_survival()` to plot the result. Use the `index_name` and
 `event_name` to give descriptive names to the key events:
 
 ``` r
-plot_survival(cohort_fit, 
-              cohort = cohort, 
-              index_name = "LOT1 Start", 
-              event_name = "Death")
+plot_survival(cohort_iws)
 #> Warning: Vectorized input to `element_text()` is not officially supported.
 #> Results may be unexpected or may change in future versions of ggplot2.
 ```

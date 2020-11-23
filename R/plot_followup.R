@@ -17,7 +17,7 @@
 #' @examples
 #'
 
-plot_followup_time <- function(object = NULL,
+plot_followup <- function(object = NULL,
                                followup_time_units = "days",
                                add_median = TRUE,
                                point_size = 1,
@@ -119,9 +119,3 @@ plot_followup_time <- function(object = NULL,
 
   p
 }
-
-
-
-
-plot_followup_time(object)
-

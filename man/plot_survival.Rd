@@ -5,29 +5,27 @@
 \title{Plot the results of a survival analysis}
 \usage{
 plot_survival(
-  fit = NULL,
+  object = NULL,
   cohort = NULL,
-  event_name = NULL,
-  index_name = "index",
   followup_time_units = NULL,
   ggtheme = ggplot2::theme_bw(),
   palette = c("#4941D1", "#00B6DA")
 )
 }
 \arguments{
-\item{fit}{survfit. A survfit object created from survival::survfit()}
-
 \item{cohort}{dataframe. A one-row-per-patient cohort used in generating fit.}
-
-\item{event_name}{character. Name of the event such as "death", "next treatment"}
-
-\item{index_name}{character. Name of the index such as "LOT1 Start" or "Metastatic Diagnosis"}
 
 \item{followup_time_units}{character. The units that time at risk are calculated in}
 
 \item{ggtheme}{theme. A ggplot2 theme}
 
 \item{palette}{character. Colors for the color palette}
+
+\item{fit}{survfit. A survfit object created from survival::survfit()}
+
+\item{event_name}{character. Name of the event such as "death", "next treatment"}
+
+\item{index_name}{character. Name of the index such as "LOT1 Start" or "Metastatic Diagnosis"}
 }
 \value{
 ggplot2
