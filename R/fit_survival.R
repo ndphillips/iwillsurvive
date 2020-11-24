@@ -109,6 +109,7 @@ fit_survival <- function(cohort,
   out <- list(
     cohort = cohort,
     fit = cohort_surv,
+    terms = terms,
     event_title = event_title,
     index_title = index_title,
     followup_time_col = followup_time,
