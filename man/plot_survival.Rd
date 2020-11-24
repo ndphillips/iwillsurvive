@@ -9,7 +9,9 @@ plot_survival(
   cohort = NULL,
   followup_time_units = NULL,
   ggtheme = ggplot2::theme_bw(),
-  palette = c("#4941D1", "#00B6DA")
+  palette = c("#4941D1", "#00B6DA"),
+  conf.int = TRUE,
+  risk.table = TRUE
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ plot_survival(
 \item{ggtheme}{theme. A ggplot2 theme}
 
 \item{palette}{character. Colors for the color palette}
+
+\item{conf.int}{logical. See ?survminer::ggsurvplot}
+
+\item{risk.table}{logical. See ?survminer::ggsurvplot}
 }
 \value{
 ggplot2

@@ -110,14 +110,13 @@ The result is an `iwillsurvive` object
 class(cohort_iws)
 ```
 
-Use `plot_followup()` to visualize the time at risk data
+Use `plot_followup()` to visualize the time at risk data:
 
 ```{r, fig.width = 7, fig.height = 4, out.width = "85%"}
 plot_followup(cohort_iws)
 ```
 
-Use `plot_survival()` to plot the result. Use the `index_title` and `event_title`
-to give descriptive names to the key events:
+Use `plot_survival()` to plot the Kaplan-Meier survival curve:
 
 ```{r, fig.width = 7, fig.height = 5, out.width = "85%"}
 plot_survival(cohort_iws)

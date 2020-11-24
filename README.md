@@ -87,7 +87,7 @@ Use the `derive_*()` functions to calculate key derived columns:
 cohort <- ez_cohort %>%
   
   derive_followup_date(event_date = "dateofdeath",
-                        censor_date = "lastvisitdate") %>%
+                       censor_date = "lastvisitdate") %>%
   
   derive_followup_time(index_date = "lotstartdate") %>%
   
@@ -146,7 +146,7 @@ class(cohort_iws)
 #> [1] "iwillsurvive"
 ```
 
-Use `plot_followup()` to visualize the time at risk data
+Use `plot_followup()` to visualize the time at risk data:
 
 ``` r
 plot_followup(cohort_iws)
@@ -154,13 +154,10 @@ plot_followup(cohort_iws)
 
 <img src="man/figures/README-unnamed-chunk-8-1.png" width="85%" />
 
-Use `plot_survival()` to plot the result. Use the `index_title` and
-`event_title` to give descriptive names to the key events:
+Use `plot_survival()` to plot the Kaplan-Meier survival curve:
 
 ``` r
 plot_survival(cohort_iws)
-#> Warning: Vectorized input to `element_text()` is not officially supported.
-#> Results may be unexpected or may change in future versions of ggplot2.
 ```
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="85%" />

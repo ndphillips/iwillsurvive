@@ -5,6 +5,8 @@
 #' @param followup_time_units character. The units that time at risk are calculated in
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. Colors for the color palette
+#' @param conf.int logical. See ?survminer::ggsurvplot
+#' @param risk.table logical. See ?survminer::ggsurvplot
 #'
 #' @import ggplot2
 #' @import scales
@@ -16,24 +18,31 @@ plot_survival <- function(object = NULL,
                           cohort = NULL,
                           followup_time_units = NULL,
                           ggtheme = ggplot2::theme_bw(),
-                          palette = c("#4941D1", "#00B6DA")) {
+                          palette = c("#4941D1", "#00B6DA"),
+                          conf.int = TRUE,
+                          risk.table = TRUE
+                          ) {
+
   patient_n <- sum(object$fit$n)
 
   index_title <- get_index_title(object)
   event_title <- get_event_title(object)
 
-  p <- survminer::ggsurvplot(
+  p <- suppressWarnings({
+
+    survminer::ggsurvplot(
     fit = object$fit,
     data = cohort,
     surv.median.line = "hv",
-    conf.int = TRUE,
-    risk.table = TRUE,
+    conf.int = conf.int,
+    risk.table = risk.table,
     tables.height = 0.2,
     tables.theme = survminer::theme_cleantable(),
     palette = palette,
     ggtheme = ggtheme
   )
 
+  })
 
   my_title <- paste0("Survival: From ", index_title)
 
