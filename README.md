@@ -130,7 +130,7 @@ and let the function take care of the formula: -->
 
 ``` r
 cohort_iws <- fit_survival(cohort, 
-                           followup_time = "followup_days", 
+                           followup_time = "followup_days",
                            terms = "condition",
                            event_title = "Death", 
                            index_title = "LOT1 Start")

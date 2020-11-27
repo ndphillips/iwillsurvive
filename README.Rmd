@@ -98,7 +98,7 @@ and let the function take care of the formula: -->
 
 ```{r}
 cohort_iws <- fit_survival(cohort, 
-                           followup_time = "followup_days", 
+                           followup_time = "followup_days",
                            terms = "condition",
                            event_title = "Death", 
                            index_title = "LOT1 Start")
@@ -118,6 +118,6 @@ plot_followup(cohort_iws)
 
 Use `plot_survival()` to plot the Kaplan-Meier survival curve:
 
-```{r, fig.width = 7, fig.height = 5, out.width = "85%"}
+```{r, fig.width = 6, fig.height = 5, out.width = "85%"}
 plot_survival(cohort_iws)
 ```

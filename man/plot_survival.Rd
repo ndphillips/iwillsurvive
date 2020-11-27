@@ -10,12 +10,18 @@ plot_survival(
   followup_time_units = NULL,
   ggtheme = ggplot2::theme_bw(),
   palette = c("#4941D1", "#00B6DA"),
-  conf.int = TRUE,
-  risk.table = TRUE
+  conf_int = TRUE,
+  add_median = TRUE,
+  add_median_delta = TRUE,
+  risk.table = TRUE,
+  index_title = NULL,
+  event_title = NULL,
+  method = "iwillsurvive",
+  event_nudge_y = 0.15
 )
 }
 \arguments{
-\item{object}{iwillsurvive. An iwillsurvivel object created from fit_survival}
+\item{object}{iwillsurvive. An iwillsurvive object created from fit_survival}
 
 \item{cohort}{dataframe. A one-row-per-patient cohort used in generating fit.}
 
@@ -25,9 +31,21 @@ plot_survival(
 
 \item{palette}{character. Colors for the color palette}
 
-\item{conf.int}{logical. See ?survminer::ggsurvplot}
+\item{conf_int}{logical. See ?survminer::ggsurvplot}
+
+\item{add_median}{logical. If TRUE, show median survival}
+
+\item{add_median_delta}{logical.}
 
 \item{risk.table}{logical. See ?survminer::ggsurvplot}
+
+\item{index_title}{character.}
+
+\item{event_title}{character.}
+
+\item{method}{character. Experimental...}
+
+\item{event_nudge_y}{numeric.}
 }
 \value{
 ggplot2
