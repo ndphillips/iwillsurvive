@@ -158,6 +158,8 @@ Use `plot_survival()` to plot the Kaplan-Meier survival curve:
 
 ``` r
 plot_survival(cohort_iws)
+#> Warning in is.na(x): is.na() applied to non-(list or vector) of type
+#> 'expression'
 ```
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="85%" />

@@ -11,12 +11,20 @@ plot_survival(
   ggtheme = ggplot2::theme_bw(),
   palette = c("#4941D1", "#00B6DA"),
   conf_int = TRUE,
+  add_labels = TRUE,
   add_median = TRUE,
   add_median_delta = TRUE,
-  risk.table = TRUE,
+  legend_position = "inside",
+  legend_position_y = 0.5,
+  legend_nudge_y = 0.1,
+  legend_position_x = NULL,
+  label_size = 3,
+  label_color = gray(0.5),
+  median_nudge_y = 0.1,
+  risk_table = TRUE,
   index_title = NULL,
   event_title = NULL,
-  method = "iwillsurvive",
+  median_label_size = 4,
   event_nudge_y = 0.15
 )
 }
@@ -25,25 +33,32 @@ plot_survival(
 
 \item{cohort}{dataframe. A one-row-per-patient cohort used in generating fit.}
 
-\item{followup_time_units}{character. The units that time at risk are calculated in}
-
 \item{ggtheme}{theme. A ggplot2 theme}
 
 \item{palette}{character. Colors for the color palette}
 
-\item{conf_int}{logical. See ?survminer::ggsurvplot}
+\item{add_labels}{logical. If TRUE, show verbal labels}
 
 \item{add_median}{logical. If TRUE, show median survival}
 
 \item{add_median_delta}{logical.}
 
-\item{risk.table}{logical. See ?survminer::ggsurvplot}
+\item{legend_position}{character. Where should the strata labels be located?
+Either 'inside' for inside the plot, or 'top', or 'right'}
+
+\item{legend_position_y}{numeric. Y locations of legend. Only used if legend_position = "inside"}
+
+\item{label_size}{numeric. Size of the labels.}
+
+\item{median_nudge_y}{numeric. Amount to nudge median label.}
+
+\item{risk_table}{logical. If TRUE, include the risk table}
 
 \item{index_title}{character.}
 
 \item{event_title}{character.}
 
-\item{method}{character. Experimental...}
+\item{median_label_size}{numeric.}
 
 \item{event_nudge_y}{numeric.}
 }

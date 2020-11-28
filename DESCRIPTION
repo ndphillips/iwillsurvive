@@ -16,7 +16,6 @@ Depends:
     R (>= 2.10)
 Imports: 
     survival,
-    survminer,
     magrittr,
     dplyr,
     rlang,
@@ -24,7 +23,8 @@ Imports:
     scales,
     cli,
     stringr,
-    tibble
+    tibble,
+    ggrepel
 Suggests: 
     testthat,
     knitr,
