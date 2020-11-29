@@ -1,6 +1,4 @@
-#' Fit a survival model with a easy to use interface
-#'
-#' This is a wrapper around survival::survfit() with a cleaner interface.
+#' Create an iwillsurvive object
 #'
 #' @param cohort dataframe. A one-row-per-patient dataframe
 #' @param followup_time character.
@@ -8,9 +6,12 @@
 #' @param patient_id character.
 #' @param terms character.
 #' @param type character. See ?survival::survfit.formula
+#' @param fit survfit. An optional survfit object created from
+#' survival:survfit(). If specified, no additional model(s) will be fit.
 #' @param event_title character.
 #' @param index_title character.
 #' @param title character.
+#' @param followup_time_units character. Units used in followup time
 #' @param verbose logical. If TRUE, return messages
 #'
 #' @importFrom magrittr '%>%'
@@ -40,52 +41,40 @@
 #'
 #' # Ignoring group term
 #'
-#' cohort_fit <- fit_survival(cohort)
+#' cohort_fit <- iwillsurvive(cohort)
 #' cohort_fit
 #'
 #' # Now including some covariates
 #'
-#' cohort_fit <- fit_survival(cohort, terms = "group")
+#' cohort_fit <- iwillsurvive(cohort,
+#'                            terms = "group")
+#'
 #' cohort_fit
-fit_survival <- function(cohort,
+iwillsurvive <- function(cohort,
                          followup_time = "followup_months",
                          event_status = "event_status",
                          patient_id = "patientid",
                          terms = NULL,
                          type = "right",
+                         fit = NULL,
                          event_title = NULL,
                          index_title = NULL,
                          title = NULL,
+                         followup_time_units = NULL,
                          verbose = TRUE) {
 
   testthat::expect_true(followup_time %in% names(cohort))
   testthat::expect_true(event_status %in% names(cohort))
   testthat::expect_is(cohort[[event_status]], "logical")
 
-  if (is.null(terms)) {
-    my_expr <- paste0(
-      "survival::survfit(survival::Surv(",
-      followup_time, ", ",
-      event_status, ", type = '", type, "') ~ 1, data = cohort)"
-    )
-  } else {
-    my_expr <- paste0(
-      "survival::survfit(survival::Surv(",
-      followup_time, ", ",
-      event_status, ", type = '", type, "') ~ ",
-      paste(terms, collapse = " + "),
-      ", data = cohort)"
-    )
-  }
-  cohort_surv <- eval(parse(text = my_expr))
+  patient_n <- nrow(cohort)
+  event_n <- sum(cohort[[event_status]])
+
+  patientid_col <- names(cohort)[tolower(names(cohort)) == "patientid"]
 
   if (verbose) {
-    patient_n <- nrow(cohort)
-    event_n <- sum(cohort[[event_status]])
 
-    cli::cli_rule(left = "fit_survival")
-
-    message(paste0("- ", my_expr))
+    cli::cli_rule(left = "iwillsurvive")
 
     my_message <- paste0(
       "- ", scales::comma(event_n), " of ", scales::comma(patient_n), " (",
@@ -93,6 +82,32 @@ fit_survival <- function(cohort,
     )
 
     message(my_message)
+
+  }
+
+  if (is.null(fit)) {
+
+    if (is.null(terms)) {
+      my_expr <- paste0(
+        "survival::survfit(survival::Surv(",
+        followup_time, ", ",
+        event_status, ", type = '", type, "') ~ 1, data = cohort)"
+      )
+    } else {
+      my_expr <- paste0(
+        "survival::survfit(survival::Surv(",
+        followup_time, ", ",
+        event_status, ", type = '", type, "') ~ ",
+        paste(terms, collapse = " + "),
+        ", data = cohort)"
+      )
+    }
+
+    fit <- eval(parse(text = my_expr))
+
+    if (verbose) {
+
+    message(paste0("- ", my_expr))
 
     if (is.null(terms)) {
       my_message <- paste0(
@@ -102,18 +117,23 @@ fit_survival <- function(cohort,
 
       message(my_message)
     }
+
+    }
+
   }
 
-  patientid_col <- names(cohort)[tolower(names(cohort)) == "patientid"]
+  # If followup_time_units isn't specified, try to guess it
 
-  # Determine the unit in followup time
+  if (is.null(followup_time_units)) {
 
-  followup_time_units <- c("days", "months", "years")[stringr::str_detect(followup_time,
-                                             pattern = c("day", "month", "year"))]
+  followup_time_units <- c("days", "months", "years")[stringr::str_detect(
+    followup_time, pattern = c("day", "month", "year"))]
+
+  }
 
   out <- list(
     cohort = cohort,
-    fit = cohort_surv,
+    fit = fit,
     terms = terms,
     event_title = event_title,
     index_title = index_title,

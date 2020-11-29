@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# iwillsurvive 0.1.1 <img src="https://cdn.iconscout.com/icon/free/png-512/disco-1-62616.png" align="right" height="139"/>
+# iwillsurvive 0.1.1.9000 <img src="https://cdn.iconscout.com/icon/free/png-512/disco-1-62616.png" align="right" height="139"/>
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -29,7 +29,7 @@ devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
 ``` r
 library(iwillsurvive)
 #> -----------------------------------------------------
-#> iwillsurvive 0.1.1 'Gloria'
+#> iwillsurvive 0.1.1.9000 'Gloria'
 #> Intro  : vignette('introduction', 'iwillsurvive')
 #> Repo   : https://github.com/ndphillips/iwillsurvive
 #> .....................................................
@@ -118,25 +118,25 @@ cohort %>%
 #> #   dateofdeath <date>, followup_months <dbl>, followup_years <dbl>
 ```
 
-Use `fit_survival()` to fit the survival model. We’ll set the follow up
+Use `iwillsurvive()` to fit the survival model. We’ll set the follow up
 time to be `followup_days` and specify “condition” as a term (i.e.;
 covariate) to be used in the model
 
 <!-- If we were using `survival::survfit()` we'd need to specify this nasty 
 looking formula `survival::survfit(survival::Surv(followup_days, event_status, 
 type = 'right') ~ group, data = cohort)` directly.  -->
-<!-- With `fit_survival()`, we can simply specify the column names of interest 
+<!-- With `iwillsurvive()`, we can simply specify the column names of interest 
 and let the function take care of the formula: -->
 
 ``` r
-cohort_iws <- fit_survival(cohort, 
+cohort_iws <- iwillsurvive(cohort, 
                            followup_time = "followup_days",
                            terms = "condition",
                            event_title = "Death", 
                            index_title = "LOT1 Start")
-#> ── fit_survival ────────────────────────────────────────────────────────────────
-#> - survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)
+#> ── iwillsurvive ────────────────────────────────────────────────────────────────
 #> - 202 of 250 (81%) patient(s) experienced the event.
+#> - survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)
 ```
 
 The result is an `iwillsurvive` object

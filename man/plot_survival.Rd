@@ -30,7 +30,7 @@ plot_survival(
 )
 }
 \arguments{
-\item{object}{iwillsurvive. An iwillsurvive object created from fit_survival}
+\item{object}{iwillsurvive. An iwillsurvive object created from iwillsurvive}
 
 \item{cohort}{dataframe. A one-row-per-patient cohort used in generating fit.}
 
@@ -81,7 +81,7 @@ cohort <- ez_cohort \%>\%
  derive_followup_time(index_date = "lotstartdate") \%>\%
  derive_event_status(event_date = "dateofdeath")
 
-cohort_iws <- fit_survival(cohort,
+cohort_iws <- iwillsurvive(cohort,
                           followup_time = "followup_days",
                           terms = "condition",
                           event_title = "Death",

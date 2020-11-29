@@ -7,7 +7,7 @@ test_that("fit survival works with different types of inputs", {
     derive_followup_time(index_date = "lotstartdate") %>%
     derive_event_status(event_date = "dateofdeath")
 
-  object <- fit_survival(cohort,
+  object <- iwillsurvive(cohort,
     followup_time = "followup_days",
     event_status = "event_status"
   )

@@ -1,6 +1,6 @@
 #' Plot the results of a survival analysis
 #'
-#' @param object iwillsurvive. An iwillsurvive object created from fit_survival
+#' @param object iwillsurvive. An iwillsurvive object created from iwillsurvive
 #' @param cohort dataframe. A one-row-per-patient cohort used in generating fit.
 #' @param ggtheme theme. A ggplot2 theme
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
@@ -35,7 +35,7 @@
 #'  derive_followup_time(index_date = "lotstartdate") %>%
 #'  derive_event_status(event_date = "dateofdeath")
 #'
-#'cohort_iws <- fit_survival(cohort,
+#'cohort_iws <- iwillsurvive(cohort,
 #'                           followup_time = "followup_days",
 #'                           terms = "condition",
 #'                           event_title = "Death",
