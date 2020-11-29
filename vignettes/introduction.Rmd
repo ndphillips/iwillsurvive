@@ -14,63 +14,60 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r example}
 library(iwillsurvive)
+library(dplyr)
 ```
 
-It's best to start with one-row-per-patient (ORPP) cohort object.
+It's best to start with one-row-per-patient (ORPP) cohort object that contains 
+columns corresponding to 
 
-For this example, we'll `ez_cohort`, a dataframe of simulated patients contained in `iwillsurvive`:
+- `patientid`, a unique patient identifier
+- `index_date`, a date corresponding to an index date.
+- `censor_date`, date corresponding to when patients were censored
+- `event_date`, date corresponding to the event of interest. NA values indicate 
+that the event was not observed.
+
+`iwillsurvive` provides one such example in `ez_cohort`, a dataframe of `r scales::comma(nrow(ez_cohort))`
+simulated patients:
 
 ```{r}
-ez_cohort
+cohort <- ez_cohort
 ```
 
+# `derive_*()` functions
 
-Use `derive
+Use the `derive_*()` functions to calculate key derived columns:
+
+`derive_followup_date()` returns the column `follow_up` date, which is event_date
+ (if known), and the `censor_date` otherwise:
 
 ```{r}
-ez_cohort <- ez_cohort %>%
-  derive_follow_up_date(event_date = "dateofdeath",
-                      censor_date = "censordate") %>%
-  
-  derive_follow_up_time(index_date = "lotstartdate") %>%
-  
-  derive_event_status(event_date = "dateofdeath")
+cohort <- cohort %>%
+  derive_followup_date(event_date = "dateofdeath",
+                       censor_date = "lastvisitdate")
+
+cohort
 ```
 
-
-Use `plot_follow_up_time` to visualize the time at risk data
-
-```{r, fig.width = 7, fig.height = 4, out.width = "85%"}
-plot_follow_up_time(ez_cohort, 
-                   follow_up_time = "follow_up_days", 
-                   event_status = "event_status")
-```
-
-Use `fit_survival()` to fit the survival model. You can do this in two ways:
-
-If you already have time at risk and the event status calculated (as we do in the `ez_cohort` object), you can simply point the function to those columns:
+`derive_followup_time()` returns the columns followup_days, followup_months, and
+followup_years which show time from index to follow up:
 
 ```{r}
-cohort_fit <- fit_survival(ez_cohort, 
-                           follow_up_time = "follow_up_days", 
-                           event_status = "event_status")
+cohort <- cohort %>%
+  derive_followup_time(index_date = "lotstartdate") 
+
+cohort %>%
+  select(patientid, lotstartdate, followup_date, 
+         followup_days, followup_months, followup_years)
 ```
 
-You should get the same result using both methods.
-
-The result is a `survfit` object (from the `survival` package)
+`derive_event_status()` will add an `event_status` column
 
 ```{r}
-class(cohort_fit)
+cohort <- cohort %>%
+  derive_event_status(event_date = "dateofdeath") 
 
-cohort_fit
+cohort
 ```
 
-Use `plot_survival()` to plot the result.
-
-```{r, fig.width = 7, fig.height = 5, out.width = "85%"}
-plot_survival(cohort_fit, 
-              cohort = ez_cohort)
-```

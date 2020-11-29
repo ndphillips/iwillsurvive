@@ -5,29 +5,66 @@
 \title{Plot the results of a survival analysis}
 \usage{
 plot_survival(
-  fit = NULL,
+  object = NULL,
   cohort = NULL,
-  event_name = NULL,
-  index_name = "index",
-  follow_up_time_units = NULL,
   ggtheme = ggplot2::theme_bw(),
-  palette = c("#4941D1", "#00B6DA")
+  conf_int = TRUE,
+  simple = FALSE,
+  add_labels = TRUE,
+  add_median = TRUE,
+  add_median_delta = TRUE,
+  anchor_arrow = FALSE,
+  legend_position = "inside",
+  legend_anchor_y = 0.5,
+  legend_nudge_y = NULL,
+  legend_position_x = NULL,
+  label_size = 3,
+  label_color = gray(0.5),
+  median_nudge_y = 0.1,
+  risk_table = TRUE,
+  risk_size = 4,
+  index_title = NULL,
+  event_title = NULL,
+  median_label_size = 4,
+  event_nudge_y = 0.15
 )
 }
 \arguments{
-\item{fit}{survfit. A survfit object created from survival::survfit()}
+\item{object}{iwillsurvive. An iwillsurvive object created from fit_survival}
 
 \item{cohort}{dataframe. A one-row-per-patient cohort used in generating fit.}
 
-\item{event_name}{character. Name of the event such as "death", "next treatment"}
-
-\item{index_name}{character. Name of the index such as "LOT1 Start" or "Metastatic Diagnosis"}
-
-\item{follow_up_time_units}{character. The units that time at risk are calculated in}
-
 \item{ggtheme}{theme. A ggplot2 theme}
 
-\item{palette}{character. Colors for the color palette}
+\item{simple}{logical. If TRUE, only plot the Kaplan-Meier estimate}
+
+\item{add_labels}{logical. If TRUE, show verbal labels}
+
+\item{add_median}{logical. If TRUE, show median survival}
+
+\item{add_median_delta}{logical.}
+
+\item{legend_position}{character. Where should the strata labels be located?
+Either 'inside' for inside the plot, or 'top', or 'right'}
+
+\item{legend_anchor_y}{numeric. Y locations of anchors for legends.
+Only used if legend_position = "inside"}
+
+\item{label_size}{numeric. Size of the labels.}
+
+\item{median_nudge_y}{numeric. Amount to nudge median label.}
+
+\item{risk_table}{logical. If TRUE, include the risk table}
+
+\item{risk_size}{numeric. Size of font in risk table.}
+
+\item{index_title}{character.}
+
+\item{event_title}{character.}
+
+\item{median_label_size}{numeric.}
+
+\item{event_nudge_y}{numeric.}
 }
 \value{
 ggplot2
@@ -36,25 +73,36 @@ ggplot2
 Plot the results of a survival analysis
 }
 \examples{
+# Set things up by creating an iwillsurvive object
 
-cohort <- data.frame(
-  patientid = 1:20,
-  follow_up_time = c(
-    6.1, 15.4, 22, 24.6, 25.6, 26.1, 28.7, 46.9, 54.5, 55, 62.2,
-    65.5, 88.1, 108.5, 116, 119.1, 119.6, 169.1, 317.8, 381.7
-  ),
-  event_status = c(
-    FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE,
-    TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE
-  )
-)
+cohort <- ez_cohort \%>\%
+ derive_followup_date(event_date = "dateofdeath",
+                      censor_date = "lastvisitdate") \%>\%
+ derive_followup_time(index_date = "lotstartdate") \%>\%
+ derive_event_status(event_date = "dateofdeath")
 
-cohort_fit <- fit_survival(cohort)
+cohort_iws <- fit_survival(cohort,
+                          followup_time = "followup_days",
+                          terms = "condition",
+                          event_title = "Death",
+                          index_title = "LOT1 Start")
 
-plot_survival(
-  fit = cohort_fit,
-  cohort = cohort,
-  event_name = "Death",
-  index_name = "Metastatic Diagnosis"
-)
+plot_survival(cohort_iws)
+
+# Set simple = TRUE to only get the KM without any fancy pants stuff
+
+plot_survival(cohort_iws,
+             simple = TRUE)
+
+# Control the location of the legend with legend_position
+plot_survival(cohort_iws,
+             legend_position = "top")
+
+# Change the location of the labels and add arrows
+plot_survival(cohort_iws,
+             legend_anchor_y = c(.7, .85),
+             legend_position_x = c(260, 250),
+             legend_nudge_y = .1,
+             anchor_arrow = TRUE)
+
 }

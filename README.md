@@ -1,18 +1,18 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# iwillsurvive 0.1.0 <img src="https://cdn.iconscout.com/icon/free/png-512/disco-1-62616.png" align="right" height="139"/>
+# iwillsurvive 0.1.1 <img src="https://cdn.iconscout.com/icon/free/png-512/disco-1-62616.png" align="right" height="139"/>
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Codename:
 shuffled](https://img.shields.io/badge/version-0.1_'Gloria'-yellow.svg)](https://en.wikipedia.org/wiki/Gloria_Gaynor)
 
-The goal of iwillsurvive is to make it easy to fit and visualize
-survival models. Essentially, it provides wrapper functions around
-commonly used functions from survival packages such as
-`survival::survfit()` and `survminer::ggsurvplot()`, while providing
-user-friendly in-line messages, notes, and warnings.
+The goal of `iwillsurvive` is to make it easy to fit and visualize
+simple survival models. It provides wrapper functions around commonly
+used functions from survival packages such as `survival::survfit()` and
+`survminer::ggsurvplot()`, while providing user-friendly in-line
+messages, notes, and warnings.
 
 ## Installation
 
@@ -28,11 +28,11 @@ devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
 
 ``` r
 library(iwillsurvive)
-#> -----------------------------------------------------------------------
-#> iwillsurvive 0.1.0 'Gloria'
-#> Intro   : vignette('introduction', 'iwillsurvive')
-#> Repo    : https://github.com/ndphillips/iwillsurvive
-#> .......................................................................
+#> -----------------------------------------------------
+#> iwillsurvive 0.1.1 'Gloria'
+#> Intro  : vignette('introduction', 'iwillsurvive')
+#> Repo   : https://github.com/ndphillips/iwillsurvive
+#> .....................................................
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -45,122 +45,113 @@ library(dplyr)
 ```
 
 It’s best to start with one-row-per-patient (ORPP) cohort object that
-contains columns corresponding to patientid, IndexDate (like
-`lotstartdate`), censordate, and an EventDate (like `dateofdeath`)
+contains columns corresponding to
 
-For this example, we’ll `ez_cohort`, a dataframe of simulated patients
-contained in `iwillsurvive`:
+-   `patientid`, a unique patient identifier
+-   `index_date`, a date corresponding to an index date.
+-   `censor_date`, date corresponding to when patients were censored
+-   `event_date`, date corresponding to the event of interest. NA values
+    indicate that the event was not observed.
+
+`iwillsurvive` provides one such example in `ez_cohort`, a dataframe of
+250 simulated patients:
 
 ``` r
 ez_cohort
-#> # A tibble: 100 x 5
-#>    patientid group lotstartdate censordate dateofdeath
-#>    <chr>     <chr> <date>       <date>     <date>     
-#>  1 F00001    a     2020-07-20   2020-09-15 NA         
-#>  2 F00002    b     2020-04-21   2020-07-27 NA         
-#>  3 F00003    b     2020-07-24   NA         2020-08-09 
-#>  4 F00004    a     2020-01-04   2020-08-14 NA         
-#>  5 F00005    a     2020-04-07   2020-08-22 NA         
-#>  6 F00006    b     2020-01-07   2020-04-23 NA         
-#>  7 F00007    b     2020-07-01   NA         2020-07-10 
-#>  8 F00008    a     2020-10-25   NA         2020-11-30 
-#>  9 F00009    a     2020-05-25   2020-06-20 NA         
-#> 10 F00010    a     2020-10-07   2020-11-07 NA         
-#> # … with 90 more rows
+#> # A tibble: 250 x 5
+#>    patientid condition lotstartdate lastvisitdate dateofdeath
+#>    <chr>     <chr>     <date>       <date>        <date>     
+#>  1 F00001    placebo   2016-05-17   2020-12-01    NA         
+#>  2 F00002    placebo   2020-07-27   2020-08-25    2020-10-05 
+#>  3 F00003    drug      2016-04-14   2017-02-16    2017-03-13 
+#>  4 F00004    drug      2020-06-12   2020-11-25    NA         
+#>  5 F00005    placebo   2019-03-20   2020-01-13    2020-02-21 
+#>  6 F00006    placebo   2017-04-02   2017-10-18    2017-11-19 
+#>  7 F00007    placebo   2018-01-26   2019-01-12    2019-02-17 
+#>  8 F00008    placebo   2015-07-02   2015-11-20    2015-12-23 
+#>  9 F00009    drug      2019-03-08   2020-07-18    2020-08-17 
+#> 10 F00010    placebo   2018-08-23   2019-02-14    2019-03-08 
+#> # … with 240 more rows
 ```
 
-Use the derive\_ functions to calculate key derived columns:
+Use the `derive_*()` functions to calculate key derived columns:
 
--   `follow_up_date` - dateofdeath, if known, and censordate, otherwise
--   `follow_up_days` - Days from lotstartdate to follow\_up\_date
--   `Death` - A logical column indicating whether or not the event
-    (death) is known
+-   `followup_date` - `dateofdeath`, if known, and `censordate`,
+    otherwise
+-   `followup_days` - Days from `index_date` (in our case,
+    `lotstartdate`) to `followup_date`
+-   `event_status` - A logical column indicating whether or not the
+    event (`dateofdeath`) is known.
 
 ``` r
 cohort <- ez_cohort %>%
   
-  derive_follow_up_date(event_date = "dateofdeath",
-                      censor_date = "censordate") %>%
+  derive_followup_date(event_date = "dateofdeath",
+                       censor_date = "lastvisitdate") %>%
   
-  derive_follow_up_time(index_date = "lotstartdate") %>%
+  derive_followup_time(index_date = "lotstartdate") %>%
   
   derive_event_status(event_date = "dateofdeath")
 ```
 
-Here is our updated cohort object:
+Here is our updated cohort object (moving our derived columns to the
+front) for visibility
 
 ``` r
 cohort %>%
-  select(patientid, follow_up_date, follow_up_days, event_status, everything())
-#> # A tibble: 100 x 8
-#>    patientid follow_up_date follow_up_days event_status group lotstartdate
-#>    <chr>     <date>                  <dbl> <lgl>        <chr> <date>      
-#>  1 F00001    2020-09-15              57.1  FALSE        a     2020-07-20  
-#>  2 F00002    2020-07-27              97.1  FALSE        b     2020-04-21  
-#>  3 F00003    2020-08-09              16.5  TRUE         b     2020-07-24  
-#>  4 F00004    2020-08-14             224.   FALSE        a     2020-01-04  
-#>  5 F00005    2020-08-22             138.   FALSE        a     2020-04-07  
-#>  6 F00006    2020-04-23             107.   FALSE        b     2020-01-07  
-#>  7 F00007    2020-07-10               9.87 TRUE         b     2020-07-01  
-#>  8 F00008    2020-11-30              36.6  TRUE         a     2020-10-25  
-#>  9 F00009    2020-06-20              26.4  FALSE        a     2020-05-25  
-#> 10 F00010    2020-11-07              31.7  FALSE        a     2020-10-07  
-#> # … with 90 more rows, and 2 more variables: censordate <date>,
-#> #   dateofdeath <date>
+  select(patientid, followup_date, followup_days, event_status, 
+         everything())
+#> # A tibble: 250 x 10
+#>    patientid followup_date followup_days event_status condition lotstartdate
+#>    <chr>     <date>                <dbl> <lgl>        <chr>     <date>      
+#>  1 F00001    2020-12-01           1660.  FALSE        placebo   2016-05-17  
+#>  2 F00002    2020-10-05             70.1 TRUE         placebo   2020-07-27  
+#>  3 F00003    2017-03-13            333.  TRUE         drug      2016-04-14  
+#>  4 F00004    2020-11-25            167.  FALSE        drug      2020-06-12  
+#>  5 F00005    2020-02-21            338.  TRUE         placebo   2019-03-20  
+#>  6 F00006    2017-11-19            232.  TRUE         placebo   2017-04-02  
+#>  7 F00007    2019-02-17            388.  TRUE         placebo   2018-01-26  
+#>  8 F00008    2015-12-23            175.  TRUE         placebo   2015-07-02  
+#>  9 F00009    2020-08-17            528.  TRUE         drug      2019-03-08  
+#> 10 F00010    2019-03-08            197.  TRUE         placebo   2018-08-23  
+#> # … with 240 more rows, and 4 more variables: lastvisitdate <date>,
+#> #   dateofdeath <date>, followup_months <dbl>, followup_years <dbl>
 ```
 
-Use `plot_follow_up_time` to visualize the time at risk data
+Use `fit_survival()` to fit the survival model. We’ll set the follow up
+time to be `followup_days` and specify “condition” as a term (i.e.;
+covariate) to be used in the model
+
+<!-- If we were using `survival::survfit()` we'd need to specify this nasty 
+looking formula `survival::survfit(survival::Surv(followup_days, event_status, 
+type = 'right') ~ group, data = cohort)` directly.  -->
+<!-- With `fit_survival()`, we can simply specify the column names of interest 
+and let the function take care of the formula: -->
 
 ``` r
-plot_follow_up_time(cohort, 
-                    follow_up_time = "follow_up_days", 
-                    event_name = "Death", 
-                    index_name = "LOT1 Start")
-```
-
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="85%" />
-
-Use `fit_survival()` to fit the survival model - we’ll set the follow up
-time to be follow\_up\_days, event status to be Death, and include group
-as a categorical covariate.
-
-<!-- If we were using `survival::survfit()` we'd need to specify this nasty looking formula `survival::survfit(survival::Surv(follow_up_days, event_status, type = 'right') ~ group, data = cohort)` directly.  -->
-<!-- With `fit_survival()`, we can simply specify the column names of interest and let the function take care of the formula: -->
-
-``` r
-cohort_fit <- fit_survival(cohort, 
-                           follow_up_time = "follow_up_days", 
-                           terms = "group")
+cohort_iws <- fit_survival(cohort, 
+                           followup_time = "followup_days",
+                           terms = "condition",
+                           event_title = "Death", 
+                           index_title = "LOT1 Start")
 #> ── fit_survival ────────────────────────────────────────────────────────────────
-#> - survival::survfit(survival::Surv(follow_up_days, event_status, type = 'right') ~ group, data = cohort)
-#> - 39 of 100 (39%) patient(s) experienced the event.
+#> - survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)
+#> - 202 of 250 (81%) patient(s) experienced the event.
 ```
 
-The result is a `survfit` object (from the `survival` package)
+The result is an `iwillsurvive` object
 
 ``` r
-class(cohort_fit)
-#> [1] "survfit"
-
-cohort_fit
-#> Call: survfit(formula = survival::Surv(follow_up_days, event_status, 
-#>     type = "right") ~ group, data = cohort)
-#> 
-#>          n events median 0.95LCL 0.95UCL
-#> group=a 53     19   91.0    46.5      NA
-#> group=b 47     20   83.8    55.9      NA
+class(cohort_iws)
+#> [1] "iwillsurvive"
 ```
 
-Use `plot_survival()` to plot the result. Use the `index_name` and
-`event_name` to give descriptive names to the key events:
+Use `plot_survival()` to plot the Kaplan-Meier survival curve:
 
 ``` r
-plot_survival(cohort_fit, 
-              cohort = cohort, 
-              index_name = "LOT1 Start", 
-              event_name = "Death")
-#> Warning: Vectorized input to `element_text()` is not officially supported.
-#> Results may be unexpected or may change in future versions of ggplot2.
+plot_survival(cohort_iws)
+#> Warning in is.na(x): is.na() applied to non-(list or vector) of type
+#> 'expression'
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="85%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />

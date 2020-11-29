@@ -1,7 +1,7 @@
 Package: iwillsurvive
 Type: Package
 Title: Easily Create and Visualize Survival Models
-Version: 0.1.0
+Version: 0.1.1
 Author: Nathaniel Phillips <nathaniel.d.phillips.is@gmail.com.com>
 Maintainer: Nathaniel Phillips <nathaniel.d.phillips.is@gmail.com.com>
 Description: Provides a user-friendly set of wrapper functions 
@@ -16,9 +16,18 @@ Depends:
     R (>= 2.10)
 Imports: 
     survival,
-    survminer,
     magrittr,
-    dplyr
+    dplyr,
+    rlang,
+    ggplot2,
+    scales,
+    cli,
+    stringr,
+    tibble,
+    ggrepel,
+    broom,
+    purrr,
+    tidyr
 Suggests: 
     testthat,
     knitr,
