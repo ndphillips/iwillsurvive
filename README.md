@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# iwillsurvive 0.1.0.9000 <img src="https://cdn.iconscout.com/icon/free/png-512/disco-1-62616.png" align="right" height="139"/>
+# iwillsurvive 0.1.1 <img src="https://cdn.iconscout.com/icon/free/png-512/disco-1-62616.png" align="right" height="139"/>
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -29,7 +29,7 @@ devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
 ``` r
 library(iwillsurvive)
 #> -----------------------------------------------------
-#> iwillsurvive 0.1.0.9000 'Gloria'
+#> iwillsurvive 0.1.1 'Gloria'
 #> Intro  : vignette('introduction', 'iwillsurvive')
 #> Repo   : https://github.com/ndphillips/iwillsurvive
 #> .....................................................
