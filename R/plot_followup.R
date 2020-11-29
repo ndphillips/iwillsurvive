@@ -18,7 +18,6 @@
 #' @examples
 #'
 plot_followup <- function(object = NULL,
-                          followup_time_units = "days",
                           add_median = TRUE,
                           point_size = 1,
                           line_size = .5,
@@ -41,8 +40,8 @@ plot_followup <- function(object = NULL,
     )))
 
 
-  if (!is.null(followup_time_units)) {
-    x_lab <- paste0("Time at Risk (", stringr::str_to_title(followup_time_units), ")")
+  if (!is.null(object$followup_time_units)) {
+    x_lab <- paste0("Time at Risk (", stringr::str_to_title(object$followup_time_units), ")")
   } else {
     x_lab <- "Time at Risk"
   }

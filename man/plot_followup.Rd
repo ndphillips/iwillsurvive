@@ -6,7 +6,6 @@
 \usage{
 plot_followup(
   object = NULL,
-  followup_time_units = "days",
   add_median = TRUE,
   point_size = 1,
   line_size = 0.5,
@@ -16,8 +15,6 @@ plot_followup(
 \arguments{
 \item{object}{iwillsurvive. An iwillsurvive object}
 
-\item{followup_time_units}{= "days",}
-
 \item{add_median}{logical. If TRUE, add a line showing median.}
 
 \item{point_size}{numeric.}
@@ -25,6 +22,8 @@ plot_followup(
 \item{line_size}{numeric.}
 
 \item{theme}{A ggplot2 theme}
+
+\item{followup_time_units}{= "days",}
 }
 \value{
 ggplot2

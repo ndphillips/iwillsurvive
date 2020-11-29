@@ -1,0 +1,73 @@
+---
+title: "introduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r example}
+library(iwillsurvive)
+library(dplyr)
+```
+
+It's best to start with one-row-per-patient (ORPP) cohort object that contains 
+columns corresponding to 
+
+- `patientid`, a unique patient identifier
+- `index_date`, a date corresponding to an index date.
+- `censor_date`, date corresponding to when patients were censored
+- `event_date`, date corresponding to the event of interest. NA values indicate 
+that the event was not observed.
+
+`iwillsurvive` provides one such example in `ez_cohort`, a dataframe of `r scales::comma(nrow(ez_cohort))`
+simulated patients:
+
+```{r}
+cohort <- ez_cohort
+```
+
+# `derive_*()` functions
+
+Use the `derive_*()` functions to calculate key derived columns:
+
+`derive_followup_date()` returns the column `follow_up` date, which is event_date
+ (if known), and the `censor_date` otherwise:
+
+```{r}
+cohort <- cohort %>%
+  derive_followup_date(event_date = "dateofdeath",
+                       censor_date = "lastvisitdate")
+
+cohort
+```
+
+`derive_followup_time()` returns the columns followup_days, followup_months, and
+followup_years which show time from index to follow up:
+
+```{r}
+cohort <- cohort %>%
+  derive_followup_time(index_date = "lotstartdate") 
+
+cohort %>%
+  select(patientid, lotstartdate, followup_date, 
+         followup_days, followup_months, followup_years)
+```
+
+`derive_event_status()` will add an `event_status` column
+
+```{r}
+cohort <- cohort %>%
+  derive_event_status(event_date = "dateofdeath") 
+
+cohort
+```
+

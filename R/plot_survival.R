@@ -3,16 +3,18 @@
 #' @param object iwillsurvive. An iwillsurvive object created from fit_survival
 #' @param cohort dataframe. A one-row-per-patient cohort used in generating fit.
 #' @param ggtheme theme. A ggplot2 theme
-#' @param palette character. Colors for the color palette
+#' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
 #' @param add_labels logical. If TRUE, show verbal labels
 #' @param add_median logical. If TRUE, show median survival
 #' @param add_median_delta logical.
 #' @param legend_position character. Where should the strata labels be located?
 #'   Either 'inside' for inside the plot, or 'top', or 'right'
-#' @param legend_position_y numeric. Y locations of legend. Only used if legend_position = "inside"
+#' @param legend_anchor_y numeric. Y locations of anchors for legends.
+#'   Only used if legend_position = "inside"
 #' @param label_size numeric. Size of the labels.
 #' @param median_nudge_y numeric. Amount to nudge median label.
 #' @param risk_table logical. If TRUE, include the risk table
+#' @param risk_size numeric. Size of font in risk table.
 #' @param index_title character.
 #' @param event_title character.
 #' @param median_label_size numeric.
@@ -24,27 +26,62 @@
 #' @return ggplot2
 #' @export
 #'
+#' @examples
+#'# Set things up by creating an iwillsurvive object
+#'
+#'cohort <- ez_cohort %>%
+#'  derive_followup_date(event_date = "dateofdeath",
+#'                       censor_date = "lastvisitdate") %>%
+#'  derive_followup_time(index_date = "lotstartdate") %>%
+#'  derive_event_status(event_date = "dateofdeath")
+#'
+#'cohort_iws <- fit_survival(cohort,
+#'                           followup_time = "followup_days",
+#'                           terms = "condition",
+#'                           event_title = "Death",
+#'                           index_title = "LOT1 Start")
+#'
+#'plot_survival(cohort_iws)
+#'
+#'# Set simple = TRUE to only get the KM without any fancy pants stuff
+#'
+#'plot_survival(cohort_iws,
+#'              simple = TRUE)
+#'
+#'# Control the location of the legend with legend_position
+#'plot_survival(cohort_iws,
+#'              legend_position = "top")
+#'
+#'# Change the location of the labels and add arrows
+#'plot_survival(cohort_iws,
+#'              legend_anchor_y = c(.7, .85),
+#'              legend_position_x = c(260, 250),
+#'              legend_nudge_y = .1,
+#'              anchor_arrow = TRUE)
+#'
 plot_survival <- function(object = NULL,
                           cohort = NULL,
-                          followup_time_units = NULL,
                           ggtheme = ggplot2::theme_bw(),
-                          palette = c("#4941D1", "#00B6DA"),
                           conf_int = TRUE,
+                          simple = FALSE,
                           add_labels = TRUE,
                           add_median = TRUE,
                           add_median_delta = TRUE,
+                          anchor_arrow = FALSE,
                           legend_position = "inside",
-                          legend_position_y = .5,
+                          legend_anchor_y = .5,
                           legend_nudge_y = NULL,
                           legend_position_x = NULL,
                           label_size = 3,
                           label_color = gray(.5),
                           median_nudge_y = .1,
                           risk_table = TRUE,
+                          risk_size = 4,
                           index_title = NULL,
                           event_title = NULL,
                           median_label_size = 4,
                           event_nudge_y = .15) {
+
   plot_df <- broom::tidy(object$fit)
   cohort <- object$cohort
 
@@ -57,6 +94,15 @@ plot_survival <- function(object = NULL,
   if (is.null(index_title)) {
     index_title <- object$index_title
   }
+
+  if (simple) {
+
+    add_labels <- FALSE
+    add_median <- FALSE
+    add_median_delta <- FALSE
+    legend_position <- "top"
+  }
+
 
   fit_summary <- summary(object$fit)$table
 
@@ -260,7 +306,8 @@ plot_survival <- function(object = NULL,
 
         median_diff <- max(median_delta$value) - min(median_delta$value)
 
-        delta_text <- paste0(round(median_diff, 1), followup_time_units)
+        delta_text <- paste0(round(median_diff, 1))
+        # delta_text <- paste0(round(median_diff, 1), object$followup_time_units)
 
         p_km <- p_km +
           ggplot2::annotate("text",
@@ -292,17 +339,20 @@ plot_survival <- function(object = NULL,
     my_title <- paste0("Survival: From ", index_title, " to ", event_title)
   }
 
+
+  if (!is.null(object$followup_time_units)) {
+    x_lab <- paste0("Time (", stringr::str_to_title(object$followup_time_units), ")")
+  } else {
+    x_lab <- "Time"
+  }
+
   p_km <- p_km +
     ggplot2::labs(
       title = my_title,
       subtitle = paste0("Cohort N = ", scales::comma(patient_n)),
       y = "Survival Probability",
-      x = "Time"
+      x = x_lab
     )
-
-  if (!is.null(followup_time_units)) {
-    p_km <- p_km + ggplot2::labs(x = paste0("Time (in ", followup_time_units, ")"))
-  }
 
   # Add legend
 
@@ -323,7 +373,7 @@ plot_survival <- function(object = NULL,
     p_km <- p_km + ggtheme +
       ggplot2::theme(legend.position = "none")
 
-    # Get the x positions corresponding to  legend_position_y
+    # Get the x positions corresponding to  legend_anchor_y
 
     if (is.null(legend_nudge_y)) {
 
@@ -334,7 +384,7 @@ plot_survival <- function(object = NULL,
 
     temp <- tibble::tibble(
       strata = strata_values,
-      legend_position_y = rep(legend_position_y,
+      legend_anchor_y = rep(legend_anchor_y,
         length.out = length(strata_values)
       )
     )
@@ -342,10 +392,11 @@ plot_survival <- function(object = NULL,
     legend_positions <- plot_df %>%
       dplyr::left_join(temp, by = "strata") %>%
       dplyr::group_by(strata) %>%
-      dplyr::mutate(dev = abs(estimate - legend_position_y)) %>%
+      dplyr::mutate(dev = abs(estimate - legend_anchor_y)) %>%
       dplyr::filter(dev == min(dev)) %>%
       dplyr::slice(1) %>%
-      dplyr::mutate(x = time, y = legend_position_y) %>%
+      dplyr::mutate(x = time,
+                    y = legend_anchor_y) %>%
       dplyr::select(strata, x, y) %>%
       dplyr::ungroup() %>%
       dplyr::mutate(nudge_x = 0)
@@ -365,8 +416,13 @@ plot_survival <- function(object = NULL,
         )
     }
 
+
+    my_arrow <- if (anchor_arrow) {arrow(length = unit(0.02, "npc"))
+
+      } else {NULL}
+
     p_km <- p_km +
-      ggrepel::geom_text_repel(
+      ggrepel::geom_label_repel(
         data = legend_positions,
         mapping = ggplot2::aes(
           x = x, y = y,
@@ -377,19 +433,20 @@ plot_survival <- function(object = NULL,
         nudge_y = legend_nudge_y,
         direction = "y",
         segment.size = .5,
-        # arrow = arrow(length = unit(0.02, "npc")),
-        segment.color = "black"
+        arrow = my_arrow,
+        segment.color = "black",
+        label.size = 0
       )
   }
 
   # Add risk table ---------------------------------------------------
 
   if (risk_table) {
+
     risk_df <- tidyr::expand_grid(
       strata = strata_values,
       time = time_minor_breaks
     )
-
 
     risk_df <- purrr::map_dfr(1:nrow(risk_df),
       .f = function(row_i) {
@@ -441,7 +498,7 @@ plot_survival <- function(object = NULL,
           adj = 0,
           label = lab
         ),
-        size = 3,
+        size = risk_size,
         col = "black"
       ) +
       ggplot2::coord_cartesian(
@@ -465,7 +522,7 @@ plot_survival <- function(object = NULL,
           x = x, y = y,
           label = strata
         ),
-        adj = 1, size = 3
+        adj = 1, size = risk_size
       )
   }
 

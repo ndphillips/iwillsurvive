@@ -101,7 +101,7 @@ front) for visibility
 cohort %>%
   select(patientid, followup_date, followup_days, event_status, 
          everything())
-#> # A tibble: 250 x 8
+#> # A tibble: 250 x 10
 #>    patientid followup_date followup_days event_status condition lotstartdate
 #>    <chr>     <date>                <dbl> <lgl>        <chr>     <date>      
 #>  1 F00001    2020-12-01           1660.  FALSE        placebo   2016-05-17  
@@ -114,8 +114,8 @@ cohort %>%
 #>  8 F00008    2015-12-23            175.  TRUE         placebo   2015-07-02  
 #>  9 F00009    2020-08-17            528.  TRUE         drug      2019-03-08  
 #> 10 F00010    2019-03-08            197.  TRUE         placebo   2018-08-23  
-#> # … with 240 more rows, and 2 more variables: lastvisitdate <date>,
-#> #   dateofdeath <date>
+#> # … with 240 more rows, and 4 more variables: lastvisitdate <date>,
+#> #   dateofdeath <date>, followup_months <dbl>, followup_years <dbl>
 ```
 
 Use `fit_survival()` to fit the survival model. We’ll set the follow up
@@ -146,14 +146,6 @@ class(cohort_iws)
 #> [1] "iwillsurvive"
 ```
 
-Use `plot_followup()` to visualize the time at risk data:
-
-``` r
-plot_followup(cohort_iws)
-```
-
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="85%" />
-
 Use `plot_survival()` to plot the Kaplan-Meier survival curve:
 
 ``` r
@@ -162,4 +154,4 @@ plot_survival(cohort_iws)
 #> 'expression'
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="85%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />

@@ -24,7 +24,10 @@ Imports:
     cli,
     stringr,
     tibble,
-    ggrepel
+    ggrepel,
+    broom,
+    purrr,
+    tidyr
 Suggests: 
     testthat,
     knitr,

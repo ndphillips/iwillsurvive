@@ -24,7 +24,7 @@
 #'
 #' cohort <- data.frame(
 #'   patientid = 1:20,
-#'   followup_time = c(
+#'   followup_months = c(
 #'     6.1, 15.4, 22, 24.6, 25.6, 26.1, 28.7, 46.9, 54.5, 55, 62.2,
 #'     65.5, 88.1, 108.5, 116, 119.1, 119.6, 169.1, 317.8, 381.7
 #'   ),
@@ -48,7 +48,7 @@
 #' cohort_fit <- fit_survival(cohort, terms = "group")
 #' cohort_fit
 fit_survival <- function(cohort,
-                         followup_time = "followup_time",
+                         followup_time = "followup_months",
                          event_status = "event_status",
                          patient_id = "patientid",
                          terms = NULL,
@@ -57,6 +57,7 @@ fit_survival <- function(cohort,
                          index_title = NULL,
                          title = NULL,
                          verbose = TRUE) {
+
   testthat::expect_true(followup_time %in% names(cohort))
   testthat::expect_true(event_status %in% names(cohort))
   testthat::expect_is(cohort[[event_status]], "logical")
@@ -76,7 +77,6 @@ fit_survival <- function(cohort,
       ", data = cohort)"
     )
   }
-
   cohort_surv <- eval(parse(text = my_expr))
 
   if (verbose) {
@@ -106,6 +106,11 @@ fit_survival <- function(cohort,
 
   patientid_col <- names(cohort)[tolower(names(cohort)) == "patientid"]
 
+  # Determine the unit in followup time
+
+  followup_time_units <- c("days", "months", "years")[stringr::str_detect(followup_time,
+                                             pattern = c("day", "month", "year"))]
+
   out <- list(
     cohort = cohort,
     fit = cohort_surv,
@@ -113,6 +118,7 @@ fit_survival <- function(cohort,
     event_title = event_title,
     index_title = index_title,
     followup_time_col = followup_time,
+    followup_time_units = followup_time_units,
     timeatrisk_col = followup_time,
     event_status_col = event_status,
     patientid_col = patientid_col,
