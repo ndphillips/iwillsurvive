@@ -10,7 +10,6 @@
 derive_event_status <- function(cohort = NULL,
                                 event_date = NULL,
                                 event_status_rename = "event_status") {
-
   testthat::expect_true(!is.null(cohort))
   testthat::expect_true(!is.null(event_date))
   testthat::expect_true(event_date %in% names(cohort))

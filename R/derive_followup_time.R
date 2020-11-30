@@ -16,16 +16,18 @@
 #' @examples
 #'
 #' cohort <- ez_cohort %>%
-#'                derive_followup_date(event_date = "dateofdeath",
-#'                                     censor_date = "lastvisitdate")
+#'   derive_followup_date(
+#'     event_date = "dateofdeath",
+#'     censor_date = "lastvisitdate"
+#'   )
 #'
 #' # Derive follow up time from index to follow upin days, months and years.
 #'
 #' cohort %>%
-#'   derive_followup_time(index_date = "lotstartdate",
-#'                        followup_date = "followup_date")
-#'
-#'
+#'   derive_followup_time(
+#'     index_date = "lotstartdate",
+#'     followup_date = "followup_date"
+#'   )
 #' @references
 #'
 #' https://pumas.nasa.gov/examples/index.php?id=46
@@ -35,7 +37,6 @@ derive_followup_time <- function(cohort,
                                  followup_date = "followup_date",
                                  days_in_month = 30.44,
                                  days_in_year = 365.24) {
-
   testthat::expect_true(!is.null(cohort))
   testthat::expect_true(index_date %in% names(cohort))
   testthat::expect_true(followup_date %in% names(cohort))
@@ -45,8 +46,9 @@ derive_followup_time <- function(cohort,
 
   cohort <- cohort %>%
     dplyr::mutate(followup_days := as.numeric(!!followup_date_sym - !!index_date_sym),
-                  followup_months = followup_days / days_in_month,
-                  followup_years = followup_days / days_in_year)
+      followup_months = followup_days / days_in_month,
+      followup_years = followup_days / days_in_year
+    )
 
   cohort
 }
