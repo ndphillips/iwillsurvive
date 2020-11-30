@@ -114,18 +114,17 @@ print.iwillsurvive <- function(object) {
     # Ending spaces
 
     if (at_median) {
-
       median_range <- round(max(object$fit_summary$median) - min(object$fit_summary$median), 0)
 
       cat(crayon::silver(rep(".", time_cuts_n - sum(spaces) - length(spaces)),
-                         sep = ""), sep = "")
-       #
-       # cat(crayon::silver("....."))
-       # cat(median_range)
-       # cat(" ", object$followup_time_units, "", sep = "")
-       # cat(crayon::silver(rep(".", time_cuts_n - sum(spaces) - length(spaces) - stringr::str_length(object$followup_time_units) - 5 - floor(log(median_range, base = 10)) - 1),
-       #     sep = ""), sep = "")
-
+        sep = ""
+      ), sep = "")
+      #
+      # cat(crayon::silver("....."))
+      # cat(median_range)
+      # cat(" ", object$followup_time_units, "", sep = "")
+      # cat(crayon::silver(rep(".", time_cuts_n - sum(spaces) - length(spaces) - stringr::str_length(object$followup_time_units) - 5 - floor(log(median_range, base = 10)) - 1),
+      #     sep = ""), sep = "")
     } else {
       cat(crayon::silver(rep(".", length = time_cuts_n - sum(spaces) - length(spaces))), sep = "")
     }

@@ -63,7 +63,6 @@ iwillsurvive <- function(cohort,
                          title = NULL,
                          followup_time_units = NULL,
                          verbose = TRUE) {
-
   testthat::expect_true(followup_time %in% names(cohort))
   testthat::expect_true(event_status %in% names(cohort))
   testthat::expect_is(cohort[[event_status]], "logical")
@@ -132,15 +131,15 @@ iwillsurvive <- function(cohort,
   fit_summary_table <- summary(fit)$table
 
   if (is.null(dim(fit_summary_table))) {
-
-    fit_summary_table <- purrr::map_df(fit_summary_table, .f = function(x) {x}) %>%
+    fit_summary_table <- purrr::map_df(fit_summary_table, .f = function(x) {
+      x
+    }) %>%
       dplyr::mutate(strata = "all") %>%
       dplyr::select(strata, dplyr::everything())
-
   } else {
-
     fit_summary_table <- tibble::as_tibble(fit_summary_table,
-                                   rownames = "strata")
+      rownames = "strata"
+    )
   }
 
 

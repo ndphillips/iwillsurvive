@@ -86,7 +86,6 @@ plot_survival <- function(object = NULL,
                           event_title = NULL,
                           median_label_size = 4,
                           event_nudge_y = .15) {
-
   testthat::expect_is(object, "iwillsurvive")
 
   plot_df <- broom::tidy(object$fit)
@@ -111,13 +110,11 @@ plot_survival <- function(object = NULL,
 
 
   if ("strata" %in% names(plot_df) == FALSE) {
-
     plot_df$strata <- "all"
   }
 
   # Create km plot {p_km} ------------------------------------------------------
   {
-
     plot_df <- plot_df %>%
       dplyr::mutate(strata = stringr::str_remove_all(strata,
         pattern = "condition="
@@ -208,7 +205,6 @@ plot_survival <- function(object = NULL,
     }
 
     if (add_median) {
-
       surv_median <- object$fit_summary %>%
         dplyr::select(strata, median) %>%
         dplyr::mutate(strata = stringr::str_remove_all(strata, pattern = "condition=")) %>%
