@@ -1,4 +1,6 @@
-# iwillsurvive dev
+# iwillsurvive DEV
+
+# iwillsurvive 0.1.2
 
 * Renamed fit_survival -> iwillsurvive()
 * Allow users to pass an existing survfit object to iwillsurvive()
