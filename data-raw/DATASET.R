@@ -71,7 +71,7 @@ cohort <- ez_cohort %>%
   derive_followup_time(index_date = "lotstartdate") %>%
   derive_event_status(event_date = "dateofdeath")
 
-cohort_fit <- fit_survival(cohort,
+cohort_fit <- iwillsurvive(cohort,
   followup_time = "followup_days",
   terms = "condition"
 )

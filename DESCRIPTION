@@ -1,9 +1,9 @@
 Package: iwillsurvive
 Type: Package
 Title: Easily Create and Visualize Survival Models
-Version: 0.1.1
-Author: Nathaniel Phillips <nathaniel.d.phillips.is@gmail.com.com>
-Maintainer: Nathaniel Phillips <nathaniel.d.phillips.is@gmail.com.com>
+Version: 0.1.2
+Author: Nathaniel Phillips <nathaniel.d.phillips.is@gmail.com>
+Maintainer: Nathaniel Phillips <nathaniel.d.phillips.is@gmail.com>
 Description: Provides a user-friendly set of wrapper functions 
     and informative user messaging around common implimentations
     of survival models for the purpose of reducing errors and

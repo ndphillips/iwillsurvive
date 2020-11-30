@@ -30,7 +30,7 @@ plot_survival(
 )
 }
 \arguments{
-\item{object}{iwillsurvive. An iwillsurvive object created from fit_survival}
+\item{object}{iwillsurvive. An iwillsurvive object created from iwillsurvive}
 
 \item{cohort}{dataframe. A one-row-per-patient cohort used in generating fit.}
 
@@ -76,33 +76,38 @@ Plot the results of a survival analysis
 # Set things up by creating an iwillsurvive object
 
 cohort <- ez_cohort \%>\%
- derive_followup_date(event_date = "dateofdeath",
-                      censor_date = "lastvisitdate") \%>\%
- derive_followup_time(index_date = "lotstartdate") \%>\%
- derive_event_status(event_date = "dateofdeath")
+  derive_followup_date(
+    event_date = "dateofdeath",
+    censor_date = "lastvisitdate"
+  ) \%>\%
+  derive_followup_time(index_date = "lotstartdate") \%>\%
+  derive_event_status(event_date = "dateofdeath")
 
-cohort_iws <- fit_survival(cohort,
-                          followup_time = "followup_days",
-                          terms = "condition",
-                          event_title = "Death",
-                          index_title = "LOT1 Start")
+cohort_iws <- iwillsurvive(cohort,
+  followup_time = "followup_days",
+  terms = "condition",
+  event_title = "Death",
+  index_title = "LOT1 Start"
+)
 
 plot_survival(cohort_iws)
 
 # Set simple = TRUE to only get the KM without any fancy pants stuff
 
 plot_survival(cohort_iws,
-             simple = TRUE)
+  simple = TRUE
+)
 
 # Control the location of the legend with legend_position
 plot_survival(cohort_iws,
-             legend_position = "top")
+  legend_position = "top"
+)
 
 # Change the location of the labels and add arrows
 plot_survival(cohort_iws,
-             legend_anchor_y = c(.7, .85),
-             legend_position_x = c(260, 250),
-             legend_nudge_y = .1,
-             anchor_arrow = TRUE)
-
+  legend_anchor_y = c(.7, .85),
+  legend_position_x = c(260, 250),
+  legend_nudge_y = .1,
+  anchor_arrow = TRUE
+)
 }

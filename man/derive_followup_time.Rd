@@ -35,16 +35,18 @@ Calculate followup_time, the number of days from index to follow up in days
 \examples{
 
 cohort <- ez_cohort \%>\%
-               derive_followup_date(event_date = "dateofdeath",
-                                    censor_date = "lastvisitdate")
+  derive_followup_date(
+    event_date = "dateofdeath",
+    censor_date = "lastvisitdate"
+  )
 
 # Derive follow up time from index to follow upin days, months and years.
 
 cohort \%>\%
-  derive_followup_time(index_date = "lotstartdate",
-                       followup_date = "followup_date")
-
-
+  derive_followup_time(
+    index_date = "lotstartdate",
+    followup_date = "followup_date"
+  )
 }
 \references{
 https://pumas.nasa.gov/examples/index.php?id=46

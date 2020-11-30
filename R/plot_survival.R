@@ -1,6 +1,6 @@
 #' Plot the results of a survival analysis
 #'
-#' @param object iwillsurvive. An iwillsurvive object created from fit_survival
+#' @param object iwillsurvive. An iwillsurvive object created from iwillsurvive
 #' @param cohort dataframe. A one-row-per-patient cohort used in generating fit.
 #' @param ggtheme theme. A ggplot2 theme
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
@@ -27,38 +27,43 @@
 #' @export
 #'
 #' @examples
-#'# Set things up by creating an iwillsurvive object
+#' # Set things up by creating an iwillsurvive object
 #'
-#'cohort <- ez_cohort %>%
-#'  derive_followup_date(event_date = "dateofdeath",
-#'                       censor_date = "lastvisitdate") %>%
-#'  derive_followup_time(index_date = "lotstartdate") %>%
-#'  derive_event_status(event_date = "dateofdeath")
+#' cohort <- ez_cohort %>%
+#'   derive_followup_date(
+#'     event_date = "dateofdeath",
+#'     censor_date = "lastvisitdate"
+#'   ) %>%
+#'   derive_followup_time(index_date = "lotstartdate") %>%
+#'   derive_event_status(event_date = "dateofdeath")
 #'
-#'cohort_iws <- fit_survival(cohort,
-#'                           followup_time = "followup_days",
-#'                           terms = "condition",
-#'                           event_title = "Death",
-#'                           index_title = "LOT1 Start")
+#' cohort_iws <- iwillsurvive(cohort,
+#'   followup_time = "followup_days",
+#'   terms = "condition",
+#'   event_title = "Death",
+#'   index_title = "LOT1 Start"
+#' )
 #'
-#'plot_survival(cohort_iws)
+#' plot_survival(cohort_iws)
 #'
-#'# Set simple = TRUE to only get the KM without any fancy pants stuff
+#' # Set simple = TRUE to only get the KM without any fancy pants stuff
 #'
-#'plot_survival(cohort_iws,
-#'              simple = TRUE)
+#' plot_survival(cohort_iws,
+#'   simple = TRUE
+#' )
 #'
-#'# Control the location of the legend with legend_position
-#'plot_survival(cohort_iws,
-#'              legend_position = "top")
+#' # Control the location of the legend with legend_position
+#' plot_survival(cohort_iws,
+#'   legend_position = "top"
+#' )
 #'
-#'# Change the location of the labels and add arrows
-#'plot_survival(cohort_iws,
-#'              legend_anchor_y = c(.7, .85),
-#'              legend_position_x = c(260, 250),
-#'              legend_nudge_y = .1,
-#'              anchor_arrow = TRUE)
-#'
+#' # Change the location of the labels and add arrows
+#' plot_survival(cohort_iws,
+#'   legend_anchor_y = c(.7, .85),
+#'   legend_position_x = c(260, 250),
+#'   legend_nudge_y = .1,
+#'   anchor_arrow = TRUE
+#' )
 plot_survival <- function(object = NULL,
                           cohort = NULL,
                           ggtheme = ggplot2::theme_bw(),
@@ -82,6 +87,8 @@ plot_survival <- function(object = NULL,
                           median_label_size = 4,
                           event_nudge_y = .15) {
 
+  testthat::expect_is(object, "iwillsurvive")
+
   plot_df <- broom::tidy(object$fit)
   cohort <- object$cohort
 
@@ -96,7 +103,6 @@ plot_survival <- function(object = NULL,
   }
 
   if (simple) {
-
     add_labels <- FALSE
     add_median <- FALSE
     add_median_delta <- FALSE
@@ -104,10 +110,14 @@ plot_survival <- function(object = NULL,
   }
 
 
-  fit_summary <- summary(object$fit)$table
+  if ("strata" %in% names(plot_df) == FALSE) {
+
+    plot_df$strata <- "all"
+  }
 
   # Create km plot {p_km} ------------------------------------------------------
   {
+
     plot_df <- plot_df %>%
       dplyr::mutate(strata = stringr::str_remove_all(strata,
         pattern = "condition="
@@ -198,11 +208,12 @@ plot_survival <- function(object = NULL,
     }
 
     if (add_median) {
-      surv_median <- fit_summary[, stringr::str_detect(colnames(fit_summary), "median")] %>%
-        tibble::as_tibble(rownames = "strata") %>%
+
+      surv_median <- object$fit_summary %>%
+        dplyr::select(strata, median) %>%
         dplyr::mutate(strata = stringr::str_remove_all(strata, pattern = "condition=")) %>%
         dplyr::mutate(y = .5) %>%
-        dplyr::mutate(value = round(value, 0))
+        dplyr::mutate(value = round(median, 0))
 
       p_km <- p_km +
         ggrepel::geom_label_repel(
@@ -365,9 +376,10 @@ plot_survival <- function(object = NULL,
     if (is.null(legend_position_x)) {
 
       # Put first
-      legend_position_x <- rev(c(max(plot_df$time) * .05,
-                             rep(max(plot_df$time) * .4, strata_n - 1)))
-
+      legend_position_x <- rev(c(
+        max(plot_df$time) * .05,
+        rep(max(plot_df$time) * .4, strata_n - 1)
+      ))
     }
 
     p_km <- p_km + ggtheme +
@@ -376,10 +388,10 @@ plot_survival <- function(object = NULL,
     # Get the x positions corresponding to  legend_anchor_y
 
     if (is.null(legend_nudge_y)) {
-
-      legend_nudge_y <- rev(c(-.15,
-                              rep(.1, strata_n - 1)))
-
+      legend_nudge_y <- rev(c(
+        -.15,
+        rep(.1, strata_n - 1)
+      ))
     }
 
     temp <- tibble::tibble(
@@ -395,8 +407,10 @@ plot_survival <- function(object = NULL,
       dplyr::mutate(dev = abs(estimate - legend_anchor_y)) %>%
       dplyr::filter(dev == min(dev)) %>%
       dplyr::slice(1) %>%
-      dplyr::mutate(x = time,
-                    y = legend_anchor_y) %>%
+      dplyr::mutate(
+        x = time,
+        y = legend_anchor_y
+      ) %>%
       dplyr::select(strata, x, y) %>%
       dplyr::ungroup() %>%
       dplyr::mutate(nudge_x = 0)
@@ -417,9 +431,11 @@ plot_survival <- function(object = NULL,
     }
 
 
-    my_arrow <- if (anchor_arrow) {arrow(length = unit(0.02, "npc"))
-
-      } else {NULL}
+    my_arrow <- if (anchor_arrow) {
+      arrow(length = unit(0.02, "npc"))
+    } else {
+      NULL
+    }
 
     p_km <- p_km +
       ggrepel::geom_label_repel(
@@ -442,7 +458,6 @@ plot_survival <- function(object = NULL,
   # Add risk table ---------------------------------------------------
 
   if (risk_table) {
-
     risk_df <- tidyr::expand_grid(
       strata = strata_values,
       time = time_minor_breaks

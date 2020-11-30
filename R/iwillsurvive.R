@@ -40,12 +40,17 @@
 #' )
 #'
 #' # Ignoring group term
+#'
 #' cohort_fit <- iwillsurvive(cohort)
+#' cohort_fit
 #'
 #' # Now including some covariates
+#'
 #' cohort_fit <- iwillsurvive(cohort,
 #'   terms = "group"
 #' )
+#'
+#' cohort_fit
 iwillsurvive <- function(cohort,
                          followup_time = "followup_months",
                          event_status = "event_status",
@@ -58,6 +63,7 @@ iwillsurvive <- function(cohort,
                          title = NULL,
                          followup_time_units = NULL,
                          verbose = TRUE) {
+
   testthat::expect_true(followup_time %in% names(cohort))
   testthat::expect_true(event_status %in% names(cohort))
   testthat::expect_is(cohort[[event_status]], "logical")
@@ -120,9 +126,28 @@ iwillsurvive <- function(cohort,
     )]
   }
 
+
+  # Extract fit_summary
+
+  fit_summary_table <- summary(fit)$table
+
+  if (is.null(dim(fit_summary_table))) {
+
+    fit_summary_table <- purrr::map_df(fit_summary_table, .f = function(x) {x}) %>%
+      dplyr::mutate(strata = "all") %>%
+      dplyr::select(strata, dplyr::everything())
+
+  } else {
+
+    fit_summary_table <- tibble::as_tibble(fit_summary_table,
+                                   rownames = "strata")
+  }
+
+
   out <- list(
     cohort = cohort,
     fit = fit,
+    fit_summary = fit_summary_table,
     terms = terms,
     event_title = event_title,
     index_title = index_title,

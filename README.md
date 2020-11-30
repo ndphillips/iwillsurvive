@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# iwillsurvive 0.1.1 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
+# iwillsurvive 0.1.2 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -29,7 +29,7 @@ devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
 ``` r
 library(iwillsurvive)
 #> -----------------------------------------------------
-#> iwillsurvive 0.1.1 'Gloria'
+#> iwillsurvive 0.1.2 'Gloria'
 #> Intro  : vignette('introduction', 'iwillsurvive')
 #> Repo   : https://github.com/ndphillips/iwillsurvive
 #> .....................................................
@@ -94,56 +94,49 @@ cohort <- ez_cohort %>%
   derive_event_status(event_date = "dateofdeath")
 ```
 
-Here is our updated cohort object (moving our derived columns to the
-front) for visibility
-
-``` r
-cohort %>%
-  select(patientid, followup_date, followup_days, event_status, 
-         everything())
-#> # A tibble: 250 x 10
-#>    patientid followup_date followup_days event_status condition lotstartdate
-#>    <chr>     <date>                <dbl> <lgl>        <chr>     <date>      
-#>  1 F00001    2020-12-01           1660.  FALSE        placebo   2016-05-17  
-#>  2 F00002    2020-10-05             70.1 TRUE         placebo   2020-07-27  
-#>  3 F00003    2017-03-13            333.  TRUE         drug      2016-04-14  
-#>  4 F00004    2020-11-25            167.  FALSE        drug      2020-06-12  
-#>  5 F00005    2020-02-21            338.  TRUE         placebo   2019-03-20  
-#>  6 F00006    2017-11-19            232.  TRUE         placebo   2017-04-02  
-#>  7 F00007    2019-02-17            388.  TRUE         placebo   2018-01-26  
-#>  8 F00008    2015-12-23            175.  TRUE         placebo   2015-07-02  
-#>  9 F00009    2020-08-17            528.  TRUE         drug      2019-03-08  
-#> 10 F00010    2019-03-08            197.  TRUE         placebo   2018-08-23  
-#> # … with 240 more rows, and 4 more variables: lastvisitdate <date>,
-#> #   dateofdeath <date>, followup_months <dbl>, followup_years <dbl>
-```
-
-Use `fit_survival()` to fit the survival model. We’ll set the follow up
+Use `iwillsurvive()` to fit the survival model. We’ll set the follow up
 time to be `followup_days` and specify “condition” as a term (i.e.;
-covariate) to be used in the model
+covariate) to be used in the model.
 
 <!-- If we were using `survival::survfit()` we'd need to specify this nasty 
 looking formula `survival::survfit(survival::Surv(followup_days, event_status, 
 type = 'right') ~ group, data = cohort)` directly.  -->
-<!-- With `fit_survival()`, we can simply specify the column names of interest 
+<!-- With `iwillsurvive()`, we can simply specify the column names of interest 
 and let the function take care of the formula: -->
 
 ``` r
-cohort_iws <- fit_survival(cohort, 
+cohort_iws <- iwillsurvive(cohort, 
                            followup_time = "followup_days",
                            terms = "condition",
                            event_title = "Death", 
                            index_title = "LOT1 Start")
-#> ── fit_survival ────────────────────────────────────────────────────────────────
-#> - survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)
+#> ── iwillsurvive ────────────────────────────────────────────────────────────────
 #> - 202 of 250 (81%) patient(s) experienced the event.
+#> - survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)
 ```
 
-The result is an `iwillsurvive` object
+Print the object to see summary information (including a fun ascii
+survival curve)
 
 ``` r
-class(cohort_iws)
-#> [1] "iwillsurvive"
+cohort_iws
+#> 250 Patients: 202 (80.8%) Death, 48 (19.2%) Censored
+#> 
+#> |*............................................
+#> |pd...........................................
+#> |.*...........................................
+#> |.pd..........................................
+#> |..pd.........................................
+#> |....p.d......................................
+#> |....p...d....................................
+#> |.....p----d..................................
+#> |.......p....d................................
+#> |........p......d.............................
+#> |.........p........d..........................
+#> |..........p...........d......................
+#> |.............p...........d...................
+#> |................p..............d.............
+#> |............................p......d.........
 ```
 
 Use `plot_survival()` to plot the Kaplan-Meier survival curve:
@@ -154,4 +147,4 @@ plot_survival(cohort_iws)
 #> 'expression'
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
