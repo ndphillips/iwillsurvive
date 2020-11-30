@@ -3,6 +3,8 @@
 * Renamed fit_survival -> iwillsurvive()
 * Allow users to pass an existing survfit object to iwillsurvive()
 * Added new hex sticker usin the hexSticker package
+* Created new print method with an ascii survival curve (spent way too long on
+this)
 
 # iwillsurvive 0.1.1
 
