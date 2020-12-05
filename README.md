@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# iwillsurvive 0.1.2 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
+# iwillsurvive 0.1.3 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -29,7 +29,7 @@ devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
 ``` r
 library(iwillsurvive)
 #> -----------------------------------------------------
-#> iwillsurvive 0.1.2 'Gloria'
+#> iwillsurvive 0.1.3 'Gloria'
 #> Intro  : vignette('introduction', 'iwillsurvive')
 #> Repo   : https://github.com/ndphillips/iwillsurvive
 #> .....................................................
@@ -115,36 +115,22 @@ cohort_iws <- iwillsurvive(cohort,
 #> - survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)
 ```
 
-Print the object to see summary information (including a fun ascii
-survival curve)
+Print the object to see summary information:
 
 ``` r
 cohort_iws
-#> 250 Patients: 202 (80.8%) Death, 48 (19.2%) Censored
-#> 
-#> |*............................................
-#> |pd...........................................
-#> |.*...........................................
-#> |.pd..........................................
-#> |..pd.........................................
-#> |....p.d......................................
-#> |....p...d....................................
-#> |.....p----d..................................
-#> |.......p....d................................
-#> |........p......d.............................
-#> |.........p........d..........................
-#> |..........p...........d......................
-#> |.............p...........d...................
-#> |................p..............d.............
-#> |............................p......d.........
 ```
+
+<img src="inst/figures/print_iwillsurvive.png" width="50%" />
 
 Use `plot_survival()` to plot the Kaplan-Meier survival curve:
 
 ``` r
 plot_survival(cohort_iws)
+#> Warning: Vectorized input to `element_text()` is not officially supported.
+#> Results may be unexpected or may change in future versions of ggplot2.
 #> Warning in is.na(x): is.na() applied to non-(list or vector) of type
 #> 'expression'
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="100%" />

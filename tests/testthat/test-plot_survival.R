@@ -10,15 +10,14 @@ cohort <- ez_cohort %>%
 
 
 test_that("multiplication works", {
-
   object <- iwillsurvive(cohort,
-                         followup_time = "followup_days",
-                         event_status = "event_status"
+    followup_time = "followup_days",
+    event_status = "event_status"
   )
 
 
-p <- plot_survival(object)
+  p <- plot_survival(object)
 
-testthat::expect_true("ggplot" %in% class(p))
+  testthat::expect_true("grob" %in% class(p))
+})
 
-  })

@@ -1,31 +1,61 @@
 #' Print method for an iwillsurvive object
 #'
-#' @param object
+#' @param x iwillsurvive. An iwillsurvive object created from \code{iwillsurvive}
+#' @param ... currently not used.
 #'
 #' @export
 #'
-print.iwillsurvive <- function(object) {
-  testthat::expect_is(object, "iwillsurvive")
+print.iwillsurvive <- function(x, ...) {
+  testthat::expect_is(x, "iwillsurvive")
 
-  cohort_n <- nrow(object$cohort)
-  event_n <- sum(object$cohort[[object$event_status_col]])
-  censor_n <- sum(object$cohort[[object$event_status_col]] == FALSE)
+  cohort_n <- nrow(x$cohort)
+  event_n <- sum(x$cohort[[x$event_status_col]])
+  censor_n <- sum(x$cohort[[x$event_status_col]] == FALSE)
+
+  strata_n <- nrow(x$fit_summary)
 
   # Cohort size ------------
   cat(paste0(
-    scales::comma(cohort_n), " Patients: ",
-    scales::comma(event_n),
-    " (", scales::percent(event_n / cohort_n, accuracy = .1),
-    ") ", object$event_title,
-    ", ",
+    scales::comma(cohort_n), " Patients:\n",
+    x$event_title, " = ", scales::comma(event_n),
+    " (", scales::percent(event_n / cohort_n, accuracy = 1),
+    "), ",
+    "Censored = ",
     scales::comma(censor_n),
-    " (", scales::percent(censor_n / cohort_n, accuracy = .1),
-    ") Censored\n\n"
-  ))
+    " (", scales::percent(censor_n / cohort_n, accuracy = 1),
+    ")\n"
+  ), sep = "")
+
+
+  # add median survival
+
+  cat("\nMedian Survival (", x$followup_time_units, "):\n", sep = "")
+
+  for (row_i in 1:strata_n) {
+
+    cat(stringr::str_remove_all(x$fit_summary$strata[row_i],
+                                pattern = "condition="), " = ",
+        round(x$fit_summary$median[row_i], 1), sep = "")
+
+    if(row_i < nrow(x$fit_summary)) {
+
+      cat(", ")
+    }
+
+  }
+
+  if(strata_n > 1) {
+
+
+    cat("\ndiff =", crayon::bold(crayon::green(round(diff(range(x$fit_summary$median)), 0))))
+
+  }
+
+  cat("\n\n")
 
   # ascii survival curve --------------------------------------------
 
-  ascii_df <- object$fit %>%
+  ascii_df <- x$fit %>%
     broom::tidy()
 
   if ("strata" %in% names(ascii_df) == FALSE) {
@@ -98,7 +128,7 @@ print.iwillsurvive <- function(object) {
     if (length(spaces) > 1) {
       for (j in 2:length(spaces)) {
         if (at_median) {
-          cat(crayon::bgYellow(crayon::green(rep("-", length = spaces[j]),
+          cat(crayon::bold(crayon::green(rep("=", length = spaces[j]),
             sep = ""
           ),
           sep = ""
@@ -114,18 +144,17 @@ print.iwillsurvive <- function(object) {
     # Ending spaces
 
     if (at_median) {
-
-      median_range <- round(max(object$fit_summary$median) - min(object$fit_summary$median), 0)
+      median_range <- round(max(x$fit_summary$median) - min(x$fit_summary$median), 0)
 
       cat(crayon::silver(rep(".", time_cuts_n - sum(spaces) - length(spaces)),
-                         sep = ""), sep = "")
-       #
-       # cat(crayon::silver("....."))
-       # cat(median_range)
-       # cat(" ", object$followup_time_units, "", sep = "")
-       # cat(crayon::silver(rep(".", time_cuts_n - sum(spaces) - length(spaces) - stringr::str_length(object$followup_time_units) - 5 - floor(log(median_range, base = 10)) - 1),
-       #     sep = ""), sep = "")
-
+        sep = ""
+      ), sep = "")
+      #
+      # cat(crayon::silver("....."))
+      # cat(median_range)
+      # cat(" ", x$followup_time_units, "", sep = "")
+      # cat(crayon::silver(rep(".", time_cuts_n - sum(spaces) - length(spaces) - stringr::str_length(x$followup_time_units) - 5 - floor(log(median_range, base = 10)) - 1),
+      #     sep = ""), sep = "")
     } else {
       cat(crayon::silver(rep(".", length = time_cuts_n - sum(spaces) - length(spaces))), sep = "")
     }

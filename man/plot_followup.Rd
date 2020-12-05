@@ -22,8 +22,6 @@ plot_followup(
 \item{line_size}{numeric.}
 
 \item{theme}{A ggplot2 theme}
-
-\item{followup_time_units}{= "days",}
 }
 \value{
 ggplot2
