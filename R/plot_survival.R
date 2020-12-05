@@ -5,15 +5,21 @@
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
+#' @param add_gridlines logical. If TRUE, include gridlines
 #' @param add_labels logical. If TRUE, show verbal labels
 #' @param add_median logical. If TRUE, show median survival
 #' @param add_median_delta logical.
+#' @param anchor_arrow logical. If TRUE, use an arrow in pointing to the anchor
 #' @param legend_position character. Where should the strata labels be located?
 #'   Either 'inside' for inside the plot, or 'top', or 'right'
 #' @param legend_anchor_y numeric. Y locations of anchors for legends.
 #'   Only used if legend_position = "inside"
+#' @param legend_nudge_y numeric.
+#' @param legend_position_x numeric. X position of the legend(s)
 #' @param xlim numeric.
+#' @param x_breaks numeric. Major breaks for the x-axis
 #' @param label_size numeric. Size of the labels.
+#' @param label_color character. Color of labels.
 #' @param median_nudge_y numeric. Amount to nudge median label.
 #' @param risk_table logical. If TRUE, include the risk table
 #' @param risk_size numeric. Size of font in risk table.
@@ -70,13 +76,12 @@ plot_survival <- function(object = NULL,
                           cohort = NULL,
                           ggtheme = ggplot2::theme_bw(),
                           palette = "Set1",
-                          conf_int = TRUE,
                           simple = FALSE,
                           add_gridlines = TRUE,
                           add_labels = TRUE,
                           add_median = TRUE,
                           add_median_delta = TRUE,
-                          anchor_arrow = FALSE,
+                          anchor_arrow = TRUE,
                           legend_position = "inside",
                           legend_anchor_y = .5,
                           legend_nudge_y = NULL,

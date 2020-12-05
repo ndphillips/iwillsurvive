@@ -1,7 +1,6 @@
 #' Plot a patient timeline containing
 #'
 #' @param object iwillsurvive. An iwillsurvive object
-#' @param followup_time_units = "days",
 #' @param add_median logical. If TRUE, add a line showing median.
 #' @param point_size numeric.
 #' @param line_size numeric.

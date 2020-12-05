@@ -4,10 +4,12 @@
 \alias{print.iwillsurvive}
 \title{Print method for an iwillsurvive object}
 \usage{
-\method{print}{iwillsurvive}(object)
+\method{print}{iwillsurvive}(x, ...)
 }
 \arguments{
-\item{object}{}
+\item{x}{iwillsurvive. An iwillsurvive object created from \code{iwillsurvive}}
+
+\item{...}{currently not used.}
 }
 \description{
 Print method for an iwillsurvive object

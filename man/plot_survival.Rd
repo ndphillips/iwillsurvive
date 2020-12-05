@@ -9,13 +9,12 @@ plot_survival(
   cohort = NULL,
   ggtheme = ggplot2::theme_bw(),
   palette = "Set1",
-  conf_int = TRUE,
   simple = FALSE,
   add_gridlines = TRUE,
   add_labels = TRUE,
   add_median = TRUE,
   add_median_delta = TRUE,
-  anchor_arrow = FALSE,
+  anchor_arrow = TRUE,
   legend_position = "inside",
   legend_anchor_y = 0.5,
   legend_nudge_y = NULL,
@@ -44,11 +43,15 @@ plot_survival(
 
 \item{simple}{logical. If TRUE, only plot the Kaplan-Meier estimate}
 
+\item{add_gridlines}{logical. If TRUE, include gridlines}
+
 \item{add_labels}{logical. If TRUE, show verbal labels}
 
 \item{add_median}{logical. If TRUE, show median survival}
 
 \item{add_median_delta}{logical.}
+
+\item{anchor_arrow}{logical. If TRUE, use an arrow in pointing to the anchor}
 
 \item{legend_position}{character. Where should the strata labels be located?
 Either 'inside' for inside the plot, or 'top', or 'right'}
@@ -56,9 +59,17 @@ Either 'inside' for inside the plot, or 'top', or 'right'}
 \item{legend_anchor_y}{numeric. Y locations of anchors for legends.
 Only used if legend_position = "inside"}
 
+\item{legend_nudge_y}{numeric.}
+
+\item{legend_position_x}{numeric. X position of the legend(s)}
+
 \item{xlim}{numeric.}
 
+\item{x_breaks}{numeric. Major breaks for the x-axis}
+
 \item{label_size}{numeric. Size of the labels.}
+
+\item{label_color}{character. Color of labels.}
 
 \item{median_nudge_y}{numeric. Amount to nudge median label.}
 
