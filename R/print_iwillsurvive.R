@@ -11,17 +11,46 @@ print.iwillsurvive <- function(object) {
   event_n <- sum(object$cohort[[object$event_status_col]])
   censor_n <- sum(object$cohort[[object$event_status_col]] == FALSE)
 
+  strata_n <- nrow(object$fit_summary)
+
   # Cohort size ------------
   cat(paste0(
-    scales::comma(cohort_n), " Patients: ",
-    scales::comma(event_n),
-    " (", scales::percent(event_n / cohort_n, accuracy = .1),
-    ") ", object$event_title,
-    ", ",
+    scales::comma(cohort_n), " Patients:\n",
+    object$event_title, " = ", scales::comma(event_n),
+    " (", scales::percent(event_n / cohort_n, accuracy = 1),
+    "), ",
+    "Censored = ",
     scales::comma(censor_n),
-    " (", scales::percent(censor_n / cohort_n, accuracy = .1),
-    ") Censored\n\n"
-  ))
+    " (", scales::percent(censor_n / cohort_n, accuracy = 1),
+    ")\n"
+  ), sep = "")
+
+
+  # add median survival
+
+  cat("\nMedian Survival (", object$followup_time_units, "):\n", sep = "")
+
+  for (row_i in 1:strata_n) {
+
+    cat(stringr::str_remove_all(object$fit_summary$strata[row_i],
+                                pattern = "condition="), " = ",
+        round(object$fit_summary$median[row_i], 1), sep = "")
+
+    if(row_i < nrow(object$fit_summary)) {
+
+      cat(", ")
+    }
+
+  }
+
+  if(strata_n > 1) {
+
+
+    cat("\ndiff =", crayon::bold(crayon::green(round(diff(range(object$fit_summary$median)), 0))))
+
+  }
+
+  cat("\n\n")
 
   # ascii survival curve --------------------------------------------
 
@@ -98,7 +127,7 @@ print.iwillsurvive <- function(object) {
     if (length(spaces) > 1) {
       for (j in 2:length(spaces)) {
         if (at_median) {
-          cat(crayon::bgYellow(crayon::green(rep("-", length = spaces[j]),
+          cat(crayon::bold(crayon::green(rep("=", length = spaces[j]),
             sep = ""
           ),
           sep = ""

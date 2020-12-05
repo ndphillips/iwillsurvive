@@ -95,11 +95,14 @@ cohort_iws <- iwillsurvive(cohort,
                            index_title = "LOT1 Start")
 ```
 
-Print the object to see summary information (including a fun ascii survival
-curve)
+Print the object to see summary information:
 
-```{r}
+```{r, eval = FALSE}
 cohort_iws
+```
+
+```{r, echo = FALSE, out.width="50%"}
+knitr::include_graphics("inst/figures/print_iwillsurvive.png")
 ```
 
 Use `plot_survival()` to plot the Kaplan-Meier survival curve:

@@ -27,7 +27,8 @@ Imports:
     ggrepel,
     broom,
     purrr,
-    tidyr
+    tidyr,
+    gridExtra
 Suggests: 
     testthat,
     knitr,

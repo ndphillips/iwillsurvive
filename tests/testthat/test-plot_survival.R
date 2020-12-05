@@ -18,5 +18,6 @@ test_that("multiplication works", {
 
   p <- plot_survival(object)
 
-  testthat::expect_true("ggplot" %in% class(p))
+  testthat::expect_true("grob" %in% class(p))
 })
+
