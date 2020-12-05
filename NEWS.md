@@ -1,4 +1,8 @@
-# iwillsurvive DEV
+# iwillsurvive 0.1.2.9000
+
+* Formatting updats to plot_iwillsurvive(). Risk table should be displayed much
+better now
+* Minor updates to print method
 
 # iwillsurvive 0.1.2
 

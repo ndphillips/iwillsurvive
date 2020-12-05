@@ -8,8 +8,10 @@ plot_survival(
   object = NULL,
   cohort = NULL,
   ggtheme = ggplot2::theme_bw(),
+  palette = "Set1",
   conf_int = TRUE,
   simple = FALSE,
+  add_gridlines = TRUE,
   add_labels = TRUE,
   add_median = TRUE,
   add_median_delta = TRUE,
@@ -18,11 +20,13 @@ plot_survival(
   legend_anchor_y = 0.5,
   legend_nudge_y = NULL,
   legend_position_x = NULL,
+  xlim = NULL,
+  x_breaks = NULL,
   label_size = 3,
-  label_color = gray(0.5),
+  label_color = gray(0),
   median_nudge_y = 0.1,
   risk_table = TRUE,
-  risk_size = 4,
+  risk_size = 3,
   index_title = NULL,
   event_title = NULL,
   median_label_size = 4,
@@ -35,6 +39,8 @@ plot_survival(
 \item{cohort}{dataframe. A one-row-per-patient cohort used in generating fit.}
 
 \item{ggtheme}{theme. A ggplot2 theme}
+
+\item{palette}{character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples}
 
 \item{simple}{logical. If TRUE, only plot the Kaplan-Meier estimate}
 
@@ -49,6 +55,8 @@ Either 'inside' for inside the plot, or 'top', or 'right'}
 
 \item{legend_anchor_y}{numeric. Y locations of anchors for legends.
 Only used if legend_position = "inside"}
+
+\item{xlim}{numeric.}
 
 \item{label_size}{numeric. Size of the labels.}
 

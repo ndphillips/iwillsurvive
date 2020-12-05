@@ -3,6 +3,7 @@
 #' @param object iwillsurvive. An iwillsurvive object created from iwillsurvive
 #' @param cohort dataframe. A one-row-per-patient cohort used in generating fit.
 #' @param ggtheme theme. A ggplot2 theme
+#' @param palette character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
 #' @param add_labels logical. If TRUE, show verbal labels
 #' @param add_median logical. If TRUE, show median survival
@@ -11,6 +12,7 @@
 #'   Either 'inside' for inside the plot, or 'top', or 'right'
 #' @param legend_anchor_y numeric. Y locations of anchors for legends.
 #'   Only used if legend_position = "inside"
+#' @param xlim numeric.
 #' @param label_size numeric. Size of the labels.
 #' @param median_nudge_y numeric. Amount to nudge median label.
 #' @param risk_table logical. If TRUE, include the risk table
@@ -67,8 +69,10 @@
 plot_survival <- function(object = NULL,
                           cohort = NULL,
                           ggtheme = ggplot2::theme_bw(),
+                          palette = "Set1",
                           conf_int = TRUE,
                           simple = FALSE,
+                          add_gridlines = TRUE,
                           add_labels = TRUE,
                           add_median = TRUE,
                           add_median_delta = TRUE,
@@ -77,11 +81,13 @@ plot_survival <- function(object = NULL,
                           legend_anchor_y = .5,
                           legend_nudge_y = NULL,
                           legend_position_x = NULL,
+                          xlim = NULL,
+                          x_breaks = NULL,
                           label_size = 3,
-                          label_color = gray(.5),
+                          label_color = gray(0),
                           median_nudge_y = .1,
                           risk_table = TRUE,
-                          risk_size = 4,
+                          risk_size = 3,
                           index_title = NULL,
                           event_title = NULL,
                           median_label_size = 4,
@@ -140,15 +146,13 @@ plot_survival <- function(object = NULL,
         col = strata
       )
     ) +
-      ggplot2::scale_y_continuous(labels = scales::label_percent()) +
-      ggplot2::scale_x_continuous(labels = scales::label_comma())
-
+      ggplot2::scale_y_continuous(labels = scales::label_percent())
 
     p_km_bld <- ggplot2::ggplot_build(p_km)
 
+    time_major_breaks <- p_km_bld$layout$panel_params[[1]]$x.sec$breaks
     time_minor_breaks <- p_km_bld$layout$panel_params[[1]]$x.sec$minor_breaks
     time_lims <- p_km_bld$layout$panel_params[[1]]$x.range
-
 
     # Loop over conditions
 
@@ -205,6 +209,7 @@ plot_survival <- function(object = NULL,
     }
 
     if (add_median) {
+
       surv_median <- object$fit_summary %>%
         dplyr::select(strata, median) %>%
         dplyr::mutate(strata = stringr::str_remove_all(strata, pattern = "condition=")) %>%
@@ -213,12 +218,14 @@ plot_survival <- function(object = NULL,
 
       p_km <- p_km +
         ggrepel::geom_label_repel(
-          data = surv_median, mapping = ggplot2::aes(
+          data = surv_median,
+          mapping = ggplot2::aes(
             x = value,
             y = y,
             label = value
           ),
           direction = "y",
+          label.size = .7,
           min.segment.length = 0,
           nudge_y = median_nudge_y,
           size = median_label_size,
@@ -260,9 +267,9 @@ plot_survival <- function(object = NULL,
         )
 
 
-      if (add_median_delta) {
-        horizontal_bar_y <- .08
+      if (add_median_delta & strata_n > 1) {
 
+        horizontal_bar_y <- .08
 
         median_delta <- surv_median %>%
           dplyr::mutate(
@@ -338,117 +345,127 @@ plot_survival <- function(object = NULL,
         }
       }
     }
-  }
-
-  my_title <- paste0("Survival: From ", index_title)
-
-  if (!is.null(event_title)) {
-    my_title <- paste0("Survival: From ", index_title, " to ", event_title)
-  }
 
 
-  if (!is.null(object$followup_time_units)) {
-    x_lab <- paste0("Time (", stringr::str_to_title(object$followup_time_units), ")")
-  } else {
-    x_lab <- "Time"
-  }
 
-  p_km <- p_km +
-    ggplot2::labs(
-      title = my_title,
-      subtitle = paste0("Cohort N = ", scales::comma(patient_n)),
-      y = "Survival Probability",
-      x = x_lab
-    )
+    my_title <- paste0("Survival: From ", index_title)
 
-  # Add legend
-
-  if (legend_position %in% c("top", "right")) {
-    p_km <- p_km + ggtheme +
-      ggplot2::theme(legend.position = "top")
-  }
-
-  if (legend_position == "inside") {
-    if (is.null(legend_position_x)) {
-
-      # Put first
-      legend_position_x <- rev(c(
-        max(plot_df$time) * .05,
-        rep(max(plot_df$time) * .4, strata_n - 1)
-      ))
+    if (!is.null(event_title)) {
+      my_title <- paste0("Survival: From ", index_title, " to ", event_title)
     }
 
-    p_km <- p_km + ggtheme +
-      ggplot2::theme(legend.position = "none")
 
-    # Get the x positions corresponding to  legend_anchor_y
-
-    if (is.null(legend_nudge_y)) {
-      legend_nudge_y <- rev(c(
-        -.15,
-        rep(.1, strata_n - 1)
-      ))
+    if (!is.null(object$followup_time_units)) {
+      x_lab <- paste0("Time (", stringr::str_to_title(object$followup_time_units), ")")
+    } else {
+      x_lab <- "Time"
     }
 
-    temp <- tibble::tibble(
-      strata = strata_values,
-      legend_anchor_y = rep(legend_anchor_y,
-        length.out = length(strata_values)
+    p_km <- p_km +
+      ggplot2::labs(
+        title = my_title,
+        subtitle = paste0("Cohort N = ", scales::comma(patient_n)),
+        y = "Survival Probability",
+        x = x_lab
       )
-    )
 
-    legend_positions <- plot_df %>%
-      dplyr::left_join(temp, by = "strata") %>%
-      dplyr::group_by(strata) %>%
-      dplyr::mutate(dev = abs(estimate - legend_anchor_y)) %>%
-      dplyr::filter(dev == min(dev)) %>%
-      dplyr::slice(1) %>%
-      dplyr::mutate(
-        x = time,
-        y = legend_anchor_y
-      ) %>%
-      dplyr::select(strata, x, y) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(nudge_x = 0)
+    # Add legend
 
-    if (!is.null(legend_position_x)) {
+    if (legend_position %in% c("top", "right")) {
+      p_km <- p_km + ggtheme +
+        ggplot2::theme(legend.position = "top")
+    }
+
+    if (legend_position == "inside") {
+      if (is.null(legend_position_x)) {
+
+        # Put first
+        legend_position_x <- rev(c(
+          max(plot_df$time) * .05,
+          rep(max(plot_df$time) * .4, strata_n - 1)
+        ))
+      }
+
+      p_km <- p_km +
+        ggtheme +
+        ggplot2::theme(
+          legend.position = "none", # This keeps the labels from disappearing
+          plot.margin = ggplot2::unit(c(1, 1, 1, 3), "lines")
+        )
+
+      # Get the x positions corresponding to  legend_anchor_y
+
+      if (is.null(legend_nudge_y)) {
+        legend_nudge_y <- rev(c(
+          -.15,
+          rep(.1, strata_n - 1)
+        ))
+      }
+
       temp <- tibble::tibble(
         strata = strata_values,
-        legend_position_x = rep(legend_position_x,
+        legend_anchor_y = rep(legend_anchor_y,
           length.out = length(strata_values)
         )
       )
 
-      legend_positions <- legend_positions %>%
+      legend_positions <- plot_df %>%
         dplyr::left_join(temp, by = "strata") %>%
+        dplyr::group_by(strata) %>%
+        dplyr::mutate(dev = abs(estimate - legend_anchor_y)) %>%
+        dplyr::filter(dev == min(dev)) %>%
+        dplyr::slice(1) %>%
         dplyr::mutate(
-          nudge_x = legend_position_x - x
+          x = time,
+          y = legend_anchor_y
+        ) %>%
+        dplyr::select(strata, x, y) %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate(nudge_x = 0)
+
+      if (!is.null(legend_position_x)) {
+        temp <- tibble::tibble(
+          strata = strata_values,
+          legend_position_x = rep(legend_position_x,
+            length.out = length(strata_values)
+          )
         )
+
+        legend_positions <- legend_positions %>%
+          dplyr::left_join(temp, by = "strata") %>%
+          dplyr::mutate(
+            nudge_x = legend_position_x - x
+          )
+      }
+
+
+      my_arrow <- if (anchor_arrow) {
+        arrow(length = unit(0.02, "npc"))
+      } else {
+        NULL
+      }
+
+      if (strata_n > 1) {
+
+      p_km <- p_km +
+        ggrepel::geom_label_repel(
+          data = legend_positions,
+          mapping = ggplot2::aes(
+            x = x, y = y,
+            group = strata,
+            label = strata
+          ),
+          nudge_x = legend_positions$nudge_x,
+          nudge_y = legend_nudge_y,
+          direction = "y",
+          segment.size = .5,
+          arrow = my_arrow,
+          segment.color = "black",
+          label.size = 0
+        )
+
+      }
     }
-
-
-    my_arrow <- if (anchor_arrow) {
-      arrow(length = unit(0.02, "npc"))
-    } else {
-      NULL
-    }
-
-    p_km <- p_km +
-      ggrepel::geom_label_repel(
-        data = legend_positions,
-        mapping = ggplot2::aes(
-          x = x, y = y,
-          group = strata,
-          label = strata
-        ),
-        nudge_x = legend_positions$nudge_x,
-        nudge_y = legend_nudge_y,
-        direction = "y",
-        segment.size = .5,
-        arrow = my_arrow,
-        segment.color = "black",
-        label.size = 0
-      )
   }
 
   # Add risk table ---------------------------------------------------
@@ -500,24 +517,35 @@ plot_survival <- function(object = NULL,
       dplyr::mutate(lab = paste0(risk_n, " (", censored_n, ")")) %>%
       dplyr::mutate(strata_y = as.numeric(factor(strata)) * -.1 - .2)
 
-    p_km <- p_km +
+
+    p_risk <- ggplot2::ggplot(
+      data = risk_df,
+      mapping = ggplot2::aes(
+        x = time,
+        y = strata,
+        label = lab
+      )
+    ) +
       ggplot2::geom_text(
         data = risk_df,
         ggplot2::aes(
           x = time,
-          y = strata_y,
           adj = 0,
           label = lab
         ),
         size = risk_size,
         col = "black"
       ) +
-      ggplot2::coord_cartesian(
-        # xlim = c(0, max(time_minor_breaks)),
-        ylim = c(0, 1),
-        clip = "off"
-      ) + # This keeps the labels from disappearing
-      ggplot2::theme(plot.margin = ggplot2::unit(c(1, 1, 4, 1), "lines"))
+      # ggplot2::coord_cartesian(
+      #   # xlim = c(0, max(time_minor_breaks)),
+      #   clip = "off"
+      # ) + # This keeps the labels from disappearing
+      ggplot2::labs(y = "", x = "") +
+      ggtheme +
+      ggplot2::theme(
+        plot.margin = ggplot2::unit(c(0, 1, 1, 2.5), "lines"),
+        legend.position = "none"
+      )
 
     # Add stata labels
 
@@ -526,15 +554,15 @@ plot_survival <- function(object = NULL,
       dplyr::summarise(y = first(strata_y), .groups = "drop") %>%
       dplyr::mutate(x = min(time_lims))
 
-    p_km <- p_km +
-      ggplot2::geom_label(
-        data = strata_labs,
-        mapping = ggplot2::aes(
-          x = x, y = y,
-          label = strata
-        ),
-        adj = 1, size = risk_size
-      )
+    # p_risk <- p_risk +
+    #   ggplot2::geom_label(
+    #     data = strata_labs,
+    #     mapping = ggplot2::aes(
+    #       x = x, y = y,
+    #       label = strata
+    #     ),
+    #     adj = 1, size = risk_size
+    #  )
   }
 
   # Create time at risk plot {p_tar} -----------------------------------------
@@ -637,11 +665,73 @@ plot_survival <- function(object = NULL,
   #
   #   # Create final plot -----------------------
   #
-  #   ggpubr::ggarrange(p_km, p_tar,
-  #     ncol = 1,
-  #     nrow = 2,
-  #     heights = c(3, 1.25)
-  #   )
 
-  p_km
+  p_km <- p_km +
+    ggplot2::theme(plot.margin = ggplot2::unit(c(1, 1, .5, 2), "lines"))
+
+  p_risk <- p_risk +
+    ggplot2::theme(plot.margin = ggplot2::unit(c(0, 1, 0, 2), "lines"))
+
+
+  if (add_gridlines == FALSE) {
+    p_km <- p_km +
+      ggplot2::theme(panel.grid = ggplot2::element_blank())
+
+
+    p_risk <- p_risk +
+      ggplot2::theme(panel.grid = ggplot2::element_blank())
+  }
+
+
+  if (is.null(xlim)) {
+    my_limits <- time_lims
+  } else {
+    my_limits <- xlim
+  }
+
+  if (is.null(x_breaks)) {
+    my_breaks <- time_major_breaks
+  } else {
+    my_breaks <- x_breaks
+  }
+
+  p_km <- p_km + ggplot2::scale_x_continuous(
+    breaks = my_breaks,
+    limits = my_limits,
+    expand = c(0, 0),
+    labels = scales::comma
+  ) +
+    ggplot2::scale_colour_brewer(palette = palette)
+
+
+  p_risk <- p_risk + ggplot2::scale_x_continuous(
+    breaks = my_breaks,
+    limits = my_limits,
+    expand = c(0, 0),
+    labels = scales::comma
+  ) +
+    ggplot2::theme(
+      axis.text.y = ggplot2::element_text(color = RColorBrewer::brewer.pal(max(c(strata_n, 3)), palette)),
+      panel.grid.major.y = ggplot2::element_blank()
+    ) +
+    ggplot2::labs(subtitle = "At Risk (Censored)")
+  #
+  #
+  #   # User specified xlim
+  #   if (!is.null(xlim)) {
+  #
+  #     p_km <- p_km + ggplot2::xlim(xlim)
+  #     p_risk <- p_risk + ggplot2::xlim(xlim)
+  #
+  #   }
+
+  g_km <- ggplot2::ggplotGrob(p_km)
+  g_risk <- ggplot2::ggplotGrob(p_risk)
+
+  maxWidth <- grid::unit.pmax(g_km$widths[2:5], g_risk$widths[2:5])
+  g_km$widths[2:5] <- as.list(maxWidth)
+  g_risk$widths[2:5] <- as.list(maxWidth)
+
+  # Lay out plots in one column
+  gridExtra::grid.arrange(g_km, g_risk, ncol = 1, heights = c(3, 1))
 }
