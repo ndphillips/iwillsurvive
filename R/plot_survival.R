@@ -184,7 +184,6 @@ plot_survival <- function(object = NULL,
           alpha = .2
         )
 
-
       p_km <- p_km +
         ggplot2::geom_ribbon(
           data = data,
@@ -271,7 +270,6 @@ plot_survival <- function(object = NULL,
           size = 4, stroke = 1
         )
 
-
       if (add_median_delta & strata_n > 1) {
 
         horizontal_bar_y <- .08
@@ -323,9 +321,9 @@ plot_survival <- function(object = NULL,
             )
           )
 
-        median_diff <- max(median_delta$value) - min(median_delta$value)
+        median_diff <- diff(range(object$fit_summary$median))
 
-        delta_text <- paste0(round(median_diff, 1))
+        delta_text <- paste0(round(median_diff, 0))
         # delta_text <- paste0(round(median_diff, 1), object$followup_time_units)
 
         p_km <- p_km +

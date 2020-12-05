@@ -14,7 +14,7 @@ plot_survival(
   add_labels = TRUE,
   add_median = TRUE,
   add_median_delta = TRUE,
-  anchor_arrow = TRUE,
+  anchor_arrow = FALSE,
   legend_position = "inside",
   legend_anchor_y = 0.5,
   legend_nudge_y = NULL,
