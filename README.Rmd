@@ -19,10 +19,9 @@ knitr::opts_chunk$set(
 [![Codename: shuffled](https://img.shields.io/badge/version-0.1_'Gloria'-yellow.svg)](https://en.wikipedia.org/wiki/Gloria_Gaynor)
 
 The goal of `iwillsurvive` is to make it easy to fit and visualize simple 
-survival models. It provides wrapper functions around commonly used functions 
-from survival packages such as `survival::survfit()` and 
-`survminer::ggsurvplot()`, while providing user-friendly in-line messages, 
-notes, and warnings.
+survival models. It does this by providing an intuitive functional interface and
+user-friendly in-line messages, notes, and warnings, while leveraging the 
+gold-standard `survival` package for all statistical methods.
 
 ## Installation
 
@@ -101,13 +100,16 @@ Print the object to see summary information:
 cohort_iws
 ```
 
-```{r, echo = FALSE, out.width="50%"}
+```{r, echo = FALSE, out.width="60%"}
 knitr::include_graphics("inst/figures/print_iwillsurvive.png")
 ```
 
+Is that an ascii survival curve? I think so!
+
+
 Use `plot_survival()` to plot the Kaplan-Meier survival curve:
 
-```{r, fig.width = 7, fig.height = 5, out.width = "100%"}
+```{r, fig.width = 6, fig.height = 5, out.width = "100%"}
 plot_survival(cohort_iws)
 ```
 

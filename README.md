@@ -9,10 +9,10 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 shuffled](https://img.shields.io/badge/version-0.1_'Gloria'-yellow.svg)](https://en.wikipedia.org/wiki/Gloria_Gaynor)
 
 The goal of `iwillsurvive` is to make it easy to fit and visualize
-simple survival models. It provides wrapper functions around commonly
-used functions from survival packages such as `survival::survfit()` and
-`survminer::ggsurvplot()`, while providing user-friendly in-line
-messages, notes, and warnings.
+simple survival models. It does this by providing an intuitive
+functional interface and user-friendly in-line messages, notes, and
+warnings, while leveraging the gold-standard `survival` package for all
+statistical methods.
 
 ## Installation
 
@@ -121,7 +121,9 @@ Print the object to see summary information:
 cohort_iws
 ```
 
-<img src="inst/figures/print_iwillsurvive.png" width="50%" />
+<img src="inst/figures/print_iwillsurvive.png" width="60%" />
+
+Is that an ascii survival curve? I think so!
 
 Use `plot_survival()` to plot the Kaplan-Meier survival curve:
 
