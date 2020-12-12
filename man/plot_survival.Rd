@@ -23,13 +23,15 @@ plot_survival(
   x_breaks = NULL,
   label_size = 3,
   label_color = gray(0),
-  median_nudge_y = 0.1,
+  median_flag_nudge_y = 0.1,
+  median_flag_thickness = 0.7,
   risk_table = TRUE,
   risk_size = 3,
   index_title = NULL,
   event_title = NULL,
-  median_label_size = 4,
-  event_nudge_y = 0.15
+  median_flag_size = 4,
+  event_nudge_y = 0.15,
+  panel_heights = c(3, 1)
 )
 }
 \arguments{
@@ -71,7 +73,9 @@ Only used if legend_position = "inside"}
 
 \item{label_color}{character. Color of labels.}
 
-\item{median_nudge_y}{numeric. Amount to nudge median label.}
+\item{median_flag_nudge_y}{numeric. Amount to nudge median label.}
+
+\item{median_flag_thickness}{numeric. Thickness of the flag border}
 
 \item{risk_table}{logical. If TRUE, include the risk table}
 
@@ -81,9 +85,11 @@ Only used if legend_position = "inside"}
 
 \item{event_title}{character.}
 
-\item{median_label_size}{numeric.}
+\item{median_flag_size}{numeric.}
 
 \item{event_nudge_y}{numeric.}
+
+\item{panel_heights}{numeric. Heights of the KM and Risk panels}
 }
 \value{
 ggplot2

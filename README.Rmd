@@ -109,7 +109,7 @@ Is that an ascii survival curve? I think so!
 
 Use `plot_survival()` to plot the Kaplan-Meier survival curve:
 
-```{r, fig.width = 6, fig.height = 5, out.width = "100%"}
+```{r, fig.width = 7, fig.height = 5.5, out.width = "100%"}
 plot_survival(cohort_iws)
 ```
 

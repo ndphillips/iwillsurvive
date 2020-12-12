@@ -6,6 +6,7 @@
 #' @param palette character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
 #' @param add_gridlines logical. If TRUE, include gridlines
+#' @param add_confidence logical. If TRUE, include a confidence interval
 #' @param add_labels logical. If TRUE, show verbal labels
 #' @param add_median logical. If TRUE, show median survival
 #' @param add_median_delta logical.
@@ -20,13 +21,16 @@
 #' @param x_breaks numeric. Major breaks for the x-axis
 #' @param label_size numeric. Size of the labels.
 #' @param label_color character. Color of labels.
-#' @param median_nudge_y numeric. Amount to nudge median label.
+#' @param median_flag_nudge_y numeric. Amount to nudge median label.
+#' @param median_flag_thickness numeric. Thickness of the flag border
 #' @param risk_table logical. If TRUE, include the risk table
 #' @param risk_size numeric. Size of font in risk table.
+#' @param risk_label_size numeric. Size of labels in risk table
 #' @param index_title character.
 #' @param event_title character.
-#' @param median_label_size numeric.
+#' @param median_flag_size numeric.
 #' @param event_nudge_y numeric.
+#' @param panel_heights numeric. Heights of the KM and Risk panels
 #'
 #' @import ggplot2
 #' @import scales
@@ -78,6 +82,7 @@ plot_survival <- function(object = NULL,
                           palette = "Set1",
                           simple = FALSE,
                           add_gridlines = TRUE,
+                          add_confidence = TRUE,
                           add_labels = TRUE,
                           add_median = TRUE,
                           add_median_delta = TRUE,
@@ -90,13 +95,18 @@ plot_survival <- function(object = NULL,
                           x_breaks = NULL,
                           label_size = 3,
                           label_color = gray(0),
-                          median_nudge_y = .1,
+                          median_flag_nudge_y = .1,
+                          median_flag_thickness = .7,
                           risk_table = TRUE,
-                          risk_size = 3,
+                          risk_size = 3.5,
+                          risk_label_size = 1.25,
                           index_title = NULL,
                           event_title = NULL,
-                          median_label_size = 4,
-                          event_nudge_y = .15) {
+                          median_flag_size = 4,
+                          event_nudge_y = .15,
+                          panel_heights = c(3, 1)) {
+
+
   testthat::expect_is(object, "iwillsurvive")
 
   plot_df <- broom::tidy(object$fit)
@@ -166,6 +176,9 @@ plot_survival <- function(object = NULL,
         filter(strata == strata_i) %>%
         filter(is.finite(estimate), is.finite(conf.low), is.finite(conf.high))
 
+
+      if (add_confidence) {
+
       # Add conf.low
 
       p_km <- p_km +
@@ -196,6 +209,8 @@ plot_survival <- function(object = NULL,
           alpha = .2, lwd = 0
         )
 
+      }
+
       p_km <- p_km +
         ggplot2::geom_line(
           data = data,
@@ -220,6 +235,8 @@ plot_survival <- function(object = NULL,
         dplyr::mutate(y = .5) %>%
         dplyr::mutate(value = round(median, 0))
 
+      # Add the median flag
+
       p_km <- p_km +
         ggrepel::geom_label_repel(
           data = surv_median,
@@ -229,10 +246,10 @@ plot_survival <- function(object = NULL,
             label = value
           ),
           direction = "y",
-          label.size = .7,
+          label.size = median_flag_thickness,
           min.segment.length = 0,
-          nudge_y = median_nudge_y,
-          size = median_label_size,
+          nudge_y = median_flag_nudge_y,
+          size = median_flag_size,
           segment.colour = "black"
         )
 
@@ -367,7 +384,7 @@ plot_survival <- function(object = NULL,
     p_km <- p_km +
       ggplot2::labs(
         title = my_title,
-        subtitle = paste0("Cohort N = ", scales::comma(patient_n)),
+        subtitle = paste0("N = ", scales::comma(patient_n)),
         y = "Survival Probability",
         x = x_lab
       )
@@ -706,7 +723,6 @@ plot_survival <- function(object = NULL,
   ) +
     ggplot2::scale_colour_brewer(palette = palette)
 
-
   p_risk <- p_risk + ggplot2::scale_x_continuous(
     breaks = my_breaks,
     limits = my_limits,
@@ -714,19 +730,13 @@ plot_survival <- function(object = NULL,
     labels = scales::comma
   ) +
     ggplot2::theme(
-      axis.text.y = ggplot2::element_text(color = RColorBrewer::brewer.pal(max(c(strata_n, 3)), palette)),
-      panel.grid.major.y = ggplot2::element_blank()
+      axis.text.y = ggplot2::element_text(color = RColorBrewer::brewer.pal(max(c(strata_n, 3)), palette),
+                                          size = ggplot2::rel(risk_label_size)),
+      panel.grid.major.y = ggplot2::element_blank(),
+      panel.grid.major.x = ggplot2::element_blank(),
+      panel.grid.minor.x = ggplot2::element_blank(),
     ) +
     ggplot2::labs(subtitle = "At Risk (Censored)")
-  #
-  #
-  #   # User specified xlim
-  #   if (!is.null(xlim)) {
-  #
-  #     p_km <- p_km + ggplot2::xlim(xlim)
-  #     p_risk <- p_risk + ggplot2::xlim(xlim)
-  #
-  #   }
 
   g_km <- ggplot2::ggplotGrob(p_km)
   g_risk <- ggplot2::ggplotGrob(p_risk)
@@ -736,5 +746,5 @@ plot_survival <- function(object = NULL,
   g_risk$widths[2:5] <- as.list(maxWidth)
 
   # Lay out plots in one column
-  gridExtra::grid.arrange(g_km, g_risk, ncol = 1, heights = c(3, 1))
+  gridExtra::grid.arrange(g_km, g_risk, ncol = 1, heights = panel_heights)
 }
