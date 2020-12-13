@@ -151,18 +151,18 @@ Before we look at the `iwillsurvive` survival curve, let's look at the default p
 plot(cohort_survival)
 ```
 
-Now let's create the `iwillsurvive` plot. To do this, we'll use the `plot_survival()` function:
+Now let's create the `iwillsurvive` plot. To do this, we'll use the `plot()` function:
 
 ```{r}
-plot_survival(cohort_iws)
+plot(cohort_iws)
 ```
 
 Yep looks like the same curve as the `survival` method, but just with some extra [flair](https://www.youtube.com/watch?v=3vdcw415OcQ&ab_channel=TITTSRecords). Just what we wanted.
 
-The `plot_survival()` function has many optional arguments that allow you customize the plot. Here are some examples:
+The `plot()` function has many optional arguments that allow you customize the plot. Here are some examples:
 
 ```{r}
-plot_survival(cohort_iws, 
+plot(cohort_iws, 
               add_confidence = FALSE, 
               add_median_delta = FALSE, 
               censor_pch = 3,

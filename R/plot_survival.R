@@ -1,7 +1,6 @@
 #' Plot the results of a survival analysis
 #'
 #' @param object iwillsurvive. An iwillsurvive object created from iwillsurvive
-#' @param cohort dataframe. A one-row-per-patient cohort used in generating fit.
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
@@ -62,28 +61,27 @@
 #'   index_title = "LOT1 Start"
 #' )
 #'
-#' plot_survival(cohort_iws)
+#' plot(cohort_iws)
 #'
 #' # Set simple = TRUE to only get the KM without any fancy pants stuff
 #'
-#' plot_survival(cohort_iws,
+#' plot(cohort_iws,
 #'   simple = TRUE
 #' )
 #'
 #' # Control the location of the legend with legend_position
-#' plot_survival(cohort_iws,
+#' plot(cohort_iws,
 #'   legend_position = "top"
 #' )
 #'
 #' # Change the location of the labels and add arrows
-#' plot_survival(cohort_iws,
+#' plot(cohort_iws,
 #'   legend_anchor_y = c(.7, .85),
 #'   legend_position_x = c(260, 250),
 #'   legend_nudge_y = .1,
 #'   anchor_arrow = TRUE
 #' )
-plot_survival <- function(object = NULL,
-                          cohort = NULL,
+plot.iwillsurvive <- function(object = NULL,
                           ggtheme = ggplot2::theme_bw(),
                           palette = "Set1",
                           simple = FALSE,

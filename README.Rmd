@@ -101,14 +101,14 @@ cohort_iws
 ```
 
 ```{r, echo = FALSE, out.width="60%"}
-knitr::include_graphics("inst/figures/print_iwillsurvive.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/print_iwillsurvive.png")
 ```
 
 Is that an ascii survival curve? I think so!
 
-Use `plot_survival()` to plot the Kaplan-Meier survival curve:
+Use `plot()` to plot the Kaplan-Meier survival curve:
 
 ```{r, fig.width = 7, fig.height = 5.5, out.width = "100%"}
-plot_survival(cohort_iws)
+plot(cohort_iws)
 ```
 

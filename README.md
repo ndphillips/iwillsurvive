@@ -121,14 +121,14 @@ Print the object to see summary information:
 cohort_iws
 ```
 
-<img src="inst/figures/print_iwillsurvive.png" width="60%" />
+<img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/print_iwillsurvive.png" width="60%" />
 
 Is that an ascii survival curve? I think so!
 
-Use `plot_survival()` to plot the Kaplan-Meier survival curve:
+Use `plot()` to plot the Kaplan-Meier survival curve:
 
 ``` r
-plot_survival(cohort_iws)
+plot(cohort_iws)
 #> Warning in is.na(x): is.na() applied to non-(list or vector) of type
 #> 'expression'
 ```

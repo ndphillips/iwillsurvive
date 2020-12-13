@@ -76,7 +76,7 @@ cohort_fit <- iwillsurvive(cohort,
   terms = "condition"
 )
 
-plot_survival(cohort_fit,
+plot(cohort_fit,
   cohort = cohort,
   index_title = "LOT1 Start",
   event_title = "Death"
