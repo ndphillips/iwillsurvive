@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Create an iwillsurvive object — iwillsurvive" />
-<meta property="og:description" content="Create an iwillsurvive object" />
+<meta property="og:description" content="Create an iwillsurvive object
+Create an iwillsurvive object" />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iwillsurvive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -104,7 +105,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/ndphillips/iwillsurvive/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -119,12 +125,13 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create an iwillsurvive object</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/ndphillips/iwillsurvive/blob/master/R/fit_survival.R'><code>R/fit_survival.R</code></a>, <a href='https://github.com/ndphillips/iwillsurvive/blob/master/R/iwillsurvive.R'><code>R/iwillsurvive.R</code></a></small>
     <div class="hidden name"><code>iwillsurvive.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Create an iwillsurvive object</p>
+<p>Create an iwillsurvive object</p>
     </div>
 
     <pre class="usage"><span class='fu'>iwillsurvive</span><span class='op'>(</span>
@@ -135,8 +142,23 @@
   terms <span class='op'>=</span> <span class='cn'>NULL</span>,
   type <span class='op'>=</span> <span class='st'>"right"</span>,
   fit <span class='op'>=</span> <span class='cn'>NULL</span>,
-  event_title <span class='op'>=</span> <span class='cn'>NULL</span>,
-  index_title <span class='op'>=</span> <span class='cn'>NULL</span>,
+  event_title <span class='op'>=</span> <span class='st'>"&lt;event&gt;"</span>,
+  index_title <span class='op'>=</span> <span class='st'>"&lt;index&gt;"</span>,
+  title <span class='op'>=</span> <span class='cn'>NULL</span>,
+  followup_time_units <span class='op'>=</span> <span class='cn'>NULL</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
+
+<span class='fu'>iwillsurvive</span><span class='op'>(</span>
+  <span class='va'>cohort</span>,
+  followup_time <span class='op'>=</span> <span class='st'>"followup_months"</span>,
+  event_status <span class='op'>=</span> <span class='st'>"event_status"</span>,
+  patient_id <span class='op'>=</span> <span class='st'>"patientid"</span>,
+  terms <span class='op'>=</span> <span class='cn'>NULL</span>,
+  type <span class='op'>=</span> <span class='st'>"right"</span>,
+  fit <span class='op'>=</span> <span class='cn'>NULL</span>,
+  event_title <span class='op'>=</span> <span class='st'>"&lt;event&gt;"</span>,
+  index_title <span class='op'>=</span> <span class='st'>"&lt;index&gt;"</span>,
   title <span class='op'>=</span> <span class='cn'>NULL</span>,
   followup_time_units <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
@@ -199,6 +221,7 @@ survival:survfit(). If specified, no additional model(s) will be fit.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>survfit. See ?survival::survfit.object to learn more</p>
+<p>survfit. See ?survival::survfit.object to learn more</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -219,134 +242,81 @@ survival:survfit(). If specified, no additional model(s) will be fit.</p></td>
 <span class='op'>)</span>
 
 <span class='co'># Ignoring group term</span>
+<span class='va'>cohort_fit</span> <span class='op'>&lt;-</span> <span class='fu'>iwillsurvive</span><span class='op'>(</span><span class='va'>cohort</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>── iwillsurvive ────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>- 13 of 20 (65%) patient(s) experienced the event.</span></div><div class='output co'>#&gt; <span class='message'>- survival::survfit(survival::Surv(followup_months, event_status, type = 'right') ~ 1, data = cohort)</span></div><div class='output co'>#&gt; <span class='message'>- Median Survival = 88.1</span></div><div class='input'>
+<span class='co'># Now including some covariates</span>
+<span class='va'>cohort_fit</span> <span class='op'>&lt;-</span> <span class='fu'>iwillsurvive</span><span class='op'>(</span><span class='va'>cohort</span>,
+  terms <span class='op'>=</span> <span class='st'>"group"</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>── iwillsurvive ────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>- 13 of 20 (65%) patient(s) experienced the event.</span></div><div class='output co'>#&gt; <span class='message'>- survival::survfit(survival::Surv(followup_months, event_status, type = 'right') ~ group, data = cohort)</span></div><div class='input'>
+<span class='va'>cohort</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+  patientid <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>,
+  followup_months <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
+    <span class='fl'>6.1</span>, <span class='fl'>15.4</span>, <span class='fl'>22</span>, <span class='fl'>24.6</span>, <span class='fl'>25.6</span>, <span class='fl'>26.1</span>, <span class='fl'>28.7</span>, <span class='fl'>46.9</span>, <span class='fl'>54.5</span>, <span class='fl'>55</span>, <span class='fl'>62.2</span>,
+    <span class='fl'>65.5</span>, <span class='fl'>88.1</span>, <span class='fl'>108.5</span>, <span class='fl'>116</span>, <span class='fl'>119.1</span>, <span class='fl'>119.6</span>, <span class='fl'>169.1</span>, <span class='fl'>317.8</span>, <span class='fl'>381.7</span>
+  <span class='op'>)</span>,
+  event_status <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
+    <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>FALSE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>FALSE</span>,
+    <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>FALSE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>
+  <span class='op'>)</span>,
+  group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>
+    <span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"a"</span>, <span class='st'>"b"</span>,
+    <span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"a"</span>, <span class='st'>"b"</span>
+  <span class='op'>)</span>
+<span class='op'>)</span>
+
+<span class='co'># Ignoring group term</span>
 
 <span class='va'>cohort_fit</span> <span class='op'>&lt;-</span> <span class='fu'>iwillsurvive</span><span class='op'>(</span><span class='va'>cohort</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>── iwillsurvive ────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>- 13 of 20 (65%) patient(s) experienced the event.</span></div><div class='output co'>#&gt; <span class='message'>- survival::survfit(survival::Surv(followup_months, event_status, type = 'right') ~ 1, data = cohort)</span></div><div class='output co'>#&gt; <span class='message'>- Median Survival = 88.1</span></div><div class='input'><span class='va'>cohort_fit</span>
-</div><div class='output co'>#&gt; $cohort
-#&gt;    patientid followup_months event_status group
-#&gt; 1          1             6.1        FALSE     a
-#&gt; 2          2            15.4        FALSE     b
-#&gt; 3          3            22.0         TRUE     a
-#&gt; 4          4            24.6         TRUE     b
-#&gt; 5          5            25.6         TRUE     a
-#&gt; 6          6            26.1         TRUE     b
-#&gt; 7          7            28.7        FALSE     a
-#&gt; 8          8            46.9         TRUE     b
-#&gt; 9          9            54.5         TRUE     a
-#&gt; 10        10            55.0        FALSE     b
-#&gt; 11        11            62.2         TRUE     a
-#&gt; 12        12            65.5         TRUE     b
-#&gt; 13        13            88.1         TRUE     a
-#&gt; 14        14           108.5         TRUE     b
-#&gt; 15        15           116.0        FALSE     a
-#&gt; 16        16           119.1         TRUE     b
-#&gt; 17        17           119.6         TRUE     a
-#&gt; 18        18           169.1         TRUE     b
-#&gt; 19        19           317.8        FALSE     a
-#&gt; 20        20           381.7        FALSE     b
+</div><div class='output co'>#&gt; An iwillsurvive object estimating survival from &lt;index&gt; to &lt;event&gt; 
 #&gt; 
-#&gt; $fit
-#&gt; Call: survfit(formula = survival::Surv(followup_months, event_status, 
-#&gt;     type = "right") ~ 1, data = cohort)
+#&gt; 20 Patients:
+#&gt; &lt;event&gt; = 13 (65%), Censored = 7 (35%)
 #&gt; 
-#&gt;       n  events  median 0.95LCL 0.95UCL 
-#&gt;    20.0    13.0    88.1    54.5      NA 
+#&gt; Median Survival (months):
+#&gt; all = 88.1
 #&gt; 
-#&gt; $terms
-#&gt; NULL
-#&gt; 
-#&gt; $event_title
-#&gt; NULL
-#&gt; 
-#&gt; $index_title
-#&gt; NULL
-#&gt; 
-#&gt; $followup_time_col
-#&gt; [1] "followup_months"
-#&gt; 
-#&gt; $followup_time_units
-#&gt; [1] "months"
-#&gt; 
-#&gt; $timeatrisk_col
-#&gt; [1] "followup_months"
-#&gt; 
-#&gt; $event_status_col
-#&gt; [1] "event_status"
-#&gt; 
-#&gt; $patientid_col
-#&gt; [1] "patientid"
-#&gt; 
-#&gt; $title
-#&gt; NULL
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "iwillsurvive"</div><div class='input'>
+#&gt; |a<span style='color: #555555;'>............................................</span><span>
+#&gt; |</span><span style='color: #555555;'>..</span><span>a</span><span style='color: #555555;'>..........................................</span><span>
+#&gt; |</span><span style='color: #555555;'>..</span><span>a</span><span style='color: #555555;'>..........................................</span><span>
+#&gt; |</span><span style='color: #555555;'>..</span><span>a</span><span style='color: #555555;'>..........................................</span><span>
+#&gt; |</span><span style='color: #555555;'>....</span><span>a</span><span style='color: #555555;'>........................................</span><span>
+#&gt; |</span><span style='color: #555555;'>.....</span><span>a</span><span style='color: #555555;'>.......................................</span><span>
+#&gt; |</span><span style='color: #555555;'>......</span><span>a</span><span style='color: #555555;'>......................................</span><span>
+#&gt; |</span><span style='color: #555555;'>.......</span><span>a</span><span style='color: #555555;'>.....................................</span><span>
+#&gt; |</span><span style='color: #555555;'>.........</span><span>a</span><span style='color: #555555;'>...................................</span><span>
+#&gt; |</span><span style='color: #555555;'>............</span><span>a</span><span style='color: #555555;'>................................</span><span>
+#&gt; |</span><span style='color: #555555;'>.............</span><span>a</span><span style='color: #555555;'>...............................</span><span>
+#&gt; |</span><span style='color: #555555;'>.............</span><span>a</span><span style='color: #555555;'>...............................</span><span>
+#&gt; |</span><span style='color: #555555;'>...................</span><span>a</span><span style='color: #555555;'>.........................</span><span></div><div class='input'>
 <span class='co'># Now including some covariates</span>
 
 <span class='va'>cohort_fit</span> <span class='op'>&lt;-</span> <span class='fu'>iwillsurvive</span><span class='op'>(</span><span class='va'>cohort</span>,
-                           terms <span class='op'>=</span> <span class='st'>"group"</span><span class='op'>)</span>
+  terms <span class='op'>=</span> <span class='st'>"group"</span>
+<span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>── iwillsurvive ────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>- 13 of 20 (65%) patient(s) experienced the event.</span></div><div class='output co'>#&gt; <span class='message'>- survival::survfit(survival::Surv(followup_months, event_status, type = 'right') ~ group, data = cohort)</span></div><div class='input'>
 <span class='va'>cohort_fit</span>
-</div><div class='output co'>#&gt; $cohort
-#&gt;    patientid followup_months event_status group
-#&gt; 1          1             6.1        FALSE     a
-#&gt; 2          2            15.4        FALSE     b
-#&gt; 3          3            22.0         TRUE     a
-#&gt; 4          4            24.6         TRUE     b
-#&gt; 5          5            25.6         TRUE     a
-#&gt; 6          6            26.1         TRUE     b
-#&gt; 7          7            28.7        FALSE     a
-#&gt; 8          8            46.9         TRUE     b
-#&gt; 9          9            54.5         TRUE     a
-#&gt; 10        10            55.0        FALSE     b
-#&gt; 11        11            62.2         TRUE     a
-#&gt; 12        12            65.5         TRUE     b
-#&gt; 13        13            88.1         TRUE     a
-#&gt; 14        14           108.5         TRUE     b
-#&gt; 15        15           116.0        FALSE     a
-#&gt; 16        16           119.1         TRUE     b
-#&gt; 17        17           119.6         TRUE     a
-#&gt; 18        18           169.1         TRUE     b
-#&gt; 19        19           317.8        FALSE     a
-#&gt; 20        20           381.7        FALSE     b
+</div><div class='output co'>#&gt; An iwillsurvive object estimating survival from &lt;index&gt; to &lt;event&gt; 
 #&gt; 
-#&gt; $fit
-#&gt; Call: survfit(formula = survival::Surv(followup_months, event_status, 
-#&gt;     type = "right") ~ group, data = cohort)
+#&gt; 20 Patients:
+#&gt; &lt;event&gt; = 13 (65%), Censored = 7 (35%)
 #&gt; 
-#&gt;          n events median 0.95LCL 0.95UCL
-#&gt; group=a 10      6   88.1    54.5      NA
-#&gt; group=b 10      7  108.5    46.9      NA
+#&gt; Median Survival (months):
+#&gt; group=a = 88.1, group=b = 108.5
+#&gt; diff = </span><span style='color: #00BB00;font-weight: bold;'>20</span><span>
 #&gt; 
-#&gt; $terms
-#&gt; [1] "group"
-#&gt; 
-#&gt; $event_title
-#&gt; NULL
-#&gt; 
-#&gt; $index_title
-#&gt; NULL
-#&gt; 
-#&gt; $followup_time_col
-#&gt; [1] "followup_months"
-#&gt; 
-#&gt; $followup_time_units
-#&gt; [1] "months"
-#&gt; 
-#&gt; $timeatrisk_col
-#&gt; [1] "followup_months"
-#&gt; 
-#&gt; $event_status_col
-#&gt; [1] "event_status"
-#&gt; 
-#&gt; $patientid_col
-#&gt; [1] "patientid"
-#&gt; 
-#&gt; $title
-#&gt; NULL
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "iwillsurvive"</div></pre>
+#&gt; |gg</span><span style='color: #555555;'>...........................................</span><span>
+#&gt; |</span><span style='color: #555555;'>.</span><span>gg</span><span style='color: #555555;'>..........................................</span><span>
+#&gt; |</span><span style='color: #555555;'>..</span><span>*</span><span style='color: #555555;'>..........................................</span><span>
+#&gt; |</span><span style='color: #555555;'>....</span><span>g</span><span style='color: #555555;'>........................................</span><span>
+#&gt; |</span><span style='color: #555555;'>.....</span><span>g</span><span style='color: #555555;'>.......................................</span><span>
+#&gt; |</span><span style='color: #555555;'>.......</span><span>g</span><span style='color: #555555;'>.....................................</span><span>
+#&gt; |</span><span style='color: #555555;'>......</span><span>g</span><span style='color: #555555;'>......................................</span><span>
+#&gt; |</span><span style='color: #555555;'>............</span><span>g</span><span style='color: #555555;'>................................</span><span>
+#&gt; |</span><span style='color: #555555;'>.........</span><span>g</span><span style='color: #555555;'>...................................</span><span>
+#&gt; |</span><span style='color: #555555;'>.............</span><span>g</span><span style='color: #555555;'>...............................</span><span>
+#&gt; |</span><span style='color: #555555;'>.............</span><span>g</span><span style='color: #555555;'>.....</span><span>g</span><span style='color: #555555;'>.........................</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

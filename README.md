@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# iwillsurvive 0.1.3 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
+# iwillsurvive 0.1.4 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -9,10 +9,10 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 shuffled](https://img.shields.io/badge/version-0.1_'Gloria'-yellow.svg)](https://en.wikipedia.org/wiki/Gloria_Gaynor)
 
 The goal of `iwillsurvive` is to make it easy to fit and visualize
-simple survival models. It provides wrapper functions around commonly
-used functions from survival packages such as `survival::survfit()` and
-`survminer::ggsurvplot()`, while providing user-friendly in-line
-messages, notes, and warnings.
+simple survival models. It does this by providing an intuitive
+functional interface and user-friendly in-line messages, notes, and
+warnings, while leveraging the gold-standard `survival` package for all
+statistical methods.
 
 ## Installation
 
@@ -29,7 +29,7 @@ devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
 ``` r
 library(iwillsurvive)
 #> -----------------------------------------------------
-#> iwillsurvive 0.1.3 'Gloria'
+#> iwillsurvive 0.1.4 'Gloria'
 #> Intro  : vignette('introduction', 'iwillsurvive')
 #> Repo   : https://github.com/ndphillips/iwillsurvive
 #> .....................................................
@@ -121,14 +121,14 @@ Print the object to see summary information:
 cohort_iws
 ```
 
-<img src="inst/figures/print_iwillsurvive.png" width="50%" />
+<img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/print_iwillsurvive.png" width="60%" />
 
-Use `plot_survival()` to plot the Kaplan-Meier survival curve:
+Is that an ascii survival curve? I think so!
+
+Use `plot()` to plot the Kaplan-Meier survival curve:
 
 ``` r
-plot_survival(cohort_iws)
-#> Warning: Vectorized input to `element_text()` is not officially supported.
-#> Results may be unexpected or may change in future versions of ggplot2.
+plot(cohort_iws)
 #> Warning in is.na(x): is.na() applied to non-(list or vector) of type
 #> 'expression'
 ```

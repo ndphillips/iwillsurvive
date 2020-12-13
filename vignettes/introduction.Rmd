@@ -10,64 +10,212 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
 )
 ```
 
 ```{r example}
 library(iwillsurvive)
 library(dplyr)
+library(survival)
+library(ggplot2)
+library(tidyr)
 ```
 
-It's best to start with one-row-per-patient (ORPP) cohort object that contains 
-columns corresponding to 
+# The survival model
 
-- `patientid`, a unique patient identifier
-- `index_date`, a date corresponding to an index date.
-- `censor_date`, date corresponding to when patients were censored
-- `event_date`, date corresponding to the event of interest. NA values indicate 
-that the event was not observed.
+I'll now give a very brief overview of the basic survival model that `iwillsurvive` works with. For a more thorough and informative discussion, check out [Emily C. Zabor's Survival Analysis in R](https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html). It's awesome.
 
-`iwillsurvive` provides one such example in `ez_cohort`, a dataframe of `r scales::comma(nrow(ez_cohort))`
-simulated patients:
+## Trial data
 
-```{r}
-cohort <- ez_cohort
+We'll start with the `ez_cohort` dataset which represents the results of a (fictional) clinical trial testing the effectiveness of a drug in extending survival from a patient's first line of therapy start date.
+
+Here are the first 10 patients:
+
+```{r, echo = FALSE}
+ez_cohort %>%
+  slice(1:10) %>%
+  knitr::kable()
 ```
 
-# `derive_*()` functions
+Here's what each column means:
 
-Use the `derive_*()` functions to calculate key derived columns:
+|Column|Definition|
+|:-----|:---------|
+|`patientid`|A character referring to an individual patient in the form "FXXXXX"|
+|`condition`|A character indicating which condition the patient was in, unique values are: `r paste(unique(ez_cohort$condition), collapse = ", ")`|
+|`lotstartdate`|A date indicating when a patient started their first line of therapy after diagnosis|
+|`lastvisitdate`|A date indicating the last known date that a patient was alive|
+|`dateofdeath`|A date indicating the date of death of patients who died during the study period|
 
-`derive_followup_date()` returns the column `follow_up` date, which is event_date
- (if known), and the `censor_date` otherwise:
+The plot below visualizes these data:
+
+```{r, fig.width = 7, fig.height = 5}
+ez_cohort_long <- ez_cohort %>%
+  arrange(lotstartdate) %>%
+  mutate(patientid = as.numeric(factor(patientid, levels = patientid, ordered = TRUE))) %>%
+  pivot_longer(cols = lotstartdate:dateofdeath, names_to = "event", values_to = "date")
+
+ggplot(ez_cohort_long, aes(x = date, y = patientid, col = event, shape = event)) +
+  geom_point() +
+  facet_wrap(~condition) +
+  theme(legend.position = "top")
+```
+
+## Survival data
+
+Once we have our trial data, we now need to define some key survival data:
+
+|Variable|Definition|
+|:----|:-----|
+|`followup_date`|The date at which the event occurs (if known), otherwise the last date the patient was known to be alive|
+|`followup_days`|The number of days from indexdate to `followupdate`|
+|`eventstatus`|A logical column indicating whether or not the patient died. TRUE = Yes, FALSE = No.
+
+To calculate these variables, we can use `iwillsurvive`'s *derive* functions:
 
 ```{r}
-cohort <- cohort %>%
+cohort <- ez_cohort %>%
+  
   derive_followup_date(event_date = "dateofdeath",
-                       censor_date = "lastvisitdate")
-
-cohort
+                       censor_date = "lastvisitdate") %>%
+  
+  derive_followup_time(index_date = "lotstartdate") %>%
+  
+  derive_event_status(event_date = "dateofdeath")
 ```
 
-`derive_followup_time()` returns the columns followup_days, followup_months, and
-followup_years which show time from index to follow up:
+Here's how the new columns look for the first 10 patients:
+
+```{r, echo = FALSE}
+cohort %>% 
+  select(patientid, condition, followup_date:event_status) %>%
+  slice(1:10) %>%
+  knitr::kable()
+```
+
+
+Now we can visualize the survival data
+
+```{r, fig.width = 7, fig.height = 5}
+cohort_long <- cohort %>%
+  arrange(followup_days) %>%
+  mutate(patientid = as.numeric(factor(patientid, levels = patientid, ordered = TRUE)))
+  
+ggplot(cohort_long, aes(x = followup_days, y = patientid, col = condition, shape = event_status)) +
+  geom_point() +
+  theme(legend.position = "top")
+```
+
+Now we're ready to fit the survival model.
+
+# Fitting survival models
+
+First, let's fit the model using the classic `survival` interface
 
 ```{r}
-cohort <- cohort %>%
-  derive_followup_time(index_date = "lotstartdate") 
-
-cohort %>%
-  select(patientid, lotstartdate, followup_date, 
-         followup_days, followup_months, followup_years)
+cohort_survival <- survfit(Surv(followup_days, event_status, type = 'right') ~ condition,
+                                data = cohort)
 ```
 
-`derive_event_status()` will add an `event_status` column
+Here is `survival`'s print method:
 
 ```{r}
-cohort <- cohort %>%
-  derive_event_status(event_date = "dateofdeath") 
-
-cohort
+cohort_survival
 ```
+
+Now let's fit it again using the `iwillsurvive` interface. Using `iwillsurvive`, we won't define a formula. Instead, we will define a verbal mapping between the function arguments and the columns in the cohort object. In addition, we will define some "titles" which will be stored in the object and used for plotting purposes.
+
+```{r}
+cohort_iws <- iwillsurvive(cohort = cohort, 
+                           followup_time = "followup_days", 
+                           event_status = "event_status",
+                           terms = "condition", 
+                           event_title = "Death", 
+                           index_title = "LOT Start")
+```
+
+Here is `iwillsurvive`'s print method:
+
+```{r}
+cohort_iws
+```
+
+# Plotting the survival curve
+
+Before we look at the `iwillsurvive` survival curve, let's look at the default plotting method that comes with the `survival` package. The plot we'll get with `iwillsurvive` will be based on the exact same model, so looking at this first serves as a gut-check to make sure that `iwillsurvive` hasn't messed things up:
+
+```{r}
+plot(cohort_survival)
+```
+
+Now let's create the `iwillsurvive` plot. To do this, we'll use the `plot()` function:
+
+```{r}
+plot(cohort_iws)
+```
+
+Yep looks like the same curve as the `survival` method, but just with some extra [flair](https://www.youtube.com/watch?v=3vdcw415OcQ&ab_channel=TITTSRecords). Just what we wanted.
+
+The `plot()` function has many optional arguments that allow you customize the plot. Here are some examples:
+
+```{r}
+plot(cohort_iws, 
+              add_confidence = FALSE, 
+              add_median_delta = FALSE, 
+              censor_pch = 3,
+              censor_size = 5,
+              legend_position_x = c(600, 400),
+              legend_nudge_y =  c(.25, .3), 
+              median_flag_nudge_y = .15,
+              anchor_arrow = TRUE,
+              palette = "Dark2",
+              title = "My Title",
+              subtitle = "My Subttitle",
+              risk_table_title = "My Risk Table Title")
+```
+
+# Understanding iwillsurvive objects
+
+The `iwillsurvive()` function returns an object of class `iwillsurvive`. Internally, it is a list containing many objects from the original data, to a `survival` object:
+
+```{r}
+names(cohort_iws)
+```
+
+The `.$cohort` object contains the original data
+
+```{r}
+cohort_iws$cohort
+```
+
+The `.$fit` object contains the `survival` object
+
+```{r}
+cohort_iws$fit
+```
+
+The `.$fit_summary` object contains summary information:
+
+```{r}
+cohort_iws$fit_summary
+```
+
+# Why did I create iwillsurvive?
+
+There already exist many, very good, R packages for survival analysis. Two in particular, [survival](https://github.com/therneau/survival) and [survminer](https://github.com/kassambara/survminer), have become almost gold-standards, and for good reason. The survival package provides a flexible interface for fitting models, while the survminer package allows you to create survival plots and extract key statistics from objects created from the `survival` package. I have been using `survival` and `survminer` regular in my research for a few years and they have served me very well. I am truly grateful to their authors and rely on both in `iwillsurvive`
+
+However, I have run into a few pain points that I feel can be filled with a new package
+
+1. The syntax for creating simple survival models with `survival` is, in my opinion, not very intuitive. For example, creating a basic right-censored survival model requires the user to write write a nested function call such as: `survfit(Surv(time, status) ~ x, data = aml)`. Without digging into the documentation, it's hard to know what these arguments mean (and easy to forget that `Surv()` is capitalized!).
+
+2. The `survival` package is, in my opinion, too flexible in the kinds of arguments it allows. For example, when specifying the value of the event, one can pass a vector with a binary coding (0 = alive, 1 = dead), a logical coding (FALSE = Alive, TRUE = Death) or a 1/2 coding (1 = Alive, 2 = Death). This flexibility is in my experience, introduces risks. I once spent several days fitting models using `survival` only to realize that I had been using the 1/2 coding but coded 1 = Death and 2 = Alive. If there had only been one event coding option (like my preferred logical format), I think I would have caught the error much earlier.
+
+3. This is a personal preference -- but I *love* immediate console feedback from functions. Something that tells me what code is doing and what the most important results are. This helps me know that everything went as expected, and can give me early warnings when things look...wrong. In the case of fitting a survival model, I'd love to have feedback telling me things like how many patients had the event, how many were censored, and what the overall median survival was. If I had this feedback, I definitely would have caught my 1/2 coding error much earlier.
+
+4. `ggsurvplot()` the workhorse plotting function in `survminer` is incredibly flexible, but in my opinion the argument defaults (for example, not including a confidence interval) are not ideal. I wanted a plotting function which gives me all the bells-and-whistles by default.
+
+5. The first thing almost everyone wants to know when fitting and visualizing a Kaplan-Meier survival model is the median survival of each group. While one can extract this info from `survival` and `survminer`, I found that it doesn't 'jump out at me' as clearly as I wanted. 
 

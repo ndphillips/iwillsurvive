@@ -12,8 +12,8 @@ iwillsurvive(
   terms = NULL,
   type = "right",
   fit = NULL,
-  event_title = NULL,
-  index_title = NULL,
+  event_title = "<event>",
+  index_title = "<index>",
   title = NULL,
   followup_time_units = NULL,
   verbose = TRUE
@@ -27,8 +27,8 @@ iwillsurvive(
   terms = NULL,
   type = "right",
   fit = NULL,
-  event_title = NULL,
-  index_title = NULL,
+  event_title = "<event>",
+  index_title = "<index>",
   title = NULL,
   followup_time_units = NULL,
   verbose = TRUE
