@@ -1,6 +1,6 @@
-#' Plot an iwillsurvive object.
+#' Plot the results of a survival analysis
 #'
-#' @param object iwillsurvive. An iwillsurvive object created from \code{iwillsurvive()}
+#' @param object iwillsurvive. An iwillsurvive object created from iwillsurvive
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
@@ -61,31 +61,26 @@
 #'   index_title = "LOT1 Start"
 #' )
 #'
-#' # Default plot
 #' plot(cohort_iws)
 #'
-#' # Simpler version
+#' # Set simple = TRUE to only get the KM without any fancy pants stuff
+#'
 #' plot(cohort_iws,
-#'   simple = TRUE,
-#'   risk_table = FALSE,
-#'   add_confidence = FALSE
+#'   simple = TRUE
 #' )
 #'
-#' # Customized version
-#'plot(cohort_iws,
-#'   add_confidence = FALSE,
-#'   add_median_delta = FALSE,
-#'   censor_pch = 3,
-#'   censor_size = 5,
-#'   legend_position_x = c(600, 400),
-#'   legend_nudge_y =  c(.25, .3),
-#'   median_flag_nudge_y = .15,
-#'   anchor_arrow = TRUE,
-#'   palette = "Dark2",
-#'   title = "My Title",
-#'   subtitle = "My Subttitle",
-#'   risk_table_title = "My Risk Table Title")
+#' # Control the location of the legend with legend_position
+#' plot(cohort_iws,
+#'   legend_position = "top"
+#' )
 #'
+#' # Change the location of the labels and add arrows
+#' plot(cohort_iws,
+#'   legend_anchor_y = c(.7, .85),
+#'   legend_position_x = c(260, 250),
+#'   legend_nudge_y = .1,
+#'   anchor_arrow = TRUE
+#' )
 plot.iwillsurvive <- function(object = NULL,
                           ggtheme = ggplot2::theme_bw(),
                           palette = "Set1",
