@@ -22,16 +22,17 @@ library(dplyr)
 library(survival)
 library(ggplot2)
 library(tidyr)
-library(survminer)
 ```
 
 # The survival model
 
-I'll now give a very brief overview of the basic survival model that `iwillsurvive` works with. For a more thorough and informative discussion, I can't recommend [Emily C. Zabor's Survival Analysis in R](https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html) tutorial enough. It's awesome.
+I'll now give a very brief overview of the basic survival model that `iwillsurvive` works with. For a more thorough and informative discussion, check out [Emily C. Zabor's Survival Analysis in R](https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html). It's awesome.
 
 ## Trial data
 
-We'll start with the `ez_cohort` dataset which represents the results of a (fictional) clinical trial testing the effectiveness of a drug in extending survival from a patient's first line of therapy start date
+We'll start with the `ez_cohort` dataset which represents the results of a (fictional) clinical trial testing the effectiveness of a drug in extending survival from a patient's first line of therapy start date.
+
+Here are the first 10 patients:
 
 ```{r, echo = FALSE}
 ez_cohort %>%
@@ -57,8 +58,9 @@ ez_cohort_long <- ez_cohort %>%
   mutate(patientid = as.numeric(factor(patientid, levels = patientid, ordered = TRUE))) %>%
   pivot_longer(cols = lotstartdate:dateofdeath, names_to = "event", values_to = "date")
 
-ggplot(ez_cohort_long, aes(x = date, y = patientid, col = condition, shape = event)) +
+ggplot(ez_cohort_long, aes(x = date, y = patientid, col = event, shape = event)) +
   geom_point() +
+  facet_wrap(~condition) +
   theme(legend.position = "top")
 ```
 
@@ -85,8 +87,7 @@ cohort <- ez_cohort %>%
   derive_event_status(event_date = "dateofdeath")
 ```
 
-
-Here's how the new columns look:
+Here's how the new columns look for the first 10 patients:
 
 ```{r, echo = FALSE}
 cohort %>% 
@@ -96,7 +97,7 @@ cohort %>%
 ```
 
 
-Now we can vizualise the survival data
+Now we can visualize the survival data
 
 ```{r, fig.width = 7, fig.height = 5}
 cohort_long <- cohort %>%
@@ -108,11 +109,11 @@ ggplot(cohort_long, aes(x = followup_days, y = patientid, col = condition, shape
   theme(legend.position = "top")
 ```
 
-Now we're ready to fit the survival model
+Now we're ready to fit the survival model.
 
 # Fitting survival models
 
-First, let's fit the model using the `survival` interface
+First, let's fit the model using the classic `survival` interface
 
 ```{r}
 cohort_survival <- survfit(Surv(followup_days, event_status, type = 'right') ~ condition,
@@ -142,13 +143,21 @@ Here is `iwillsurvive`'s print method:
 cohort_iws
 ```
 
-# Plotting results
+# Plotting the survival curve
 
-To plot the survival curve from `iwillsurvive`, use the `plot_survival()` function:
+Before we look at the `iwillsurvive` survival curve, let's look at the default plotting method that comes with the `survival` package. The plot we'll get with `iwillsurvive` will be based on the exact same model, so looking at this first serves as a gut-check to make sure that `iwillsurvive` hasn't messed things up:
+
+```{r}
+plot(cohort_survival)
+```
+
+Now let's create the `iwillsurvive` plot. To do this, we'll use the `plot_survival()` function:
 
 ```{r}
 plot_survival(cohort_iws)
 ```
+
+Yep looks like the same curve as the `survival` method, but just with some extra [flair](https://www.youtube.com/watch?v=3vdcw415OcQ&ab_channel=TITTSRecords). Just what we wanted.
 
 The `plot_survival()` function has many optional arguments that allow you customize the plot. Here are some examples:
 
@@ -194,10 +203,9 @@ The `.$fit_summary` object contains summary information:
 cohort_iws$fit_summary
 ```
 
-
 # Why did I create iwillsurvive?
 
-There already exist many, very good, R packages for survival analysis. Two In particular have become almost gold-standards, and for good reason. The [survival](https://github.com/therneau/survival) package provides a flexible interface for fitting models, while the [survminer](https://github.com/kassambara/survminer) package allows you to create survival plots and extract key statistics from objects created from the `survival` package. I have been using `survival` and `survminer` regular in my research for a few years and they have served me very well. I am truly grateful to their authors and rely on both in `iwillsurvive`
+There already exist many, very good, R packages for survival analysis. Two in particular, [survival](https://github.com/therneau/survival) and [survminer](https://github.com/kassambara/survminer), have become almost gold-standards, and for good reason. The survival package provides a flexible interface for fitting models, while the survminer package allows you to create survival plots and extract key statistics from objects created from the `survival` package. I have been using `survival` and `survminer` regular in my research for a few years and they have served me very well. I am truly grateful to their authors and rely on both in `iwillsurvive`
 
 However, I have run into a few pain points that I feel can be filled with a new package
 
@@ -209,5 +217,5 @@ However, I have run into a few pain points that I feel can be filled with a new 
 
 4. `ggsurvplot()` the workhorse plotting function in `survminer` is incredibly flexible, but in my opinion the argument defaults (for example, not including a confidence interval) are not ideal. I wanted a plotting function which gives me all the bells-and-whistles by default.
 
-5. The first thing almost everyone wants to know when fitting and vizualising a Kaplan-Meier survival model is the median survival of each group. While one can extract this info from `survival` and `survminer`, I found that it doesn't 'jump out at me' as clearly as I wanted. 
+5. The first thing almost everyone wants to know when fitting and visualizing a Kaplan-Meier survival model is the median survival of each group. While one can extract this info from `survival` and `survminer`, I found that it doesn't 'jump out at me' as clearly as I wanted. 
 

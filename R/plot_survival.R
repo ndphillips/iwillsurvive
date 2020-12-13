@@ -227,18 +227,16 @@ plot_survival <- function(object = NULL,
         )
 
       if (add_censor_ticks) {
-
-      p_km <- p_km +
-        ggplot2::geom_point(
-          data = data %>% filter(n.censor > 0),
-          ggplot2::aes(y = estimate),
-          alpha = 1,
-          pch = censor_pch,
-          size = censor_size,
-          fill = scales::alpha("white", .8)
-        )
+        p_km <- p_km +
+          ggplot2::geom_point(
+            data = data %>% filter(n.censor > 0),
+            ggplot2::aes(y = estimate),
+            alpha = 1,
+            pch = censor_pch,
+            size = censor_size,
+            fill = scales::alpha("white", .8)
+          )
       }
-
     }
 
     if (add_median) {
@@ -379,33 +377,23 @@ plot_survival <- function(object = NULL,
     }
 
 
-# Set title
+    # Set title
 
     if (!is.null(title)) {
-
       my_title <- title
-
     } else {
+      my_title <- paste0("Survival: From ", index_title)
 
-    my_title <- paste0("Survival: From ", index_title)
-
-    if (!is.null(event_title)) {
-
-      my_title <- paste0("Survival: From ", index_title, " to ", event_title)
-
+      if (!is.null(event_title)) {
+        my_title <- paste0("Survival: From ", index_title, " to ", event_title)
       }
-
     }
 
     if (!is.null(subtitle)) {
-
       my_subtitle <- subtitle
-
     } else {
-
       my_subtitle <- paste0("N = ", scales::comma(patient_n))
-
-      }
+    }
 
     if (!is.null(object$followup_time_units)) {
       x_lab <- paste0("Time (", stringr::str_to_title(object$followup_time_units), ")")
@@ -737,7 +725,6 @@ plot_survival <- function(object = NULL,
   if (add_gridlines == FALSE) {
     p_km <- p_km +
       ggplot2::theme(panel.grid = ggplot2::element_blank())
-
   }
 
   p_km <- p_km + ggplot2::scale_x_continuous(
@@ -753,51 +740,47 @@ plot_survival <- function(object = NULL,
 
 
   if (risk_table) {
+    if (is.null(risk_table_title)) {
+      risk_table_title <- "At Risk (Censored)"
+    }
 
-  if (is.null(risk_table_title)) {
+    p_risk <- p_risk +
+      ggplot2::theme(plot.margin = ggplot2::unit(c(0, 1, 0, 2), "lines"))
 
-    risk_table_title <- "At Risk (Censored)"
-  }
+    p_risk <- p_risk +
+      ggplot2::theme(panel.grid = ggplot2::element_blank())
 
-  p_risk <- p_risk +
-    ggplot2::theme(plot.margin = ggplot2::unit(c(0, 1, 0, 2), "lines"))
+    p_risk <- p_risk + ggplot2::scale_x_continuous(
+      breaks = my_breaks,
+      limits = my_limits,
+      expand = c(0, 0),
+      labels = scales::comma
+    ) +
+      suppressWarnings({
+        ggplot2::theme(
+          axis.text.y = ggplot2::element_text(
+            color = RColorBrewer::brewer.pal(max(c(strata_n, 3)), palette),
+            size = ggplot2::rel(risk_label_size)
+          ),
+          panel.grid.major.y = ggplot2::element_blank(),
+          panel.grid.major.x = ggplot2::element_blank(),
+          panel.grid.minor.x = ggplot2::element_blank(),
+        )
+      }) +
+      ggplot2::labs(subtitle = risk_table_title)
 
-  p_risk <- p_risk +
-    ggplot2::theme(panel.grid = ggplot2::element_blank())
-
-  p_risk <- p_risk + ggplot2::scale_x_continuous(
-    breaks = my_breaks,
-    limits = my_limits,
-    expand = c(0, 0),
-    labels = scales::comma
-  ) +
-    suppressWarnings({
-      ggplot2::theme(
-        axis.text.y = ggplot2::element_text(
-          color = RColorBrewer::brewer.pal(max(c(strata_n, 3)), palette),
-          size = ggplot2::rel(risk_label_size)
-        ),
-        panel.grid.major.y = ggplot2::element_blank(),
-        panel.grid.major.x = ggplot2::element_blank(),
-        panel.grid.minor.x = ggplot2::element_blank(),
-      )
-    }) +
-    ggplot2::labs(subtitle = risk_table_title)
-
-  g_risk <- ggplot2::ggplotGrob(p_risk)
-
+    g_risk <- ggplot2::ggplotGrob(p_risk)
   }
 
 
   if (risk_table) {
+    maxWidth <- grid::unit.pmax(
+      g_km$widths[2:5],
+      g_risk$widths[2:5]
+    )
 
-  maxWidth <- grid::unit.pmax(g_km$widths[2:5],
-                              g_risk$widths[2:5])
-
-  g_risk$widths[2:5] <- as.list(maxWidth)
-
+    g_risk$widths[2:5] <- as.list(maxWidth)
   } else {
-
     maxWidth <- grid::unit.pmax(g_km$widths[2:5])
   }
 
@@ -805,16 +788,13 @@ plot_survival <- function(object = NULL,
 
 
   if (risk_table) {
-
     gridExtra::grid.arrange(g_km, g_risk,
-                            ncol = 1,
-                            heights = panel_heights)
-
+      ncol = 1,
+      heights = panel_heights
+    )
   } else {
-
     gridExtra::grid.arrange(g_km,
-                            ncol = 1)
-
+      ncol = 1
+    )
   }
-
 }

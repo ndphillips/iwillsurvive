@@ -3,6 +3,5 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   introduction: introduction.html
-  plot_iwillsurvive: plot_iwillsurvive.html
-last_built: 2020-12-13T14:51Z
+last_built: 2020-12-13T15:25Z
 

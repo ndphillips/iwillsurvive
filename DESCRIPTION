@@ -24,6 +24,7 @@ Imports:
     cli,
     stringr,
     tibble,
+    ggpubr,
     ggrepel,
     broom,
     purrr,

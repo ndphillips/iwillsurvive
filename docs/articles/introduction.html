@@ -56,9 +56,6 @@
 <li>
       <a href="../articles/introduction.html">introduction</a>
     </li>
-    <li>
-      <a href="../articles/plot_iwillsurvive.html">plot_iwillsurvive</a>
-    </li>
   </ul>
 </li>
 <li>
@@ -107,9 +104,7 @@
 <span class="co">#&gt;     intersect, setdiff, setequal, union</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/rpkgs/survminer/">survminer</a></span><span class="op">)</span>
-<span class="co">#&gt; Loading required package: ggpubr</span></code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span></code></pre></div>
 <div id="the-survival-model" class="section level1">
 <h1 class="hasAnchor">
 <a href="#the-survival-model" class="anchor"></a>The survival model</h1>
@@ -239,8 +234,9 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>patientid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">patientid</span>, levels <span class="op">=</span> <span class="va">patientid</span>, ordered <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">lotstartdate</span><span class="op">:</span><span class="va">dateofdeath</span>, names_to <span class="op">=</span> <span class="st">"event"</span>, values_to <span class="op">=</span> <span class="st">"date"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ez_cohort_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">date</span>, y <span class="op">=</span> <span class="va">patientid</span>, col <span class="op">=</span> <span class="va">condition</span>, shape <span class="op">=</span> <span class="va">event</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ez_cohort_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">date</span>, y <span class="op">=</span> <span class="va">patientid</span>, col <span class="op">=</span> <span class="va">event</span>, shape <span class="op">=</span> <span class="va">event</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">condition</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Removed 48 rows containing missing values (geom_point).</span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
@@ -397,7 +393,7 @@
 </tr>
 </tbody>
 </table>
-<p>Now we can vizualise the survival data</p>
+<p>Now we can visualize the survival data</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cohort_long</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">followup_days</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -413,7 +409,7 @@
 <div id="fitting-survival-models" class="section level1">
 <h1 class="hasAnchor">
 <a href="#fitting-survival-models" class="anchor"></a>Fitting survival models</h1>
-<p>First, let’s fit the model using the <code>survival</code> interface</p>
+<p>First, let’s fit the model using the classic <code>survival</code> interface</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cohort_survival</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">followup_days</span>, <span class="va">event_status</span>, type <span class="op">=</span> <span class="st">'right'</span><span class="op">)</span> <span class="op">~</span> <span class="va">condition</span>,
                                 data <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span></code></pre></div>
@@ -465,17 +461,22 @@
 <span class="co">#&gt; |................p..............d.............</span>
 <span class="co">#&gt; |............................p......d.........</span></code></pre></div>
 </div>
-<div id="plotting-results" class="section level1">
+<div id="plotting-the-survival-curve" class="section level1">
 <h1 class="hasAnchor">
-<a href="#plotting-results" class="anchor"></a>Plotting results</h1>
-<p>To plot the survival curve from <code>iwillsurvive</code>, use the <code><a href="../reference/plot_survival.html">plot_survival()</a></code> function:</p>
+<a href="#plotting-the-survival-curve" class="anchor"></a>Plotting the survival curve</h1>
+<p>Before we look at the <code>iwillsurvive</code> survival curve, let’s look at the default plotting method that comes with the <code>survival</code> package. The plot we’ll get with <code>iwillsurvive</code> will be based on the exact same model, so looking at this first serves as a gut-check to make sure that <code>iwillsurvive</code> hasn’t messed things up:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cohort_survival</span><span class="op">)</span></code></pre></div>
+<p><img src="introduction_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
+<p>Now let’s create the <code>iwillsurvive</code> plot. To do this, we’ll use the <code><a href="../reference/plot_survival.html">plot_survival()</a></code> function:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_survival.html">plot_survival</a></span><span class="op">(</span><span class="va">cohort_iws</span><span class="op">)</span>
 <span class="co">#&gt; Warning in is.na(x): is.na() applied to non-(list or vector) of type</span>
 <span class="co">#&gt; 'expression'</span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-12-1.png" width="672"></p>
+<p>Yep looks like the same curve as the <code>survival</code> method, but just with some extra <a href="https://www.youtube.com/watch?v=3vdcw415OcQ&amp;ab_channel=TITTSRecords">flair</a>. Just what we wanted.</p>
 <p>The <code><a href="../reference/plot_survival.html">plot_survival()</a></code> function has many optional arguments that allow you customize the plot. Here are some examples:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_survival.html">plot_survival</a></span><span class="op">(</span><span class="va">cohort_iws</span>, 
               add_confidence <span class="op">=</span> <span class="cn">FALSE</span>, 
               add_median_delta <span class="op">=</span> <span class="cn">FALSE</span>, 
@@ -489,20 +490,20 @@
               title <span class="op">=</span> <span class="st">"My Title"</span>,
               subtitle <span class="op">=</span> <span class="st">"My Subttitle"</span>,
               risk_table_title <span class="op">=</span> <span class="st">"My Risk Table Title"</span><span class="op">)</span></code></pre></div>
-<p><img src="introduction_files/figure-html/unnamed-chunk-12-1.png" width="672"></p>
+<p><img src="introduction_files/figure-html/unnamed-chunk-13-1.png" width="672"></p>
 </div>
 <div id="understanding-iwillsurvive-objects" class="section level1">
 <h1 class="hasAnchor">
 <a href="#understanding-iwillsurvive-objects" class="anchor"></a>Understanding iwillsurvive objects</h1>
 <p>The <code><a href="../reference/iwillsurvive.html">iwillsurvive()</a></code> function returns an object of class <code>iwillsurvive</code>. Internally, it is a list containing many objects from the original data, to a <code>survival</code> object:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">cohort_iws</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "cohort"              "fit"                 "fit_summary"        </span>
 <span class="co">#&gt;  [4] "terms"               "event_title"         "index_title"        </span>
 <span class="co">#&gt;  [7] "followup_time_col"   "followup_time_units" "timeatrisk_col"     </span>
 <span class="co">#&gt; [10] "event_status_col"    "patientid_col"       "title"</span></code></pre></div>
 <p>The <code>.$cohort</code> object contains the original data</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cohort_iws</span><span class="op">$</span><span class="va">cohort</span>
 <span class="co">#&gt; # A tibble: 250 x 10</span>
 <span class="co">#&gt;    patientid condition lotstartdate lastvisitdate dateofdeath followup_date</span>
@@ -520,7 +521,7 @@
 <span class="co">#&gt; # … with 240 more rows, and 4 more variables: followup_days &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   followup_months &lt;dbl&gt;, followup_years &lt;dbl&gt;, event_status &lt;lgl&gt;</span></code></pre></div>
 <p>The <code>.$fit</code> object contains the <code>survival</code> object</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cohort_iws</span><span class="op">$</span><span class="va">fit</span>
 <span class="co">#&gt; Call: survfit(formula = survival::Surv(followup_days, event_status, </span>
 <span class="co">#&gt;     type = "right") ~ condition, data = cohort)</span>
@@ -529,7 +530,7 @@
 <span class="co">#&gt; condition=drug    132    105    410     329     590</span>
 <span class="co">#&gt; condition=placebo 118     97    232     184     313</span></code></pre></div>
 <p>The <code>.$fit_summary</code> object contains summary information:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cohort_iws</span><span class="op">$</span><span class="va">fit_summary</span>
 <span class="co">#&gt; # A tibble: 2 x 10</span>
 <span class="co">#&gt;   strata records n.max n.start events `*rmean` `*se(rmean)` median `0.95LCL`</span>
@@ -541,14 +542,14 @@
 <div id="why-did-i-create-iwillsurvive" class="section level1">
 <h1 class="hasAnchor">
 <a href="#why-did-i-create-iwillsurvive" class="anchor"></a>Why did I create iwillsurvive?</h1>
-<p>There already exist many, very good, R packages for survival analysis. Two In particular have become almost gold-standards, and for good reason. The <a href="https://github.com/therneau/survival">survival</a> package provides a flexible interface for fitting models, while the <a href="https://github.com/kassambara/survminer">survminer</a> package allows you to create survival plots and extract key statistics from objects created from the <code>survival</code> package. I have been using <code>survival</code> and <code>survminer</code> regular in my research for a few years and they have served me very well. I am truly grateful to their authors and rely on both in <code>iwillsurvive</code></p>
+<p>There already exist many, very good, R packages for survival analysis. Two in particular, <a href="https://github.com/therneau/survival">survival</a> and <a href="https://github.com/kassambara/survminer">survminer</a>, have become almost gold-standards, and for good reason. The survival package provides a flexible interface for fitting models, while the survminer package allows you to create survival plots and extract key statistics from objects created from the <code>survival</code> package. I have been using <code>survival</code> and <code>survminer</code> regular in my research for a few years and they have served me very well. I am truly grateful to their authors and rely on both in <code>iwillsurvive</code></p>
 <p>However, I have run into a few pain points that I feel can be filled with a new package</p>
 <ol style="list-style-type: decimal">
 <li><p>The syntax for creating simple survival models with <code>survival</code> is, in my opinion, not very intuitive. For example, creating a basic right-censored survival model requires the user to write write a nested function call such as: <code><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit(Surv(time, status) ~ x, data = aml)</a></code>. Without digging into the documentation, it’s hard to know what these arguments mean (and easy to forget that <code><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv()</a></code> is capitalized!).</p></li>
 <li><p>The <code>survival</code> package is, in my opinion, too flexible in the kinds of arguments it allows. For example, when specifying the value of the event, one can pass a vector with a binary coding (0 = alive, 1 = dead), a logical coding (FALSE = Alive, TRUE = Death) or a 1/2 coding (1 = Alive, 2 = Death). This flexibility is in my experience, introduces risks. I once spent several days fitting models using <code>survival</code> only to realize that I had been using the 1/2 coding but coded 1 = Death and 2 = Alive. If there had only been one event coding option (like my preferred logical format), I think I would have caught the error much earlier.</p></li>
 <li><p>This is a personal preference – but I <em>love</em> immediate console feedback from functions. Something that tells me what code is doing and what the most important results are. This helps me know that everything went as expected, and can give me early warnings when things look…wrong. In the case of fitting a survival model, I’d love to have feedback telling me things like how many patients had the event, how many were censored, and what the overall median survival was. If I had this feedback, I definitely would have caught my 1/2 coding error much earlier.</p></li>
-<li><p><code><a href="https://rdrr.io/pkg/survminer/man/ggsurvplot.html">ggsurvplot()</a></code> the workhorse plotting function in <code>survminer</code> is incredibly flexible, but in my opinion the argument defaults (for example, not including a confidence interval) are not ideal. I wanted a plotting function which gives me all the bells-and-whistles by default.</p></li>
-<li><p>The first thing almost everyone wants to know when fitting and vizualising a Kaplan-Meier survival model is the median survival of each group. While one can extract this info from <code>survival</code> and <code>survminer</code>, I found that it doesn’t ‘jump out at me’ as clearly as I wanted.</p></li>
+<li><p><code>ggsurvplot()</code> the workhorse plotting function in <code>survminer</code> is incredibly flexible, but in my opinion the argument defaults (for example, not including a confidence interval) are not ideal. I wanted a plotting function which gives me all the bells-and-whistles by default.</p></li>
+<li><p>The first thing almost everyone wants to know when fitting and visualizing a Kaplan-Meier survival model is the median survival of each group. While one can extract this info from <code>survival</code> and <code>survminer</code>, I found that it doesn’t ‘jump out at me’ as clearly as I wanted.</p></li>
 </ol>
 </div>
   </div>
