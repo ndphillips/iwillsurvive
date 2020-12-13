@@ -1,6 +1,8 @@
-# iwillsurvive 0.1.3
+# iwillsurvive 0.1.4
 
-* Formatting updats to plot_iwillsurvive(). Risk table should be displayed much
+* Replaced `plot_survival()` with a `plot.iwillsurvive()` method.
+* Built a package down website. 
+* Formatting updates to plot_iwillsurvive(). Risk table should be displayed much
 better now
 * Minor updates to print method
 
