@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iwillsurvive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9000</span>
       </span>
     </div>
 
@@ -55,6 +55,9 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="../articles/introduction.html">introduction</a>
+    </li>
+    <li>
+      <a href="../articles/plot_iwillsurvive.html">plot_iwillsurvive</a>
     </li>
   </ul>
 </li>
@@ -89,7 +92,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">iwillsurvive</span><span class="op">)</span>
 <span class="co">#&gt; -----------------------------------------------------</span>
-<span class="co">#&gt; iwillsurvive 0.1.1.9000 'Gloria'</span>
+<span class="co">#&gt; iwillsurvive 0.1.3.9000 'Gloria'</span>
 <span class="co">#&gt; Intro  : vignette('introduction', 'iwillsurvive')</span>
 <span class="co">#&gt; Repo   : https://github.com/ndphillips/iwillsurvive</span>
 <span class="co">#&gt; .....................................................</span>
@@ -101,74 +104,406 @@
 <span class="co">#&gt;     filter, lag</span>
 <span class="co">#&gt; The following objects are masked from 'package:base':</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;     intersect, setdiff, setequal, union</span></code></pre></div>
-<p>It’s best to start with one-row-per-patient (ORPP) cohort object that contains columns corresponding to</p>
-<ul>
-<li>
-<code>patientid</code>, a unique patient identifier</li>
-<li>
-<code>index_date</code>, a date corresponding to an index date.</li>
-<li>
-<code>censor_date</code>, date corresponding to when patients were censored</li>
-<li>
-<code>event_date</code>, date corresponding to the event of interest. NA values indicate that the event was not observed.</li>
-</ul>
-<p><code>iwillsurvive</code> provides one such example in <code>ez_cohort</code>, a dataframe of 250 simulated patients:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">ez_cohort</span></code></pre></div>
-<div id="derive_-functions" class="section level1">
+<span class="co">#&gt;     intersect, setdiff, setequal, union</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/rpkgs/survminer/">survminer</a></span><span class="op">)</span>
+<span class="co">#&gt; Loading required package: ggpubr</span></code></pre></div>
+<div id="the-survival-model" class="section level1">
 <h1 class="hasAnchor">
-<a href="#derive_-functions" class="anchor"></a><code>derive_*()</code> functions</h1>
-<p>Use the <code>derive_*()</code> functions to calculate key derived columns:</p>
-<p><code><a href="../reference/derive_followup_date.html">derive_followup_date()</a></code> returns the column <code>follow_up</code> date, which is event_date (if known), and the <code>censor_date</code> otherwise:</p>
+<a href="#the-survival-model" class="anchor"></a>The survival model</h1>
+<p>I’ll now give a very brief overview of the basic survival model that <code>iwillsurvive</code> works with. For a more thorough and informative discussion, I can’t recommend <a href="https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html">Emily C. Zabor’s Survival Analysis in R</a> tutorial enough. It’s awesome.</p>
+<div id="trial-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#trial-data" class="anchor"></a>Trial data</h2>
+<p>We’ll start with the <code>ez_cohort</code> dataset which represents the results of a (fictional) clinical trial testing the effectiveness of a drug in extending survival from a patient’s first line of therapy start date</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">patientid</th>
+<th align="left">condition</th>
+<th align="left">lotstartdate</th>
+<th align="left">lastvisitdate</th>
+<th align="left">dateofdeath</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">F00001</td>
+<td align="left">placebo</td>
+<td align="left">2016-05-17</td>
+<td align="left">2020-12-01</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">F00002</td>
+<td align="left">placebo</td>
+<td align="left">2020-07-27</td>
+<td align="left">2020-08-25</td>
+<td align="left">2020-10-05</td>
+</tr>
+<tr class="odd">
+<td align="left">F00003</td>
+<td align="left">drug</td>
+<td align="left">2016-04-14</td>
+<td align="left">2017-02-16</td>
+<td align="left">2017-03-13</td>
+</tr>
+<tr class="even">
+<td align="left">F00004</td>
+<td align="left">drug</td>
+<td align="left">2020-06-12</td>
+<td align="left">2020-11-25</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">F00005</td>
+<td align="left">placebo</td>
+<td align="left">2019-03-20</td>
+<td align="left">2020-01-13</td>
+<td align="left">2020-02-21</td>
+</tr>
+<tr class="even">
+<td align="left">F00006</td>
+<td align="left">placebo</td>
+<td align="left">2017-04-02</td>
+<td align="left">2017-10-18</td>
+<td align="left">2017-11-19</td>
+</tr>
+<tr class="odd">
+<td align="left">F00007</td>
+<td align="left">placebo</td>
+<td align="left">2018-01-26</td>
+<td align="left">2019-01-12</td>
+<td align="left">2019-02-17</td>
+</tr>
+<tr class="even">
+<td align="left">F00008</td>
+<td align="left">placebo</td>
+<td align="left">2015-07-02</td>
+<td align="left">2015-11-20</td>
+<td align="left">2015-12-23</td>
+</tr>
+<tr class="odd">
+<td align="left">F00009</td>
+<td align="left">drug</td>
+<td align="left">2019-03-08</td>
+<td align="left">2020-07-18</td>
+<td align="left">2020-08-17</td>
+</tr>
+<tr class="even">
+<td align="left">F00010</td>
+<td align="left">placebo</td>
+<td align="left">2018-08-23</td>
+<td align="left">2019-02-14</td>
+<td align="left">2019-03-08</td>
+</tr>
+</tbody>
+</table>
+<p>Here’s what each column means:</p>
+<table class="table">
+<colgroup>
+<col width="37%">
+<col width="62%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Column</th>
+<th align="left">Definition</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>patientid</code></td>
+<td align="left">A character referring to an individual patient in the form “FXXXXX”</td>
+</tr>
+<tr class="even">
+<td align="left"><code>condition</code></td>
+<td align="left">A character indicating which condition the patient was in, unique values are: placebo, drug</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>lotstartdate</code></td>
+<td align="left">A date indicating when a patient started their first line of therapy after diagnosis</td>
+</tr>
+<tr class="even">
+<td align="left"><code>lastvisitdate</code></td>
+<td align="left">A date indicating the last known date that a patient was alive</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>dateofdeath</code></td>
+<td align="left">A date indicating the date of death of patients who died during the study period</td>
+</tr>
+</tbody>
+</table>
+<p>The plot below visualizes these data:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ez_cohort_long</span> <span class="op">&lt;-</span> <span class="va">ez_cohort</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">lotstartdate</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>patientid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">patientid</span>, levels <span class="op">=</span> <span class="va">patientid</span>, ordered <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">lotstartdate</span><span class="op">:</span><span class="va">dateofdeath</span>, names_to <span class="op">=</span> <span class="st">"event"</span>, values_to <span class="op">=</span> <span class="st">"date"</span><span class="op">)</span>
+
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ez_cohort_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">date</span>, y <span class="op">=</span> <span class="va">patientid</span>, col <span class="op">=</span> <span class="va">condition</span>, shape <span class="op">=</span> <span class="va">event</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span>
+<span class="co">#&gt; Warning: Removed 48 rows containing missing values (geom_point).</span></code></pre></div>
+<p><img src="introduction_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
+</div>
+<div id="survival-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#survival-data" class="anchor"></a>Survival data</h2>
+<p>Once we have our trial data, we now need to define some key survival data:</p>
+<table class="table">
+<colgroup>
+<col width="45%">
+<col width="54%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Variable</th>
+<th align="left">Definition</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>followup_date</code></td>
+<td align="left">The date at which the event occurs (if known), otherwise the last date the patient was known to be alive</td>
+</tr>
+<tr class="even">
+<td align="left"><code>followup_days</code></td>
+<td align="left">The number of days from indexdate to <code>followupdate</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>eventstatus</code></td>
+<td align="left">A logical column indicating whether or not the patient died. TRUE = Yes, FALSE = No.</td>
+</tr>
+</tbody>
+</table>
+<p>To calculate these variables, we can use <code>iwillsurvive</code>’s <em>derive</em> functions:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">ez_cohort</span> <span class="op">%&gt;%</span>
+  
   <span class="fu"><a href="../reference/derive_followup_date.html">derive_followup_date</a></span><span class="op">(</span>event_date <span class="op">=</span> <span class="st">"dateofdeath"</span>,
-                       censor_date <span class="op">=</span> <span class="st">"lastvisitdate"</span><span class="op">)</span>
-
-<span class="va">cohort</span>
-<span class="co">#&gt; # A tibble: 250 x 6</span>
-<span class="co">#&gt;    patientid condition lotstartdate lastvisitdate dateofdeath followup_date</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;date&gt;       &lt;date&gt;        &lt;date&gt;      &lt;date&gt;       </span>
-<span class="co">#&gt;  1 F00001    placebo   2016-05-17   2020-12-01    NA          2020-12-01   </span>
-<span class="co">#&gt;  2 F00002    placebo   2020-07-27   2020-08-25    2020-10-05  2020-10-05   </span>
-<span class="co">#&gt;  3 F00003    drug      2016-04-14   2017-02-16    2017-03-13  2017-03-13   </span>
-<span class="co">#&gt;  4 F00004    drug      2020-06-12   2020-11-25    NA          2020-11-25   </span>
-<span class="co">#&gt;  5 F00005    placebo   2019-03-20   2020-01-13    2020-02-21  2020-02-21   </span>
-<span class="co">#&gt;  6 F00006    placebo   2017-04-02   2017-10-18    2017-11-19  2017-11-19   </span>
-<span class="co">#&gt;  7 F00007    placebo   2018-01-26   2019-01-12    2019-02-17  2019-02-17   </span>
-<span class="co">#&gt;  8 F00008    placebo   2015-07-02   2015-11-20    2015-12-23  2015-12-23   </span>
-<span class="co">#&gt;  9 F00009    drug      2019-03-08   2020-07-18    2020-08-17  2020-08-17   </span>
-<span class="co">#&gt; 10 F00010    placebo   2018-08-23   2019-02-14    2019-03-08  2019-03-08   </span>
-<span class="co">#&gt; # … with 240 more rows</span></code></pre></div>
-<p><code><a href="../reference/derive_followup_time.html">derive_followup_time()</a></code> returns the columns followup_days, followup_months, and followup_years which show time from index to follow up:</p>
+                       censor_date <span class="op">=</span> <span class="st">"lastvisitdate"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  
+  <span class="fu"><a href="../reference/derive_followup_time.html">derive_followup_time</a></span><span class="op">(</span>index_date <span class="op">=</span> <span class="st">"lotstartdate"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  
+  <span class="fu"><a href="../reference/derive_event_status.html">derive_event_status</a></span><span class="op">(</span>event_date <span class="op">=</span> <span class="st">"dateofdeath"</span><span class="op">)</span></code></pre></div>
+<p>Here’s how the new columns look:</p>
+<table class="table">
+<colgroup>
+<col width="10%">
+<col width="10%">
+<col width="15%">
+<col width="15%">
+<col width="17%">
+<col width="16%">
+<col width="14%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">patientid</th>
+<th align="left">condition</th>
+<th align="left">followup_date</th>
+<th align="right">followup_days</th>
+<th align="right">followup_months</th>
+<th align="right">followup_years</th>
+<th align="left">event_status</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">F00001</td>
+<td align="left">placebo</td>
+<td align="left">2020-12-01</td>
+<td align="right">1659.93708</td>
+<td align="right">54.531442</td>
+<td align="right">4.5447845</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">F00002</td>
+<td align="left">placebo</td>
+<td align="left">2020-10-05</td>
+<td align="right">70.10455</td>
+<td align="right">2.303040</td>
+<td align="right">0.1919411</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">F00003</td>
+<td align="left">drug</td>
+<td align="left">2017-03-13</td>
+<td align="right">333.35423</td>
+<td align="right">10.951190</td>
+<td align="right">0.9126991</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">F00004</td>
+<td align="left">drug</td>
+<td align="left">2020-11-25</td>
+<td align="right">166.74057</td>
+<td align="right">5.477680</td>
+<td align="right">0.4565233</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">F00005</td>
+<td align="left">placebo</td>
+<td align="left">2020-02-21</td>
+<td align="right">338.18433</td>
+<td align="right">11.109866</td>
+<td align="right">0.9259236</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">F00006</td>
+<td align="left">placebo</td>
+<td align="left">2017-11-19</td>
+<td align="right">231.78657</td>
+<td align="right">7.614539</td>
+<td align="right">0.6346144</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">F00007</td>
+<td align="left">placebo</td>
+<td align="left">2019-02-17</td>
+<td align="right">387.86797</td>
+<td align="right">12.742049</td>
+<td align="right">1.0619537</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">F00008</td>
+<td align="left">placebo</td>
+<td align="left">2015-12-23</td>
+<td align="right">174.93504</td>
+<td align="right">5.746880</td>
+<td align="right">0.4789591</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">F00009</td>
+<td align="left">drug</td>
+<td align="left">2020-08-17</td>
+<td align="right">528.43528</td>
+<td align="right">17.359897</td>
+<td align="right">1.4468166</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">F00010</td>
+<td align="left">placebo</td>
+<td align="left">2019-03-08</td>
+<td align="right">197.04442</td>
+<td align="right">6.473207</td>
+<td align="right">0.5394930</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+<p>Now we can vizualise the survival data</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/derive_followup_time.html">derive_followup_time</a></span><span class="op">(</span>index_date <span class="op">=</span> <span class="st">"lotstartdate"</span><span class="op">)</span> 
-
-<span class="va">cohort</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">patientid</span>, <span class="va">lotstartdate</span>, <span class="va">followup_date</span>, 
-         <span class="va">followup_days</span>, <span class="va">followup_months</span>, <span class="va">followup_years</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 250 x 6</span>
-<span class="co">#&gt;    patientid lotstartdate followup_date followup_days followup_months</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;date&gt;       &lt;date&gt;                &lt;dbl&gt;           &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 F00001    2016-05-17   2020-12-01           1660.            54.5 </span>
-<span class="co">#&gt;  2 F00002    2020-07-27   2020-10-05             70.1            2.30</span>
-<span class="co">#&gt;  3 F00003    2016-04-14   2017-03-13            333.            11.0 </span>
-<span class="co">#&gt;  4 F00004    2020-06-12   2020-11-25            167.             5.48</span>
-<span class="co">#&gt;  5 F00005    2019-03-20   2020-02-21            338.            11.1 </span>
-<span class="co">#&gt;  6 F00006    2017-04-02   2017-11-19            232.             7.61</span>
-<span class="co">#&gt;  7 F00007    2018-01-26   2019-02-17            388.            12.7 </span>
-<span class="co">#&gt;  8 F00008    2015-07-02   2015-12-23            175.             5.75</span>
-<span class="co">#&gt;  9 F00009    2019-03-08   2020-08-17            528.            17.4 </span>
-<span class="co">#&gt; 10 F00010    2018-08-23   2019-03-08            197.             6.47</span>
-<span class="co">#&gt; # … with 240 more rows, and 1 more variable: followup_years &lt;dbl&gt;</span></code></pre></div>
-<p><code><a href="../reference/derive_event_status.html">derive_event_status()</a></code> will add an <code>event_status</code> column</p>
+<code class="sourceCode R"><span class="va">cohort_long</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">followup_days</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>patientid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">patientid</span>, levels <span class="op">=</span> <span class="va">patientid</span>, ordered <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+  
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">cohort_long</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">followup_days</span>, y <span class="op">=</span> <span class="va">patientid</span>, col <span class="op">=</span> <span class="va">condition</span>, shape <span class="op">=</span> <span class="va">event_status</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span></code></pre></div>
+<p><img src="introduction_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
+<p>Now we’re ready to fit the survival model</p>
+</div>
+</div>
+<div id="fitting-survival-models" class="section level1">
+<h1 class="hasAnchor">
+<a href="#fitting-survival-models" class="anchor"></a>Fitting survival models</h1>
+<p>First, let’s fit the model using the <code>survival</code> interface</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">cohort</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/derive_event_status.html">derive_event_status</a></span><span class="op">(</span>event_date <span class="op">=</span> <span class="st">"dateofdeath"</span><span class="op">)</span> 
-
-<span class="va">cohort</span>
+<code class="sourceCode R"><span class="va">cohort_survival</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">followup_days</span>, <span class="va">event_status</span>, type <span class="op">=</span> <span class="st">'right'</span><span class="op">)</span> <span class="op">~</span> <span class="va">condition</span>,
+                                data <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span></code></pre></div>
+<p>Here is <code>survival</code>’s print method:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cohort_survival</span>
+<span class="co">#&gt; Call: survfit(formula = Surv(followup_days, event_status, type = "right") ~ </span>
+<span class="co">#&gt;     condition, data = cohort)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;                     n events median 0.95LCL 0.95UCL</span>
+<span class="co">#&gt; condition=drug    132    105    410     329     590</span>
+<span class="co">#&gt; condition=placebo 118     97    232     184     313</span></code></pre></div>
+<p>Now let’s fit it again using the <code>iwillsurvive</code> interface. Using <code>iwillsurvive</code>, we won’t define a formula. Instead, we will define a verbal mapping between the function arguments and the columns in the cohort object. In addition, we will define some “titles” which will be stored in the object and used for plotting purposes.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cohort_iws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iwillsurvive.html">iwillsurvive</a></span><span class="op">(</span>cohort <span class="op">=</span> <span class="va">cohort</span>, 
+                           followup_time <span class="op">=</span> <span class="st">"followup_days"</span>, 
+                           event_status <span class="op">=</span> <span class="st">"event_status"</span>,
+                           terms <span class="op">=</span> <span class="st">"condition"</span>, 
+                           event_title <span class="op">=</span> <span class="st">"Death"</span>, 
+                           index_title <span class="op">=</span> <span class="st">"LOT Start"</span><span class="op">)</span>
+<span class="co">#&gt; ── iwillsurvive ────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; - 202 of 250 (81%) patient(s) experienced the event.</span>
+<span class="co">#&gt; - survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)</span></code></pre></div>
+<p>Here is <code>iwillsurvive</code>’s print method:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cohort_iws</span>
+<span class="co">#&gt; An iwillsurvive object estimating survival from LOT Start to Death </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; 250 Patients:</span>
+<span class="co">#&gt; Death = 202 (81%), Censored = 48 (19%)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Median Survival (days):</span>
+<span class="co">#&gt; drug = 410.5, placebo = 231.8</span>
+<span class="co">#&gt; diff = 179</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; |*............................................</span>
+<span class="co">#&gt; |pd...........................................</span>
+<span class="co">#&gt; |.*...........................................</span>
+<span class="co">#&gt; |.pd..........................................</span>
+<span class="co">#&gt; |..pd.........................................</span>
+<span class="co">#&gt; |....p.d......................................</span>
+<span class="co">#&gt; |....p...d....................................</span>
+<span class="co">#&gt; |.....p====d..................................</span>
+<span class="co">#&gt; |.......p....d................................</span>
+<span class="co">#&gt; |........p......d.............................</span>
+<span class="co">#&gt; |.........p........d..........................</span>
+<span class="co">#&gt; |..........p...........d......................</span>
+<span class="co">#&gt; |.............p...........d...................</span>
+<span class="co">#&gt; |................p..............d.............</span>
+<span class="co">#&gt; |............................p......d.........</span></code></pre></div>
+</div>
+<div id="plotting-results" class="section level1">
+<h1 class="hasAnchor">
+<a href="#plotting-results" class="anchor"></a>Plotting results</h1>
+<p>To plot the survival curve from <code>iwillsurvive</code>, use the <code><a href="../reference/plot_survival.html">plot_survival()</a></code> function:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_survival.html">plot_survival</a></span><span class="op">(</span><span class="va">cohort_iws</span><span class="op">)</span>
+<span class="co">#&gt; Warning in is.na(x): is.na() applied to non-(list or vector) of type</span>
+<span class="co">#&gt; 'expression'</span></code></pre></div>
+<p><img src="introduction_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
+<p>The <code><a href="../reference/plot_survival.html">plot_survival()</a></code> function has many optional arguments that allow you customize the plot. Here are some examples:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_survival.html">plot_survival</a></span><span class="op">(</span><span class="va">cohort_iws</span>, 
+              add_confidence <span class="op">=</span> <span class="cn">FALSE</span>, 
+              add_median_delta <span class="op">=</span> <span class="cn">FALSE</span>, 
+              censor_pch <span class="op">=</span> <span class="fl">3</span>,
+              censor_size <span class="op">=</span> <span class="fl">5</span>,
+              legend_position_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">400</span><span class="op">)</span>,
+              legend_nudge_y <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.25</span>, <span class="fl">.3</span><span class="op">)</span>, 
+              median_flag_nudge_y <span class="op">=</span> <span class="fl">.15</span>,
+              anchor_arrow <span class="op">=</span> <span class="cn">TRUE</span>,
+              palette <span class="op">=</span> <span class="st">"Dark2"</span>,
+              title <span class="op">=</span> <span class="st">"My Title"</span>,
+              subtitle <span class="op">=</span> <span class="st">"My Subttitle"</span>,
+              risk_table_title <span class="op">=</span> <span class="st">"My Risk Table Title"</span><span class="op">)</span></code></pre></div>
+<p><img src="introduction_files/figure-html/unnamed-chunk-12-1.png" width="672"></p>
+</div>
+<div id="understanding-iwillsurvive-objects" class="section level1">
+<h1 class="hasAnchor">
+<a href="#understanding-iwillsurvive-objects" class="anchor"></a>Understanding iwillsurvive objects</h1>
+<p>The <code><a href="../reference/iwillsurvive.html">iwillsurvive()</a></code> function returns an object of class <code>iwillsurvive</code>. Internally, it is a list containing many objects from the original data, to a <code>survival</code> object:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">cohort_iws</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "cohort"              "fit"                 "fit_summary"        </span>
+<span class="co">#&gt;  [4] "terms"               "event_title"         "index_title"        </span>
+<span class="co">#&gt;  [7] "followup_time_col"   "followup_time_units" "timeatrisk_col"     </span>
+<span class="co">#&gt; [10] "event_status_col"    "patientid_col"       "title"</span></code></pre></div>
+<p>The <code>.$cohort</code> object contains the original data</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cohort_iws</span><span class="op">$</span><span class="va">cohort</span>
 <span class="co">#&gt; # A tibble: 250 x 10</span>
 <span class="co">#&gt;    patientid condition lotstartdate lastvisitdate dateofdeath followup_date</span>
 <span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;date&gt;       &lt;date&gt;        &lt;date&gt;      &lt;date&gt;       </span>
@@ -184,6 +519,37 @@
 <span class="co">#&gt; 10 F00010    placebo   2018-08-23   2019-02-14    2019-03-08  2019-03-08   </span>
 <span class="co">#&gt; # … with 240 more rows, and 4 more variables: followup_days &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   followup_months &lt;dbl&gt;, followup_years &lt;dbl&gt;, event_status &lt;lgl&gt;</span></code></pre></div>
+<p>The <code>.$fit</code> object contains the <code>survival</code> object</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cohort_iws</span><span class="op">$</span><span class="va">fit</span>
+<span class="co">#&gt; Call: survfit(formula = survival::Surv(followup_days, event_status, </span>
+<span class="co">#&gt;     type = "right") ~ condition, data = cohort)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;                     n events median 0.95LCL 0.95UCL</span>
+<span class="co">#&gt; condition=drug    132    105    410     329     590</span>
+<span class="co">#&gt; condition=placebo 118     97    232     184     313</span></code></pre></div>
+<p>The <code>.$fit_summary</code> object contains summary information:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cohort_iws</span><span class="op">$</span><span class="va">fit_summary</span>
+<span class="co">#&gt; # A tibble: 2 x 10</span>
+<span class="co">#&gt;   strata records n.max n.start events `*rmean` `*se(rmean)` median `0.95LCL`</span>
+<span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 condi…     132   132     132    105     542.         40.9   410.      329.</span>
+<span class="co">#&gt; 2 condi…     118   118     118     97     349.         39.4   232.      184.</span>
+<span class="co">#&gt; # … with 1 more variable: `0.95UCL` &lt;dbl&gt;</span></code></pre></div>
+</div>
+<div id="why-did-i-create-iwillsurvive" class="section level1">
+<h1 class="hasAnchor">
+<a href="#why-did-i-create-iwillsurvive" class="anchor"></a>Why did I create iwillsurvive?</h1>
+<p>There already exist many, very good, R packages for survival analysis. Two In particular have become almost gold-standards, and for good reason. The <a href="https://github.com/therneau/survival">survival</a> package provides a flexible interface for fitting models, while the <a href="https://github.com/kassambara/survminer">survminer</a> package allows you to create survival plots and extract key statistics from objects created from the <code>survival</code> package. I have been using <code>survival</code> and <code>survminer</code> regular in my research for a few years and they have served me very well. I am truly grateful to their authors and rely on both in <code>iwillsurvive</code></p>
+<p>However, I have run into a few pain points that I feel can be filled with a new package</p>
+<ol style="list-style-type: decimal">
+<li><p>The syntax for creating simple survival models with <code>survival</code> is, in my opinion, not very intuitive. For example, creating a basic right-censored survival model requires the user to write write a nested function call such as: <code><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit(Surv(time, status) ~ x, data = aml)</a></code>. Without digging into the documentation, it’s hard to know what these arguments mean (and easy to forget that <code><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv()</a></code> is capitalized!).</p></li>
+<li><p>The <code>survival</code> package is, in my opinion, too flexible in the kinds of arguments it allows. For example, when specifying the value of the event, one can pass a vector with a binary coding (0 = alive, 1 = dead), a logical coding (FALSE = Alive, TRUE = Death) or a 1/2 coding (1 = Alive, 2 = Death). This flexibility is in my experience, introduces risks. I once spent several days fitting models using <code>survival</code> only to realize that I had been using the 1/2 coding but coded 1 = Death and 2 = Alive. If there had only been one event coding option (like my preferred logical format), I think I would have caught the error much earlier.</p></li>
+<li><p>This is a personal preference – but I <em>love</em> immediate console feedback from functions. Something that tells me what code is doing and what the most important results are. This helps me know that everything went as expected, and can give me early warnings when things look…wrong. In the case of fitting a survival model, I’d love to have feedback telling me things like how many patients had the event, how many were censored, and what the overall median survival was. If I had this feedback, I definitely would have caught my 1/2 coding error much earlier.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/survminer/man/ggsurvplot.html">ggsurvplot()</a></code> the workhorse plotting function in <code>survminer</code> is incredibly flexible, but in my opinion the argument defaults (for example, not including a confidence interval) are not ideal. I wanted a plotting function which gives me all the bells-and-whistles by default.</p></li>
+<li><p>The first thing almost everyone wants to know when fitting and vizualising a Kaplan-Meier survival model is the median survival of each group. While one can extract this info from <code>survival</code> and <code>survminer</code>, I found that it doesn’t ‘jump out at me’ as clearly as I wanted.</p></li>
+</ol>
 </div>
   </div>
 

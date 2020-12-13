@@ -5,8 +5,13 @@
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
+#' @param title character. Plot title
+#' @param subtitle character. Plot subtitle
+#' @param censor_pch character. The point shape for censor ticks. See \code{?points}.
+#' @param censor_size numeric. Size of censor ticks.
 #' @param add_gridlines logical. If TRUE, include gridlines
 #' @param add_confidence logical. If TRUE, include a confidence interval
+#' @param add_censor_ticks logical. If TRUE, show censoring tick marks
 #' @param add_labels logical. If TRUE, show verbal labels
 #' @param add_median logical. If TRUE, show median survival
 #' @param add_median_delta logical.
@@ -24,6 +29,7 @@
 #' @param median_flag_nudge_y numeric. Amount to nudge median label.
 #' @param median_flag_thickness numeric. Thickness of the flag border
 #' @param risk_table logical. If TRUE, include the risk table
+#' @param risk_table_title character. Title for the risk table
 #' @param risk_size numeric. Size of font in risk table.
 #' @param risk_label_size numeric. Size of labels in risk table
 #' @param index_title character.
@@ -81,8 +87,13 @@ plot_survival <- function(object = NULL,
                           ggtheme = ggplot2::theme_bw(),
                           palette = "Set1",
                           simple = FALSE,
+                          title = NULL,
+                          subtitle = NULL,
+                          censor_pch = "|",
+                          censor_size = 3,
                           add_gridlines = TRUE,
                           add_confidence = TRUE,
+                          add_censor_ticks = TRUE,
                           add_labels = TRUE,
                           add_median = TRUE,
                           add_median_delta = TRUE,
@@ -98,6 +109,7 @@ plot_survival <- function(object = NULL,
                           median_flag_nudge_y = .1,
                           median_flag_thickness = .7,
                           risk_table = TRUE,
+                          risk_table_title = NULL,
                           risk_size = 3.5,
                           risk_label_size = 1.25,
                           index_title = NULL,
@@ -105,8 +117,6 @@ plot_survival <- function(object = NULL,
                           median_flag_size = 4,
                           event_nudge_y = .15,
                           panel_heights = c(3, 1)) {
-
-
   testthat::expect_is(object, "iwillsurvive")
 
   plot_df <- broom::tidy(object$fit)
@@ -179,36 +189,35 @@ plot_survival <- function(object = NULL,
 
       if (add_confidence) {
 
-      # Add conf.low
+        # Add conf.low
 
-      p_km <- p_km +
-        ggplot2::geom_path(
-          data = data,
-          ggplot2::aes(y = conf.low),
-          alpha = .2
-        )
+        p_km <- p_km +
+          ggplot2::geom_path(
+            data = data,
+            ggplot2::aes(y = conf.low),
+            alpha = .2
+          )
 
-      # Add conf.high
+        # Add conf.high
 
-      p_km <- p_km +
-        ggplot2::geom_line(
-          data = data,
-          ggplot2::aes(y = conf.high),
-          alpha = .2
-        )
+        p_km <- p_km +
+          ggplot2::geom_line(
+            data = data,
+            ggplot2::aes(y = conf.high),
+            alpha = .2
+          )
 
-      p_km <- p_km +
-        ggplot2::geom_ribbon(
-          data = data,
-          ggplot2::aes(
-            x = time,
-            ymin = conf.low,
-            ymax = conf.high,
-            fill = strata
-          ),
-          alpha = .2, lwd = 0
-        )
-
+        p_km <- p_km +
+          ggplot2::geom_ribbon(
+            data = data,
+            ggplot2::aes(
+              x = time,
+              ymin = conf.low,
+              ymax = conf.high,
+              fill = strata
+            ),
+            alpha = .2, lwd = 0
+          )
       }
 
       p_km <- p_km +
@@ -217,18 +226,22 @@ plot_survival <- function(object = NULL,
           ggplot2::aes(y = estimate)
         )
 
+      if (add_censor_ticks) {
+
       p_km <- p_km +
         ggplot2::geom_point(
           data = data %>% filter(n.censor > 0),
           ggplot2::aes(y = estimate),
           alpha = 1,
-          pch = "|", size = 3,
+          pch = censor_pch,
+          size = censor_size,
           fill = scales::alpha("white", .8)
         )
+      }
+
     }
 
     if (add_median) {
-
       surv_median <- object$fit_summary %>%
         dplyr::select(strata, median) %>%
         dplyr::mutate(strata = stringr::str_remove_all(strata, pattern = "condition=")) %>%
@@ -288,7 +301,6 @@ plot_survival <- function(object = NULL,
         )
 
       if (add_median_delta & strata_n > 1) {
-
         horizontal_bar_y <- .08
 
         median_delta <- surv_median %>%
@@ -367,13 +379,33 @@ plot_survival <- function(object = NULL,
     }
 
 
+# Set title
+
+    if (!is.null(title)) {
+
+      my_title <- title
+
+    } else {
 
     my_title <- paste0("Survival: From ", index_title)
 
     if (!is.null(event_title)) {
+
       my_title <- paste0("Survival: From ", index_title, " to ", event_title)
+
+      }
+
     }
 
+    if (!is.null(subtitle)) {
+
+      my_subtitle <- subtitle
+
+    } else {
+
+      my_subtitle <- paste0("N = ", scales::comma(patient_n))
+
+      }
 
     if (!is.null(object$followup_time_units)) {
       x_lab <- paste0("Time (", stringr::str_to_title(object$followup_time_units), ")")
@@ -384,7 +416,7 @@ plot_survival <- function(object = NULL,
     p_km <- p_km +
       ggplot2::labs(
         title = my_title,
-        subtitle = paste0("N = ", scales::comma(patient_n)),
+        subtitle = my_subtitle,
         y = "Survival Probability",
         x = x_lab
       )
@@ -466,24 +498,22 @@ plot_survival <- function(object = NULL,
       }
 
       if (strata_n > 1) {
-
-      p_km <- p_km +
-        ggrepel::geom_label_repel(
-          data = legend_positions,
-          mapping = ggplot2::aes(
-            x = x, y = y,
-            group = strata,
-            label = strata
-          ),
-          nudge_x = legend_positions$nudge_x,
-          nudge_y = legend_nudge_y,
-          direction = "y",
-          segment.size = .5,
-          arrow = my_arrow,
-          segment.color = "black",
-          label.size = 0
-        )
-
+        p_km <- p_km +
+          ggrepel::geom_label_repel(
+            data = legend_positions,
+            mapping = ggplot2::aes(
+              x = x, y = y,
+              group = strata,
+              label = strata
+            ),
+            nudge_x = legend_positions$nudge_x,
+            nudge_y = legend_nudge_y,
+            direction = "y",
+            segment.size = .5,
+            arrow = my_arrow,
+            segment.color = "black",
+            label.size = 0
+          )
       }
     }
   }
@@ -686,22 +716,6 @@ plot_survival <- function(object = NULL,
   #   # Create final plot -----------------------
   #
 
-  p_km <- p_km +
-    ggplot2::theme(plot.margin = ggplot2::unit(c(1, 1, .5, 2), "lines"))
-
-  p_risk <- p_risk +
-    ggplot2::theme(plot.margin = ggplot2::unit(c(0, 1, 0, 2), "lines"))
-
-
-  if (add_gridlines == FALSE) {
-    p_km <- p_km +
-      ggplot2::theme(panel.grid = ggplot2::element_blank())
-
-
-    p_risk <- p_risk +
-      ggplot2::theme(panel.grid = ggplot2::element_blank())
-  }
-
 
   if (is.null(xlim)) {
     my_limits <- time_lims
@@ -715,6 +729,17 @@ plot_survival <- function(object = NULL,
     my_breaks <- x_breaks
   }
 
+
+  p_km <- p_km +
+    ggplot2::theme(plot.margin = ggplot2::unit(c(1, 1, .5, 2), "lines"))
+
+
+  if (add_gridlines == FALSE) {
+    p_km <- p_km +
+      ggplot2::theme(panel.grid = ggplot2::element_blank())
+
+  }
+
   p_km <- p_km + ggplot2::scale_x_continuous(
     breaks = my_breaks,
     limits = my_limits,
@@ -723,28 +748,73 @@ plot_survival <- function(object = NULL,
   ) +
     ggplot2::scale_colour_brewer(palette = palette)
 
+  g_km <- ggplot2::ggplotGrob(p_km)
+
+
+
+  if (risk_table) {
+
+  if (is.null(risk_table_title)) {
+
+    risk_table_title <- "At Risk (Censored)"
+  }
+
+  p_risk <- p_risk +
+    ggplot2::theme(plot.margin = ggplot2::unit(c(0, 1, 0, 2), "lines"))
+
+  p_risk <- p_risk +
+    ggplot2::theme(panel.grid = ggplot2::element_blank())
+
   p_risk <- p_risk + ggplot2::scale_x_continuous(
     breaks = my_breaks,
     limits = my_limits,
     expand = c(0, 0),
     labels = scales::comma
   ) +
-    ggplot2::theme(
-      axis.text.y = ggplot2::element_text(color = RColorBrewer::brewer.pal(max(c(strata_n, 3)), palette),
-                                          size = ggplot2::rel(risk_label_size)),
-      panel.grid.major.y = ggplot2::element_blank(),
-      panel.grid.major.x = ggplot2::element_blank(),
-      panel.grid.minor.x = ggplot2::element_blank(),
-    ) +
-    ggplot2::labs(subtitle = "At Risk (Censored)")
+    suppressWarnings({
+      ggplot2::theme(
+        axis.text.y = ggplot2::element_text(
+          color = RColorBrewer::brewer.pal(max(c(strata_n, 3)), palette),
+          size = ggplot2::rel(risk_label_size)
+        ),
+        panel.grid.major.y = ggplot2::element_blank(),
+        panel.grid.major.x = ggplot2::element_blank(),
+        panel.grid.minor.x = ggplot2::element_blank(),
+      )
+    }) +
+    ggplot2::labs(subtitle = risk_table_title)
 
-  g_km <- ggplot2::ggplotGrob(p_km)
   g_risk <- ggplot2::ggplotGrob(p_risk)
 
-  maxWidth <- grid::unit.pmax(g_km$widths[2:5], g_risk$widths[2:5])
-  g_km$widths[2:5] <- as.list(maxWidth)
+  }
+
+
+  if (risk_table) {
+
+  maxWidth <- grid::unit.pmax(g_km$widths[2:5],
+                              g_risk$widths[2:5])
+
   g_risk$widths[2:5] <- as.list(maxWidth)
 
-  # Lay out plots in one column
-  gridExtra::grid.arrange(g_km, g_risk, ncol = 1, heights = panel_heights)
+  } else {
+
+    maxWidth <- grid::unit.pmax(g_km$widths[2:5])
+  }
+
+  g_km$widths[2:5] <- as.list(maxWidth)
+
+
+  if (risk_table) {
+
+    gridExtra::grid.arrange(g_km, g_risk,
+                            ncol = 1,
+                            heights = panel_heights)
+
+  } else {
+
+    gridExtra::grid.arrange(g_km,
+                            ncol = 1)
+
+  }
+
 }

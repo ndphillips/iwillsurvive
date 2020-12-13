@@ -20,4 +20,3 @@ test_that("multiplication works", {
 
   testthat::expect_true("grob" %in% class(p))
 })
-

@@ -10,7 +10,13 @@ plot_survival(
   ggtheme = ggplot2::theme_bw(),
   palette = "Set1",
   simple = FALSE,
+  title = NULL,
+  subtitle = NULL,
+  censor_pch = "|",
+  censor_size = 3,
   add_gridlines = TRUE,
+  add_confidence = TRUE,
+  add_censor_ticks = TRUE,
   add_labels = TRUE,
   add_median = TRUE,
   add_median_delta = TRUE,
@@ -26,7 +32,9 @@ plot_survival(
   median_flag_nudge_y = 0.1,
   median_flag_thickness = 0.7,
   risk_table = TRUE,
-  risk_size = 3,
+  risk_table_title = NULL,
+  risk_size = 3.5,
+  risk_label_size = 1.25,
   index_title = NULL,
   event_title = NULL,
   median_flag_size = 4,
@@ -45,7 +53,19 @@ plot_survival(
 
 \item{simple}{logical. If TRUE, only plot the Kaplan-Meier estimate}
 
+\item{title}{character. Plot title}
+
+\item{subtitle}{character. Plot subtitle}
+
+\item{censor_pch}{character. The point shape for censor ticks. See \code{?points}.}
+
+\item{censor_size}{numeric. Size of censor ticks.}
+
 \item{add_gridlines}{logical. If TRUE, include gridlines}
+
+\item{add_confidence}{logical. If TRUE, include a confidence interval}
+
+\item{add_censor_ticks}{logical. If TRUE, show censoring tick marks}
 
 \item{add_labels}{logical. If TRUE, show verbal labels}
 
@@ -79,7 +99,11 @@ Only used if legend_position = "inside"}
 
 \item{risk_table}{logical. If TRUE, include the risk table}
 
+\item{risk_table_title}{character. Title for the risk table}
+
 \item{risk_size}{numeric. Size of font in risk table.}
+
+\item{risk_label_size}{numeric. Size of labels in risk table}
 
 \item{index_title}{character.}
 

@@ -14,6 +14,12 @@ print.iwillsurvive <- function(x, ...) {
 
   strata_n <- nrow(x$fit_summary)
 
+
+  cat(paste0(
+    "An iwillsurvive object estimating survival from ",
+    x$index_title, " to ", x$event_title
+  ), "\n\n")
+
   # Cohort size ------------
   cat(paste0(
     scales::comma(cohort_n), " Patients:\n",
@@ -32,23 +38,20 @@ print.iwillsurvive <- function(x, ...) {
   cat("\nMedian Survival (", x$followup_time_units, "):\n", sep = "")
 
   for (row_i in 1:strata_n) {
-
     cat(stringr::str_remove_all(x$fit_summary$strata[row_i],
-                                pattern = "condition="), " = ",
-        round(x$fit_summary$median[row_i], 1), sep = "")
+      pattern = "condition="
+    ), " = ",
+    round(x$fit_summary$median[row_i], 1),
+    sep = ""
+    )
 
-    if(row_i < nrow(x$fit_summary)) {
-
+    if (row_i < nrow(x$fit_summary)) {
       cat(", ")
     }
-
   }
 
-  if(strata_n > 1) {
-
-
+  if (strata_n > 1) {
     cat("\ndiff =", crayon::bold(crayon::green(round(diff(range(x$fit_summary$median)), 0))))
-
   }
 
   cat("\n\n")

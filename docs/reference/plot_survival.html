@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iwillsurvive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9000</span>
       </span>
     </div>
 
@@ -96,6 +96,9 @@
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/introduction.html">introduction</a>
+    </li>
+    <li>
+      <a href="../articles/plot_iwillsurvive.html">plot_iwillsurvive</a>
     </li>
   </ul>
 </li>
@@ -131,8 +134,10 @@
   object <span class='op'>=</span> <span class='cn'>NULL</span>,
   cohort <span class='op'>=</span> <span class='cn'>NULL</span>,
   ggtheme <span class='op'>=</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span><span class='op'>(</span><span class='op'>)</span>,
-  conf_int <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  palette <span class='op'>=</span> <span class='st'>"Set1"</span>,
   simple <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  add_gridlines <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  add_confidence <span class='op'>=</span> <span class='cn'>TRUE</span>,
   add_labels <span class='op'>=</span> <span class='cn'>TRUE</span>,
   add_median <span class='op'>=</span> <span class='cn'>TRUE</span>,
   add_median_delta <span class='op'>=</span> <span class='cn'>TRUE</span>,
@@ -141,15 +146,20 @@
   legend_anchor_y <span class='op'>=</span> <span class='fl'>0.5</span>,
   legend_nudge_y <span class='op'>=</span> <span class='cn'>NULL</span>,
   legend_position_x <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xlim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  x_breaks <span class='op'>=</span> <span class='cn'>NULL</span>,
   label_size <span class='op'>=</span> <span class='fl'>3</span>,
-  label_color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/gray.html'>gray</a></span><span class='op'>(</span><span class='fl'>0.5</span><span class='op'>)</span>,
-  median_nudge_y <span class='op'>=</span> <span class='fl'>0.1</span>,
+  label_color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/gray.html'>gray</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>)</span>,
+  median_flag_nudge_y <span class='op'>=</span> <span class='fl'>0.1</span>,
+  median_flag_thickness <span class='op'>=</span> <span class='fl'>0.7</span>,
   risk_table <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  risk_size <span class='op'>=</span> <span class='fl'>4</span>,
+  risk_size <span class='op'>=</span> <span class='fl'>3.5</span>,
+  risk_label_size <span class='op'>=</span> <span class='fl'>1.25</span>,
   index_title <span class='op'>=</span> <span class='cn'>NULL</span>,
   event_title <span class='op'>=</span> <span class='cn'>NULL</span>,
-  median_label_size <span class='op'>=</span> <span class='fl'>4</span>,
-  event_nudge_y <span class='op'>=</span> <span class='fl'>0.15</span>
+  median_flag_size <span class='op'>=</span> <span class='fl'>4</span>,
+  event_nudge_y <span class='op'>=</span> <span class='fl'>0.15</span>,
+  panel_heights <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -168,8 +178,20 @@
       <td><p>theme. A ggplot2 theme</p></td>
     </tr>
     <tr>
+      <th>palette</th>
+      <td><p>character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples</p></td>
+    </tr>
+    <tr>
       <th>simple</th>
       <td><p>logical. If TRUE, only plot the Kaplan-Meier estimate</p></td>
+    </tr>
+    <tr>
+      <th>add_gridlines</th>
+      <td><p>logical. If TRUE, include gridlines</p></td>
+    </tr>
+    <tr>
+      <th>add_confidence</th>
+      <td><p>logical. If TRUE, include a confidence interval</p></td>
     </tr>
     <tr>
       <th>add_labels</th>
@@ -184,6 +206,10 @@
       <td><p>logical.</p></td>
     </tr>
     <tr>
+      <th>anchor_arrow</th>
+      <td><p>logical. If TRUE, use an arrow in pointing to the anchor</p></td>
+    </tr>
+    <tr>
       <th>legend_position</th>
       <td><p>character. Where should the strata labels be located?
 Either 'inside' for inside the plot, or 'top', or 'right'</p></td>
@@ -194,12 +220,36 @@ Either 'inside' for inside the plot, or 'top', or 'right'</p></td>
 Only used if legend_position = "inside"</p></td>
     </tr>
     <tr>
+      <th>legend_nudge_y</th>
+      <td><p>numeric.</p></td>
+    </tr>
+    <tr>
+      <th>legend_position_x</th>
+      <td><p>numeric. X position of the legend(s)</p></td>
+    </tr>
+    <tr>
+      <th>xlim</th>
+      <td><p>numeric.</p></td>
+    </tr>
+    <tr>
+      <th>x_breaks</th>
+      <td><p>numeric. Major breaks for the x-axis</p></td>
+    </tr>
+    <tr>
       <th>label_size</th>
       <td><p>numeric. Size of the labels.</p></td>
     </tr>
     <tr>
-      <th>median_nudge_y</th>
+      <th>label_color</th>
+      <td><p>character. Color of labels.</p></td>
+    </tr>
+    <tr>
+      <th>median_flag_nudge_y</th>
       <td><p>numeric. Amount to nudge median label.</p></td>
+    </tr>
+    <tr>
+      <th>median_flag_thickness</th>
+      <td><p>numeric. Thickness of the flag border</p></td>
     </tr>
     <tr>
       <th>risk_table</th>
@@ -210,6 +260,10 @@ Only used if legend_position = "inside"</p></td>
       <td><p>numeric. Size of font in risk table.</p></td>
     </tr>
     <tr>
+      <th>risk_label_size</th>
+      <td><p>numeric. Size of labels in risk table</p></td>
+    </tr>
+    <tr>
       <th>index_title</th>
       <td><p>character.</p></td>
     </tr>
@@ -218,12 +272,16 @@ Only used if legend_position = "inside"</p></td>
       <td><p>character.</p></td>
     </tr>
     <tr>
-      <th>median_label_size</th>
+      <th>median_flag_size</th>
       <td><p>numeric.</p></td>
     </tr>
     <tr>
       <th>event_nudge_y</th>
       <td><p>numeric.</p></td>
+    </tr>
+    <tr>
+      <th>panel_heights</th>
+      <td><p>numeric. Heights of the KM and Risk panels</p></td>
     </tr>
     </table>
 
@@ -235,36 +293,41 @@ Only used if legend_position = "inside"</p></td>
     <pre class="examples"><div class='input'><span class='co'># Set things up by creating an iwillsurvive object</span>
 
 <span class='va'>cohort</span> <span class='op'>&lt;-</span> <span class='va'>ez_cohort</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='derive_followup_date.html'>derive_followup_date</a></span><span class='op'>(</span>event_date <span class='op'>=</span> <span class='st'>"dateofdeath"</span>,
-                      censor_date <span class='op'>=</span> <span class='st'>"lastvisitdate"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='derive_followup_time.html'>derive_followup_time</a></span><span class='op'>(</span>index_date <span class='op'>=</span> <span class='st'>"lotstartdate"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='derive_event_status.html'>derive_event_status</a></span><span class='op'>(</span>event_date <span class='op'>=</span> <span class='st'>"dateofdeath"</span><span class='op'>)</span>
+  <span class='fu'><a href='derive_followup_date.html'>derive_followup_date</a></span><span class='op'>(</span>
+    event_date <span class='op'>=</span> <span class='st'>"dateofdeath"</span>,
+    censor_date <span class='op'>=</span> <span class='st'>"lastvisitdate"</span>
+  <span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='derive_followup_time.html'>derive_followup_time</a></span><span class='op'>(</span>index_date <span class='op'>=</span> <span class='st'>"lotstartdate"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='derive_event_status.html'>derive_event_status</a></span><span class='op'>(</span>event_date <span class='op'>=</span> <span class='st'>"dateofdeath"</span><span class='op'>)</span>
 
 <span class='va'>cohort_iws</span> <span class='op'>&lt;-</span> <span class='fu'><a href='iwillsurvive.html'>iwillsurvive</a></span><span class='op'>(</span><span class='va'>cohort</span>,
-                          followup_time <span class='op'>=</span> <span class='st'>"followup_days"</span>,
-                          terms <span class='op'>=</span> <span class='st'>"condition"</span>,
-                          event_title <span class='op'>=</span> <span class='st'>"Death"</span>,
-                          index_title <span class='op'>=</span> <span class='st'>"LOT1 Start"</span><span class='op'>)</span>
+  followup_time <span class='op'>=</span> <span class='st'>"followup_days"</span>,
+  terms <span class='op'>=</span> <span class='st'>"condition"</span>,
+  event_title <span class='op'>=</span> <span class='st'>"Death"</span>,
+  index_title <span class='op'>=</span> <span class='st'>"LOT1 Start"</span>
+<span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>── iwillsurvive ────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>- 202 of 250 (81%) patient(s) experienced the event.</span></div><div class='output co'>#&gt; <span class='message'>- survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)</span></div><div class='input'>
 <span class='fu'>plot_survival</span><span class='op'>(</span><span class='va'>cohort_iws</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: is.na() applied to non-(list or vector) of type 'expression'</span></div><div class='img'><img src='plot_survival-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Set simple = TRUE to only get the KM without any fancy pants stuff</span>
 
 <span class='fu'>plot_survival</span><span class='op'>(</span><span class='va'>cohort_iws</span>,
-             simple <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+  simple <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 </div><div class='img'><img src='plot_survival-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Control the location of the legend with legend_position</span>
 <span class='fu'>plot_survival</span><span class='op'>(</span><span class='va'>cohort_iws</span>,
-             legend_position <span class='op'>=</span> <span class='st'>"top"</span><span class='op'>)</span>
+  legend_position <span class='op'>=</span> <span class='st'>"top"</span>
+<span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: is.na() applied to non-(list or vector) of type 'expression'</span></div><div class='img'><img src='plot_survival-3.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Change the location of the labels and add arrows</span>
 <span class='fu'>plot_survival</span><span class='op'>(</span><span class='va'>cohort_iws</span>,
-             legend_anchor_y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.7</span>, <span class='fl'>.85</span><span class='op'>)</span>,
-             legend_position_x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>260</span>, <span class='fl'>250</span><span class='op'>)</span>,
-             legend_nudge_y <span class='op'>=</span> <span class='fl'>.1</span>,
-             anchor_arrow <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: is.na() applied to non-(list or vector) of type 'expression'</span></div><div class='img'><img src='plot_survival-4.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+  legend_anchor_y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.7</span>, <span class='fl'>.85</span><span class='op'>)</span>,
+  legend_position_x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>260</span>, <span class='fl'>250</span><span class='op'>)</span>,
+  legend_nudge_y <span class='op'>=</span> <span class='fl'>.1</span>,
+  anchor_arrow <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: is.na() applied to non-(list or vector) of type 'expression'</span></div><div class='img'><img src='plot_survival-4.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
