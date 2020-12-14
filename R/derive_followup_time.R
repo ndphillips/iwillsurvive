@@ -15,7 +15,7 @@
 #'
 #' @examples
 #'
-#' cohort <- ez_cohort %>%
+#' cohort <- cohort_raw %>%
 #'   derive_followup_date(
 #'     event_date = "dateofdeath",
 #'     censor_date = "lastvisitdate"

@@ -30,12 +30,12 @@ I'll now give a very brief overview of the basic survival model that `iwillsurvi
 
 ## Trial data
 
-We'll start with the `ez_cohort` dataset which represents the results of a (fictional) clinical trial testing the effectiveness of a drug in extending survival from a patient's first line of therapy start date.
+We'll start with the `cohort_raw` dataset which represents the results of a (fictional) clinical trial testing the effectiveness of a drug in extending survival from a patient's first line of therapy start date.
 
 Here are the first 10 patients:
 
 ```{r, echo = FALSE}
-ez_cohort %>%
+cohort_raw %>%
   slice(1:10) %>%
   knitr::kable()
 ```
@@ -45,7 +45,7 @@ Here's what each column means:
 |Column|Definition|
 |:-----|:---------|
 |`patientid`|A character referring to an individual patient in the form "FXXXXX"|
-|`condition`|A character indicating which condition the patient was in, unique values are: `r paste(unique(ez_cohort$condition), collapse = ", ")`|
+|`condition`|A character indicating which condition the patient was in, unique values are: `r paste(unique(cohort_raw$condition), collapse = ", ")`|
 |`lotstartdate`|A date indicating when a patient started their first line of therapy after diagnosis|
 |`lastvisitdate`|A date indicating the last known date that a patient was alive|
 |`dateofdeath`|A date indicating the date of death of patients who died during the study period|
@@ -53,12 +53,12 @@ Here's what each column means:
 The plot below visualizes these data:
 
 ```{r, fig.width = 7, fig.height = 5}
-ez_cohort_long <- ez_cohort %>%
+cohort_raw_long <- cohort_raw %>%
   arrange(lotstartdate) %>%
   mutate(patientid = as.numeric(factor(patientid, levels = patientid, ordered = TRUE))) %>%
   pivot_longer(cols = lotstartdate:dateofdeath, names_to = "event", values_to = "date")
 
-ggplot(ez_cohort_long, aes(x = date, y = patientid, col = event, shape = event)) +
+ggplot(cohort_raw_long, aes(x = date, y = patientid, col = event, shape = event)) +
   geom_point() +
   facet_wrap(~condition) +
   theme(legend.position = "top")
@@ -77,7 +77,7 @@ Once we have our trial data, we now need to define some key survival data:
 To calculate these variables, we can use `iwillsurvive`'s *derive* functions:
 
 ```{r}
-cohort <- ez_cohort %>%
+cohort <- cohort_raw %>%
   
   derive_followup_date(event_date = "dateofdeath",
                        censor_date = "lastvisitdate") %>%

@@ -53,11 +53,11 @@ contains columns corresponding to
 -   `event_date`, date corresponding to the event of interest. NA values
     indicate that the event was not observed.
 
-`iwillsurvive` provides one such example in `ez_cohort`, a dataframe of
+`iwillsurvive` provides one such example in `cohort_raw`, a dataframe of
 250 simulated patients:
 
 ``` r
-ez_cohort
+cohort_raw
 #> # A tibble: 250 x 5
 #>    patientid condition lotstartdate lastvisitdate dateofdeath
 #>    <chr>     <chr>     <date>       <date>        <date>     
@@ -84,7 +84,7 @@ Use the `derive_*()` functions to calculate key derived columns:
     event (`dateofdeath`) is known.
 
 ``` r
-cohort <- ez_cohort %>%
+cohort <- cohort_raw %>%
   
   derive_followup_date(event_date = "dateofdeath",
                        censor_date = "lastvisitdate") %>%

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot the results of a survival analysis — plot.iwillsurvive • iwillsurvive</title>
+<title>Plot an iwillsurvive x. — plot.iwillsurvive • iwillsurvive</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Plot the results of a survival analysis — plot.iwillsurvive" />
-<meta property="og:description" content="Plot the results of a survival analysis" />
+<meta property="og:title" content="Plot an iwillsurvive x. — plot.iwillsurvive" />
+<meta property="og:description" content="Plot an iwillsurvive x." />
 
 
 
@@ -123,18 +123,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot the results of a survival analysis</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ndphillips/iwillsurvive/blob/master/R/plot_survival.R'><code>R/plot_survival.R</code></a></small>
+    <h1>Plot an iwillsurvive x.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ndphillips/iwillsurvive/blob/master/R/plot_iwillsurvive.R'><code>R/plot_iwillsurvive.R</code></a></small>
     <div class="hidden name"><code>plot.iwillsurvive.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot the results of a survival analysis</p>
+    <p>Plot an iwillsurvive x.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for iwillsurvive</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
-  object <span class='op'>=</span> <span class='cn'>NULL</span>,
+  x <span class='op'>=</span> <span class='cn'>NULL</span>,
   ggtheme <span class='op'>=</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span><span class='op'>(</span><span class='op'>)</span>,
   palette <span class='op'>=</span> <span class='st'>"Set1"</span>,
   simple <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -167,15 +167,16 @@
   event_title <span class='op'>=</span> <span class='cn'>NULL</span>,
   median_flag_size <span class='op'>=</span> <span class='fl'>4</span>,
   event_nudge_y <span class='op'>=</span> <span class='fl'>0.15</span>,
-  panel_heights <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>1</span><span class='op'>)</span>
+  panel_heights <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>1</span><span class='op'>)</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>iwillsurvive. An iwillsurvive object created from iwillsurvive</p></td>
+      <th>x</th>
+      <td><p>iwillsurvive. An iwillsurvive x created from <code><a href='iwillsurvive.html'>iwillsurvive()</a></code></p></td>
     </tr>
     <tr>
       <th>ggtheme</th>
@@ -311,6 +312,10 @@ Only used if legend_position = "inside"</p></td>
       <th>panel_heights</th>
       <td><p>numeric. Heights of the KM and Risk panels</p></td>
     </tr>
+    <tr>
+      <th>...</th>
+      <td><p>currently ignored</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -318,9 +323,9 @@ Only used if legend_position = "inside"</p></td>
     <p>ggplot2</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Set things up by creating an iwillsurvive object</span>
+    <pre class="examples"><div class='input'><span class='co'># Set things up by creating an iwillsurvive x</span>
 
-<span class='va'>cohort</span> <span class='op'>&lt;-</span> <span class='va'>ez_cohort</span> <span class='op'>%&gt;%</span>
+<span class='va'>cohort</span> <span class='op'>&lt;-</span> <span class='va'>cohort_raw</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='derive_followup_date.html'>derive_followup_date</a></span><span class='op'>(</span>
     event_date <span class='op'>=</span> <span class='st'>"dateofdeath"</span>,
     censor_date <span class='op'>=</span> <span class='st'>"lastvisitdate"</span>
@@ -335,27 +340,32 @@ Only used if legend_position = "inside"</p></td>
   index_title <span class='op'>=</span> <span class='st'>"LOT1 Start"</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>── iwillsurvive ────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>- 202 of 250 (81%) patient(s) experienced the event.</span></div><div class='output co'>#&gt; <span class='message'>- survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)</span></div><div class='input'>
+<span class='co'># Default plot</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>cohort_iws</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: is.na() applied to non-(list or vector) of type 'expression'</span></div><div class='img'><img src='plot.iwillsurvive-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># Set simple = TRUE to only get the KM without any fancy pants stuff</span>
-
+<span class='co'># Simpler version</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>cohort_iws</span>,
-  simple <span class='op'>=</span> <span class='cn'>TRUE</span>
+  simple <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  risk_table <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  add_confidence <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span>
 </div><div class='img'><img src='plot.iwillsurvive-2.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># Control the location of the legend with legend_position</span>
+<span class='co'># Customized version</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>cohort_iws</span>,
-  legend_position <span class='op'>=</span> <span class='st'>"top"</span>
+  add_confidence <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  add_median_delta <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  censor_pch <span class='op'>=</span> <span class='fl'>3</span>,
+  censor_size <span class='op'>=</span> <span class='fl'>5</span>,
+  legend_position_x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600</span>, <span class='fl'>400</span><span class='op'>)</span>,
+  legend_nudge_y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.25</span>, <span class='fl'>.3</span><span class='op'>)</span>,
+  median_flag_nudge_y <span class='op'>=</span> <span class='fl'>.15</span>,
+  anchor_arrow <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  palette <span class='op'>=</span> <span class='st'>"Dark2"</span>,
+  title <span class='op'>=</span> <span class='st'>"My Title"</span>,
+  subtitle <span class='op'>=</span> <span class='st'>"My Subttitle"</span>,
+  risk_table_title <span class='op'>=</span> <span class='st'>"My Risk Table Title"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: is.na() applied to non-(list or vector) of type 'expression'</span></div><div class='img'><img src='plot.iwillsurvive-3.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'># Change the location of the labels and add arrows</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>cohort_iws</span>,
-  legend_anchor_y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>.7</span>, <span class='fl'>.85</span><span class='op'>)</span>,
-  legend_position_x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>260</span>, <span class='fl'>250</span><span class='op'>)</span>,
-  legend_nudge_y <span class='op'>=</span> <span class='fl'>.1</span>,
-  anchor_arrow <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: is.na() applied to non-(list or vector) of type 'expression'</span></div><div class='img'><img src='plot.iwillsurvive-4.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='img'><img src='plot.iwillsurvive-3.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -5,6 +5,8 @@
 * Formatting updates to plot_iwillsurvive(). Risk table should be displayed much
 better now
 * Minor updates to print method
+* Ranamed `ez_cohort` to `cohort_raw`
+* Created new `cohort_survival` with pre-calculated survival derived variables
 
 # iwillsurvive 0.1.2
 

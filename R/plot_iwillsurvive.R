@@ -1,6 +1,6 @@
-#' Plot the results of a survival analysis
+#' Plot an iwillsurvive x.
 #'
-#' @param object iwillsurvive. An iwillsurvive object created from iwillsurvive
+#' @param x iwillsurvive. An iwillsurvive x created from \code{iwillsurvive()}
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
@@ -36,6 +36,7 @@
 #' @param median_flag_size numeric.
 #' @param event_nudge_y numeric.
 #' @param panel_heights numeric. Heights of the KM and Risk panels
+#' @param ... currently ignored
 #'
 #' @import ggplot2
 #' @import scales
@@ -44,9 +45,9 @@
 #' @export
 #'
 #' @examples
-#' # Set things up by creating an iwillsurvive object
+#' # Set things up by creating an iwillsurvive x
 #'
-#' cohort <- ez_cohort %>%
+#' cohort <- cohort_raw %>%
 #'   derive_followup_date(
 #'     event_date = "dateofdeath",
 #'     censor_date = "lastvisitdate"
@@ -61,73 +62,80 @@
 #'   index_title = "LOT1 Start"
 #' )
 #'
+#' # Default plot
 #' plot(cohort_iws)
 #'
-#' # Set simple = TRUE to only get the KM without any fancy pants stuff
-#'
+#' # Simpler version
 #' plot(cohort_iws,
-#'   simple = TRUE
+#'   simple = TRUE,
+#'   risk_table = FALSE,
+#'   add_confidence = FALSE
 #' )
 #'
-#' # Control the location of the legend with legend_position
+#' # Customized version
 #' plot(cohort_iws,
-#'   legend_position = "top"
+#'   add_confidence = FALSE,
+#'   add_median_delta = FALSE,
+#'   censor_pch = 3,
+#'   censor_size = 5,
+#'   legend_position_x = c(600, 400),
+#'   legend_nudge_y = c(.25, .3),
+#'   median_flag_nudge_y = .15,
+#'   anchor_arrow = TRUE,
+#'   palette = "Dark2",
+#'   title = "My Title",
+#'   subtitle = "My Subttitle",
+#'   risk_table_title = "My Risk Table Title"
 #' )
-#'
-#' # Change the location of the labels and add arrows
-#' plot(cohort_iws,
-#'   legend_anchor_y = c(.7, .85),
-#'   legend_position_x = c(260, 250),
-#'   legend_nudge_y = .1,
-#'   anchor_arrow = TRUE
-#' )
-plot.iwillsurvive <- function(object = NULL,
-                          ggtheme = ggplot2::theme_bw(),
-                          palette = "Set1",
-                          simple = FALSE,
-                          title = NULL,
-                          subtitle = NULL,
-                          censor_pch = "|",
-                          censor_size = 3,
-                          add_gridlines = TRUE,
-                          add_confidence = TRUE,
-                          add_censor_ticks = TRUE,
-                          add_labels = TRUE,
-                          add_median = TRUE,
-                          add_median_delta = TRUE,
-                          anchor_arrow = FALSE,
-                          legend_position = "inside",
-                          legend_anchor_y = .5,
-                          legend_nudge_y = NULL,
-                          legend_position_x = NULL,
-                          xlim = NULL,
-                          x_breaks = NULL,
-                          label_size = 3,
-                          label_color = gray(0),
-                          median_flag_nudge_y = .1,
-                          median_flag_thickness = .7,
-                          risk_table = TRUE,
-                          risk_table_title = NULL,
-                          risk_size = 3.5,
-                          risk_label_size = 1.25,
-                          index_title = NULL,
-                          event_title = NULL,
-                          median_flag_size = 4,
-                          event_nudge_y = .15,
-                          panel_heights = c(3, 1)) {
-  testthat::expect_is(object, "iwillsurvive")
+plot.iwillsurvive <- function(x = NULL,
+                              ggtheme = ggplot2::theme_bw(),
+                              palette = "Set1",
+                              simple = FALSE,
+                              title = NULL,
+                              subtitle = NULL,
+                              censor_pch = "|",
+                              censor_size = 3,
+                              add_gridlines = TRUE,
+                              add_confidence = TRUE,
+                              add_censor_ticks = TRUE,
+                              add_labels = TRUE,
+                              add_median = TRUE,
+                              add_median_delta = TRUE,
+                              anchor_arrow = FALSE,
+                              legend_position = "inside",
+                              legend_anchor_y = .5,
+                              legend_nudge_y = NULL,
+                              legend_position_x = NULL,
+                              xlim = NULL,
+                              x_breaks = NULL,
+                              label_size = 3,
+                              label_color = gray(0),
+                              median_flag_nudge_y = .1,
+                              median_flag_thickness = .7,
+                              risk_table = TRUE,
+                              risk_table_title = NULL,
+                              risk_size = 3.5,
+                              risk_label_size = 1.25,
+                              index_title = NULL,
+                              event_title = NULL,
+                              median_flag_size = 4,
+                              event_nudge_y = .15,
+                              panel_heights = c(3, 1),
+                              ...) {
 
-  plot_df <- broom::tidy(object$fit)
-  cohort <- object$cohort
+  testthat::expect_is(x, "iwillsurvive")
+
+  plot_df <- broom::tidy(x$fit)
+  cohort <- x$cohort
 
   patient_n <- nrow(cohort)
 
   if (is.null(event_title)) {
-    event_title <- object$event_title
+    event_title <- x$event_title
   }
 
   if (is.null(index_title)) {
-    index_title <- object$index_title
+    index_title <- x$index_title
   }
 
   if (simple) {
@@ -238,7 +246,7 @@ plot.iwillsurvive <- function(object = NULL,
     }
 
     if (add_median) {
-      surv_median <- object$fit_summary %>%
+      surv_median <- x$fit_summary %>%
         dplyr::select(strata, median) %>%
         dplyr::mutate(strata = stringr::str_remove_all(strata, pattern = "condition=")) %>%
         dplyr::mutate(y = .5) %>%
@@ -346,10 +354,10 @@ plot.iwillsurvive <- function(object = NULL,
             )
           )
 
-        median_diff <- diff(range(object$fit_summary$median))
+        median_diff <- diff(range(x$fit_summary$median))
 
         delta_text <- paste0(round(median_diff, 0))
-        # delta_text <- paste0(round(median_diff, 1), object$followup_time_units)
+        # delta_text <- paste0(round(median_diff, 1), x$followup_time_units)
 
         p_km <- p_km +
           ggplot2::annotate("text",
@@ -393,8 +401,8 @@ plot.iwillsurvive <- function(object = NULL,
       my_subtitle <- paste0("N = ", scales::comma(patient_n))
     }
 
-    if (!is.null(object$followup_time_units)) {
-      x_lab <- paste0("Time (", stringr::str_to_title(object$followup_time_units), ")")
+    if (!is.null(x$followup_time_units)) {
+      x_lab <- paste0("Time (", stringr::str_to_title(x$followup_time_units), ")")
     } else {
       x_lab <- "Time"
     }

@@ -128,9 +128,9 @@
 <li>
 <code>event_date</code>, date corresponding to the event of interest. NA values indicate that the event was not observed.</li>
 </ul>
-<p><code>iwillsurvive</code> provides one such example in <code>ez_cohort</code>, a dataframe of 250 simulated patients:</p>
+<p><code>iwillsurvive</code> provides one such example in <code>cohort_raw</code>, a dataframe of 250 simulated patients:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ez_cohort</span>
+<code class="sourceCode R"><span class="va">cohort_raw</span>
 <span class="co">#&gt; # A tibble: 250 x 5</span>
 <span class="co">#&gt;    patientid condition lotstartdate lastvisitdate dateofdeath</span>
 <span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;date&gt;       &lt;date&gt;        &lt;date&gt;     </span>
@@ -156,7 +156,7 @@
 <code>event_status</code> - A logical column indicating whether or not the event (<code>dateofdeath</code>) is known.</li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">ez_cohort</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">cohort_raw</span> <span class="op">%&gt;%</span>
   
   <span class="fu"><a href="reference/derive_followup_date.html">derive_followup_date</a></span><span class="op">(</span>event_date <span class="op">=</span> <span class="st">"dateofdeath"</span>,
                        censor_date <span class="op">=</span> <span class="st">"lastvisitdate"</span><span class="op">)</span> <span class="op">%&gt;%</span>

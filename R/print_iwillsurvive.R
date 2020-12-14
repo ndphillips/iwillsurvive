@@ -6,6 +6,7 @@
 #' @export
 #'
 print.iwillsurvive <- function(x, ...) {
+
   testthat::expect_is(x, "iwillsurvive")
 
   cohort_n <- nrow(x$cohort)

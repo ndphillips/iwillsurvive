@@ -49,11 +49,11 @@ columns corresponding to
 - `event_date`, date corresponding to the event of interest. NA values indicate 
 that the event was not observed.
 
-`iwillsurvive` provides one such example in `ez_cohort`, a dataframe of `r scales::comma(nrow(ez_cohort))`
+`iwillsurvive` provides one such example in `cohort_raw`, a dataframe of `r scales::comma(nrow(cohort_raw))`
 simulated patients:
 
 ```{r}
-ez_cohort
+cohort_raw
 ```
 
 Use the `derive_*()` functions to calculate key derived columns:
@@ -65,7 +65,7 @@ Use the `derive_*()` functions to calculate key derived columns:
 (`dateofdeath`) is known.
 
 ```{r}
-cohort <- ez_cohort %>%
+cohort <- cohort_raw %>%
   
   derive_followup_date(event_date = "dateofdeath",
                        censor_date = "lastvisitdate") %>%

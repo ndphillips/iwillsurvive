@@ -177,7 +177,7 @@ followup_years.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='va'>cohort</span> <span class='op'>&lt;-</span> <span class='va'>ez_cohort</span> <span class='op'>%&gt;%</span>
+<span class='va'>cohort</span> <span class='op'>&lt;-</span> <span class='va'>cohort_raw</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='derive_followup_date.html'>derive_followup_date</a></span><span class='op'>(</span>
     event_date <span class='op'>=</span> <span class='st'>"dateofdeath"</span>,
     censor_date <span class='op'>=</span> <span class='st'>"lastvisitdate"</span>
@@ -190,21 +190,21 @@ followup_years.</p>
     index_date <span class='op'>=</span> <span class='st'>"lotstartdate"</span>,
     followup_date <span class='op'>=</span> <span class='st'>"followup_date"</span>
   <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 250 x 9</span><span>
-#&gt;    patientid condition lotstartdate lastvisitdate dateofdeath followup_date
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>       
-#&gt; </span><span style='color: #555555;'> 1</span><span> F00001    placebo   2016-05-17   2020-12-01    </span><span style='color: #BB0000;'>NA</span><span>          2020-12-01   
-#&gt; </span><span style='color: #555555;'> 2</span><span> F00002    placebo   2020-07-27   2020-08-25    2020-10-05  2020-10-05   
-#&gt; </span><span style='color: #555555;'> 3</span><span> F00003    drug      2016-04-14   2017-02-16    2017-03-13  2017-03-13   
-#&gt; </span><span style='color: #555555;'> 4</span><span> F00004    drug      2020-06-12   2020-11-25    </span><span style='color: #BB0000;'>NA</span><span>          2020-11-25   
-#&gt; </span><span style='color: #555555;'> 5</span><span> F00005    placebo   2019-03-20   2020-01-13    2020-02-21  2020-02-21   
-#&gt; </span><span style='color: #555555;'> 6</span><span> F00006    placebo   2017-04-02   2017-10-18    2017-11-19  2017-11-19   
-#&gt; </span><span style='color: #555555;'> 7</span><span> F00007    placebo   2018-01-26   2019-01-12    2019-02-17  2019-02-17   
-#&gt; </span><span style='color: #555555;'> 8</span><span> F00008    placebo   2015-07-02   2015-11-20    2015-12-23  2015-12-23   
-#&gt; </span><span style='color: #555555;'> 9</span><span> F00009    drug      2019-03-08   2020-07-18    2020-08-17  2020-08-17   
-#&gt; </span><span style='color: #555555;'>10</span><span> F00010    placebo   2018-08-23   2019-02-14    2019-03-08  2019-03-08   
-#&gt; </span><span style='color: #555555;'># … with 240 more rows, and 3 more variables: followup_days </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   followup_months </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, followup_years </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span></div></span></pre>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 250 x 11</span><span>
+#&gt;    patientid sex     age condition lotstartdate lastvisitdate dateofdeath
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>     
+#&gt; </span><span style='color: #555555;'> 1</span><span> F00001    m      41.8 placebo   2016-05-17   2020-12-01    </span><span style='color: #BB0000;'>NA</span><span>         
+#&gt; </span><span style='color: #555555;'> 2</span><span> F00002    m      45.3 placebo   2020-07-27   2020-08-25    2020-10-05 
+#&gt; </span><span style='color: #555555;'> 3</span><span> F00003    m      52.9 drug      2016-04-14   2017-02-16    2017-03-13 
+#&gt; </span><span style='color: #555555;'> 4</span><span> F00004    m      48.4 drug      2020-06-12   2020-11-25    </span><span style='color: #BB0000;'>NA</span><span>         
+#&gt; </span><span style='color: #555555;'> 5</span><span> F00005    f      54.4 placebo   2019-03-20   2020-01-13    2020-02-21 
+#&gt; </span><span style='color: #555555;'> 6</span><span> F00006    f      50.7 placebo   2017-04-02   2017-10-18    2017-11-19 
+#&gt; </span><span style='color: #555555;'> 7</span><span> F00007    f      47.6 placebo   2018-01-26   2019-01-12    2019-02-17 
+#&gt; </span><span style='color: #555555;'> 8</span><span> F00008    f      42.7 placebo   2015-07-02   2015-11-20    2015-12-23 
+#&gt; </span><span style='color: #555555;'> 9</span><span> F00009    m      48.1 drug      2019-03-08   2020-07-18    2020-08-17 
+#&gt; </span><span style='color: #555555;'>10</span><span> F00010    m      28.9 placebo   2018-08-23   2019-02-14    2019-03-08 
+#&gt; </span><span style='color: #555555;'># … with 240 more rows, and 4 more variables: followup_date </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'>#   followup_days </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, followup_months </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, followup_years </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

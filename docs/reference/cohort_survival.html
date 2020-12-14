@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A simulated dataset containing the survival data of 100 patients — cohort_raw • iwillsurvive</title>
+<title>A simulated dataset containing the survival data of 250 patients — cohort_survival • iwillsurvive</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="A simulated dataset containing the survival data of 100 patients — cohort_raw" />
-<meta property="og:description" content="A simulated dataset containing the survival data of 100 patients" />
+<meta property="og:title" content="A simulated dataset containing the survival data of 250 patients — cohort_survival" />
+<meta property="og:description" content="A simulated dataset containing the survival data of 250 patients" />
 
 
 
@@ -123,27 +123,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A simulated dataset containing the survival data of 100 patients</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ndphillips/iwillsurvive/blob/master/R/cohort_raw.R'><code>R/cohort_raw.R</code></a></small>
-    <div class="hidden name"><code>cohort_raw.Rd</code></div>
+    <h1>A simulated dataset containing the survival data of 250 patients</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ndphillips/iwillsurvive/blob/master/R/cohort_survival.R'><code>R/cohort_survival.R</code></a></small>
+    <div class="hidden name"><code>cohort_survival.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A simulated dataset containing the survival data of 100 patients</p>
+    <p>A simulated dataset containing the survival data of 250 patients</p>
     </div>
 
-    <pre class="usage"><span class='va'>cohort_raw</span></pre>
+    <pre class="usage"><span class='va'>cohort_survival</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p>A data frame with 1626 rows and 2 variables:</p><dl>
   <dt>patientid</dt><dd><p>character. Unique patientid</p></dd>
-  <dt>condition</dt><dd><p>character. The condition a patient was in.</p></dd>
-  <dt>lotstartdate</dt><dd><p>date. Date at which first line of therapy starts. used
-  as an indexdate</p></dd>
-  <dt>lastvisitdate</dt><dd><p>date. Last known patient contactdate</p></dd>
-  <dt>dateofdeath</dt><dd><p>date. Date of death if known.</p></dd>
+  <dt>sex</dt><dd><p>character. Patient sex</p></dd>
+  <dt>age</dt><dd><p>numeric. Patient's age at index</p></dd>
+  <dt>condition</dt><dd><p>character. The condition a patient was in, either placebo or drug</p></dd>
+  <dt>followup_days</dt><dd><p>numeric. Days from index to followup</p></dd>
+  <dt>event_status</dt><dd><p>logical. TRUE = Death, FALSE = Censored</p></dd>
 
 </dl>
 
