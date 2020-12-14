@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# iwillsurvive 0.1.4 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
+# iwillsurvive 0.1.4.9000 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -29,7 +29,7 @@ devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
 ``` r
 library(iwillsurvive)
 #> -----------------------------------------------------
-#> iwillsurvive 0.1.4 'Gloria'
+#> iwillsurvive 0.1.4.9000 'Gloria'
 #> Intro  : vignette('introduction', 'iwillsurvive')
 #> Repo   : https://github.com/ndphillips/iwillsurvive
 #> .....................................................
@@ -58,19 +58,19 @@ contains columns corresponding to
 
 ``` r
 cohort_raw
-#> # A tibble: 250 x 5
-#>    patientid condition lotstartdate lastvisitdate dateofdeath
-#>    <chr>     <chr>     <date>       <date>        <date>     
-#>  1 F00001    placebo   2016-05-17   2020-12-01    NA         
-#>  2 F00002    placebo   2020-07-27   2020-08-25    2020-10-05 
-#>  3 F00003    drug      2016-04-14   2017-02-16    2017-03-13 
-#>  4 F00004    drug      2020-06-12   2020-11-25    NA         
-#>  5 F00005    placebo   2019-03-20   2020-01-13    2020-02-21 
-#>  6 F00006    placebo   2017-04-02   2017-10-18    2017-11-19 
-#>  7 F00007    placebo   2018-01-26   2019-01-12    2019-02-17 
-#>  8 F00008    placebo   2015-07-02   2015-11-20    2015-12-23 
-#>  9 F00009    drug      2019-03-08   2020-07-18    2020-08-17 
-#> 10 F00010    placebo   2018-08-23   2019-02-14    2019-03-08 
+#> # A tibble: 250 x 7
+#>    patientid sex     age condition lotstartdate lastvisitdate dateofdeath
+#>    <chr>     <chr> <dbl> <chr>     <date>       <date>        <date>     
+#>  1 F00001    m      41.8 placebo   2016-05-17   2020-12-01    NA         
+#>  2 F00002    m      45.3 placebo   2020-07-27   2020-08-25    2020-10-05 
+#>  3 F00003    m      52.9 drug      2016-04-14   2017-02-16    2017-03-13 
+#>  4 F00004    m      48.4 drug      2020-06-12   2020-11-25    NA         
+#>  5 F00005    f      54.4 placebo   2019-03-20   2020-01-13    2020-02-21 
+#>  6 F00006    f      50.7 placebo   2017-04-02   2017-10-18    2017-11-19 
+#>  7 F00007    f      47.6 placebo   2018-01-26   2019-01-12    2019-02-17 
+#>  8 F00008    f      42.7 placebo   2015-07-02   2015-11-20    2015-12-23 
+#>  9 F00009    m      48.1 drug      2019-03-08   2020-07-18    2020-08-17 
+#> 10 F00010    m      28.9 placebo   2018-08-23   2019-02-14    2019-03-08 
 #> # … with 240 more rows
 ```
 

@@ -1,3 +1,8 @@
+# iwillsurvive 0.1..9000
+
+* Renamed `ez_cohort` to `cohort_raw`
+* Created new `cohort_survival` with pre-calculated survival derived variables
+
 # iwillsurvive 0.1.4
 
 * Replaced `plot_survival()` with a `plot.iwillsurvive()` method.
@@ -5,8 +10,7 @@
 * Formatting updates to plot_iwillsurvive(). Risk table should be displayed much
 better now
 * Minor updates to print method
-* Ranamed `ez_cohort` to `cohort_raw`
-* Created new `cohort_survival` with pre-calculated survival derived variables
+
 
 # iwillsurvive 0.1.2
 
