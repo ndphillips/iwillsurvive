@@ -3,10 +3,15 @@
 
 # iwillsurvive 0.1.4.9000 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
 
+<!-- badges: start -->
+
+[![R build
+status](https://github.com/ndphillips/iwillsurvive/workflows/R-CMD-check/badge.svg)](https://github.com/ndphillips/iwillsurvive/actions)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Codename:
 shuffled](https://img.shields.io/badge/version-0.1_'Gloria'-yellow.svg)](https://en.wikipedia.org/wiki/Gloria_Gaynor)
+<!-- badges: end -->
 
 The goal of `iwillsurvive` is to make it easy to fit and visualize
 simple survival models. It does this by providing an intuitive
