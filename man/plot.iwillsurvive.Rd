@@ -43,7 +43,7 @@
 )
 }
 \arguments{
-\item{x}{iwillsurvive. An iwillsurvive x created from \code{iwillsurvive()}}
+\item{x}{iwillsurvive. An iwillsurvive object created from \code{iwillsurvive()}}
 
 \item{ggtheme}{theme. A ggplot2 theme}
 

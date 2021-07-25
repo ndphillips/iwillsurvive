@@ -1,6 +1,6 @@
 #' Plot an iwillsurvive x.
 #'
-#' @param x iwillsurvive. An iwillsurvive x created from \code{iwillsurvive()}
+#' @param x iwillsurvive. An iwillsurvive object created from \code{iwillsurvive()}
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
@@ -122,7 +122,6 @@ plot.iwillsurvive <- function(x = NULL,
                               event_nudge_y = .15,
                               panel_heights = c(3, 1),
                               ...) {
-
   testthat::expect_is(x, "iwillsurvive")
 
   plot_df <- broom::tidy(x$fit)
