@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iwillsurvive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4.9000</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,7 +106,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/ndphillips/iwillsurvive/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -133,7 +133,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for iwillsurvive</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='cn'>NULL</span>,
   ggtheme <span class='op'>=</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span><span class='op'>(</span><span class='op'>)</span>,
   palette <span class='op'>=</span> <span class='st'>"Set1"</span>,
@@ -176,7 +176,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>iwillsurvive. An iwillsurvive x created from <code><a href='iwillsurvive.html'>iwillsurvive()</a></code></p></td>
+      <td><p>iwillsurvive. An iwillsurvive object created from <code><a href='iwillsurvive.html'>iwillsurvive()</a></code></p></td>
     </tr>
     <tr>
       <th>ggtheme</th>
@@ -341,17 +341,17 @@ Only used if legend_position = "inside"</p></td>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>── iwillsurvive ────────────────────────────────────────────────────────────────</span></div><div class='output co'>#&gt; <span class='message'>- 202 of 250 (81%) patient(s) experienced the event.</span></div><div class='output co'>#&gt; <span class='message'>- survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = cohort)</span></div><div class='input'>
 <span class='co'># Default plot</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>cohort_iws</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>cohort_iws</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: is.na() applied to non-(list or vector) of type 'expression'</span></div><div class='img'><img src='plot.iwillsurvive-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Simpler version</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>cohort_iws</span>,
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>cohort_iws</span>,
   simple <span class='op'>=</span> <span class='cn'>TRUE</span>,
   risk_table <span class='op'>=</span> <span class='cn'>FALSE</span>,
   add_confidence <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span>
 </div><div class='img'><img src='plot.iwillsurvive-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Customized version</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>cohort_iws</span>,
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>cohort_iws</span>,
   add_confidence <span class='op'>=</span> <span class='cn'>FALSE</span>,
   add_median_delta <span class='op'>=</span> <span class='cn'>FALSE</span>,
   censor_pch <span class='op'>=</span> <span class='fl'>3</span>,

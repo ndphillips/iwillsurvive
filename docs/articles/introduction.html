@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iwillsurvive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4.9000</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -65,7 +65,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/ndphillips/iwillsurvive/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -79,8 +79,7 @@
 
       
 
-      </header><script src="introduction_files/header-attrs-2.5/header-attrs.js"></script><link href="introduction_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="introduction_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="introduction_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>introduction</h1>
@@ -96,7 +95,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ndphillips.github.io/iwillsurvive/">iwillsurvive</a></span><span class="op">)</span>
 <span class="co">#&gt; -----------------------------------------------------</span>
-<span class="co">#&gt; iwillsurvive 0.1.4 'Gloria'</span>
+<span class="co">#&gt; iwillsurvive 0.1.4.9000 'Gloria'</span>
 <span class="co">#&gt; Intro  : vignette('introduction', 'iwillsurvive')</span>
 <span class="co">#&gt; Repo   : https://github.com/ndphillips/iwillsurvive</span>
 <span class="co">#&gt; .....................................................</span>
@@ -110,7 +109,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     intersect, setdiff, setequal, union</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span></code></pre></div>
 <div id="the-survival-model" class="section level1">
 <h1 class="hasAnchor">
@@ -496,18 +495,18 @@
 <a href="#plotting-the-survival-curve" class="anchor"></a>Plotting the survival curve</h1>
 <p>Before we look at the <code>iwillsurvive</code> survival curve, let’s look at the default plotting method that comes with the <code>survival</code> package. The plot we’ll get with <code>iwillsurvive</code> will be based on the exact same model, so looking at this first serves as a gut-check to make sure that <code>iwillsurvive</code> hasn’t messed things up:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cohort_survival</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span><span class="op">(</span><span class="va">cohort_survival</span><span class="op">)</span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
-<p>Now let’s create the <code>iwillsurvive</code> plot. To do this, we’ll use the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function:</p>
+<p>Now let’s create the <code>iwillsurvive</code> plot. To do this, we’ll use the <code><a href="https://rdrr.io/r/graphics/plot.html">plot()</a></code> function:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cohort_iws</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span><span class="op">(</span><span class="va">cohort_iws</span><span class="op">)</span>
 <span class="co">#&gt; Warning in is.na(x): is.na() applied to non-(list or vector) of type</span>
 <span class="co">#&gt; 'expression'</span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-12-1.png" width="672"></p>
 <p>Yep looks like the same curve as the <code>survival</code> method, but just with some extra <a href="https://www.youtube.com/watch?v=3vdcw415OcQ&amp;ab_channel=TITTSRecords">flair</a>. Just what we wanted.</p>
-<p>The <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function has many optional arguments that allow you customize the plot. Here are some examples:</p>
+<p>The <code><a href="https://rdrr.io/r/graphics/plot.html">plot()</a></code> function has many optional arguments that allow you customize the plot. Here are some examples:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cohort_iws</span>, 
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span><span class="op">(</span><span class="va">cohort_iws</span>, 
               add_confidence <span class="op">=</span> <span class="cn">FALSE</span>, 
               add_median_delta <span class="op">=</span> <span class="cn">FALSE</span>, 
               censor_pch <span class="op">=</span> <span class="fl">3</span>,
@@ -564,11 +563,11 @@
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cohort_iws</span><span class="op">$</span><span class="va">fit_summary</span>
 <span class="co">#&gt; # A tibble: 2 x 10</span>
-<span class="co">#&gt;   strata records n.max n.start events `*rmean` `*se(rmean)` median `0.95LCL`</span>
-<span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 condi…     132   132     132    105     542.         40.9   410.      329.</span>
-<span class="co">#&gt; 2 condi…     118   118     118     97     349.         39.4   232.      184.</span>
-<span class="co">#&gt; # … with 1 more variable: `0.95UCL` &lt;dbl&gt;</span></code></pre></div>
+<span class="co">#&gt;   strata     records n.max n.start events `*rmean` `*se(rmean)` median `0.95LCL`</span>
+<span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 condition…     132   132     132    105     542.         40.9   410.      329.</span>
+<span class="co">#&gt; 2 condition…     118   118     118     97     345.         38.0   232.      184.</span>
+<span class="co">#&gt; # … with 1 more variable: 0.95UCL &lt;dbl&gt;</span></code></pre></div>
 </div>
 <div id="why-did-i-create-iwillsurvive" class="section level1">
 <h1 class="hasAnchor">

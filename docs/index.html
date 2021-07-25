@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">iwillsurvive</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4.9000</span>
       </span>
     </div>
 
@@ -42,7 +42,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -68,7 +68,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/ndphillips/iwillsurvive/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -84,10 +84,11 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="iwillsurvive-014-" class="section level1">
+<div id="iwillsurvive-0149000-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#iwillsurvive-014-" class="anchor"></a>iwillsurvive 0.1.4 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139">
+<a href="#iwillsurvive-0149000-" class="anchor"></a>iwillsurvive 0.1.4.9000 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139">
 </h1></div>
+<!-- badges: start -->
 
 <p>The goal of <code>iwillsurvive</code> is to make it easy to fit and visualize simple survival models. It does this by providing an intuitive functional interface and user-friendly in-line messages, notes, and warnings, while leveraging the gold-standard <code>survival</code> package for all statistical methods.</p>
 <div id="installation" class="section level2">
@@ -104,7 +105,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ndphillips.github.io/iwillsurvive/">iwillsurvive</a></span><span class="op">)</span>
 <span class="co">#&gt; -----------------------------------------------------</span>
-<span class="co">#&gt; iwillsurvive 0.1.4 'Gloria'</span>
+<span class="co">#&gt; iwillsurvive 0.1.4.9000 'Gloria'</span>
 <span class="co">#&gt; Intro  : vignette('introduction', 'iwillsurvive')</span>
 <span class="co">#&gt; Repo   : https://github.com/ndphillips/iwillsurvive</span>
 <span class="co">#&gt; .....................................................</span>
@@ -131,19 +132,19 @@
 <p><code>iwillsurvive</code> provides one such example in <code>cohort_raw</code>, a dataframe of 250 simulated patients:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cohort_raw</span>
-<span class="co">#&gt; # A tibble: 250 x 5</span>
-<span class="co">#&gt;    patientid condition lotstartdate lastvisitdate dateofdeath</span>
-<span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;date&gt;       &lt;date&gt;        &lt;date&gt;     </span>
-<span class="co">#&gt;  1 F00001    placebo   2016-05-17   2020-12-01    NA         </span>
-<span class="co">#&gt;  2 F00002    placebo   2020-07-27   2020-08-25    2020-10-05 </span>
-<span class="co">#&gt;  3 F00003    drug      2016-04-14   2017-02-16    2017-03-13 </span>
-<span class="co">#&gt;  4 F00004    drug      2020-06-12   2020-11-25    NA         </span>
-<span class="co">#&gt;  5 F00005    placebo   2019-03-20   2020-01-13    2020-02-21 </span>
-<span class="co">#&gt;  6 F00006    placebo   2017-04-02   2017-10-18    2017-11-19 </span>
-<span class="co">#&gt;  7 F00007    placebo   2018-01-26   2019-01-12    2019-02-17 </span>
-<span class="co">#&gt;  8 F00008    placebo   2015-07-02   2015-11-20    2015-12-23 </span>
-<span class="co">#&gt;  9 F00009    drug      2019-03-08   2020-07-18    2020-08-17 </span>
-<span class="co">#&gt; 10 F00010    placebo   2018-08-23   2019-02-14    2019-03-08 </span>
+<span class="co">#&gt; # A tibble: 250 x 7</span>
+<span class="co">#&gt;    patientid sex     age condition lotstartdate lastvisitdate dateofdeath</span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;date&gt;       &lt;date&gt;        &lt;date&gt;     </span>
+<span class="co">#&gt;  1 F00001    m      41.8 placebo   2016-05-17   2020-12-01    NA         </span>
+<span class="co">#&gt;  2 F00002    m      45.3 placebo   2020-07-27   2020-08-25    2020-10-05 </span>
+<span class="co">#&gt;  3 F00003    m      52.9 drug      2016-04-14   2017-02-16    2017-03-13 </span>
+<span class="co">#&gt;  4 F00004    m      48.4 drug      2020-06-12   2020-11-25    NA         </span>
+<span class="co">#&gt;  5 F00005    f      54.4 placebo   2019-03-20   2020-01-13    2020-02-21 </span>
+<span class="co">#&gt;  6 F00006    f      50.7 placebo   2017-04-02   2017-10-18    2017-11-19 </span>
+<span class="co">#&gt;  7 F00007    f      47.6 placebo   2018-01-26   2019-01-12    2019-02-17 </span>
+<span class="co">#&gt;  8 F00008    f      42.7 placebo   2015-07-02   2015-11-20    2015-12-23 </span>
+<span class="co">#&gt;  9 F00009    m      48.1 drug      2019-03-08   2020-07-18    2020-08-17 </span>
+<span class="co">#&gt; 10 F00010    m      28.9 placebo   2018-08-23   2019-02-14    2019-03-08 </span>
 <span class="co">#&gt; # … with 240 more rows</span></code></pre></div>
 <p>Use the <code>derive_*()</code> functions to calculate key derived columns:</p>
 <ul>
@@ -184,9 +185,9 @@ and let the function take care of the formula: -->
 <code class="sourceCode R"><span class="va">cohort_iws</span></code></pre></div>
 <p><img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/print_iwillsurvive.png" width="60%"></p>
 <p>Is that an ascii survival curve? I think so!</p>
-<p>Use <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> to plot the Kaplan-Meier survival curve:</p>
+<p>Use <code><a href="https://rdrr.io/r/graphics/plot.html">plot()</a></code> to plot the Kaplan-Meier survival curve:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cohort_iws</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span><span class="op">(</span><span class="va">cohort_iws</span><span class="op">)</span>
 <span class="co">#&gt; Warning in is.na(x): is.na() applied to non-(list or vector) of type</span>
 <span class="co">#&gt; 'expression'</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-8-1.png" width="100%"></p>
@@ -221,6 +222,7 @@ and let the function take care of the formula: -->
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://github.com/ndphillips/iwillsurvive/actions"><img src="https://github.com/ndphillips/iwillsurvive/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 <li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://en.wikipedia.org/wiki/Gloria_Gaynor"><img src="https://img.shields.io/badge/version-0.1_'Gloria'-yellow.svg" alt="Codename: shuffled"></a></li>
 </ul>
