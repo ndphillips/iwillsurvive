@@ -26,12 +26,6 @@ derive_followup_time(
 \item{followup_date}{character. The name of a column in cohort indicating follow up dates.}
 
 \item{followup_time_rename}{character. (Optional) Name of the resulting follow up days column.}
-
-\item{days_in_month}{numeric. Average number of days in a month. Defaults to
-30.44.}
-
-\item{days_in_year}{numeric. Average number of days in a year. Defaults to
-365.24}
 }
 \value{
 The cohort dataframe with new columns followup_days, followup_months,

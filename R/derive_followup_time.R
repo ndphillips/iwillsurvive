@@ -3,10 +3,6 @@
 #' @param cohort dataframe. A one-row-per-patient dataframe.
 #' @param index_date character. The name of a column in cohort indicating index dates.
 #' @param followup_date character. The name of a column in cohort indicating follow up dates.
-#' @param days_in_month numeric. Average number of days in a month. Defaults to
-#' 30.44.
-#' @param days_in_year numeric. Average number of days in a year. Defaults to
-#' 365.24
 #'
 #' @return The cohort dataframe with new columns followup_days, followup_months,
 #' followup_years.
@@ -34,9 +30,11 @@
 #'
 derive_followup_time <- function(cohort,
                                  index_date = "index_date",
-                                 followup_date = "followup_date",
-                                 days_in_month = 30.44,
-                                 days_in_year = 365.24) {
+                                 followup_date = "followup_date") {
+
+  days_in_month = 30.44
+  days_in_year = 365.24
+
   testthat::expect_true(!is.null(cohort))
   testthat::expect_true(index_date %in% names(cohort))
   testthat::expect_true(followup_date %in% names(cohort))
