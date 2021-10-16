@@ -68,16 +68,13 @@ cohort_raw <- tibble::tibble(
 usethis::use_data(cohort_raw, overwrite = TRUE)
 
 cohort_survival <- cohort_raw %>%
-
-  derive_followup_date(event_date = "dateofdeath",
-                       censor_date = "lastvisitdate") %>%
-
+  derive_followup_date(
+    event_date = "dateofdeath",
+    censor_date = "lastvisitdate"
+  ) %>%
   derive_followup_time(index_date = "lotstartdate") %>%
-
   derive_event_status(event_date = "dateofdeath") %>%
-
-select(patientid, sex, age, condition, followup_days, event_status)
+  select(patientid, sex, age, condition, followup_days, event_status)
 
 
 usethis::use_data(cohort_survival, overwrite = TRUE)
-

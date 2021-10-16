@@ -28,7 +28,10 @@ test_that("iwillsurvive works with existing survfit object", {
   data = cohort
   )
 
-  object <- iwillsurvive(cohort, fit = fit)
+  object <- iwillsurvive(cohort,
+    fit = fit,
+    followup_time = "followup_days"
+  )
 
   testthat::expect_is(
     object,

@@ -1,6 +1,6 @@
-#' Plot an iwillsurvive x.
+#' Plot an iwillsurvive object.
 #'
-#' @param x iwillsurvive. An iwillsurvive x created from \code{iwillsurvive()}
+#' @param object iwillsurvive. An iwillsurvive object created from \code{iwillsurvive()}
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
@@ -36,7 +36,6 @@
 #' @param median_flag_size numeric.
 #' @param event_nudge_y numeric.
 #' @param panel_heights numeric. Heights of the KM and Risk panels
-#' @param ... currently ignored
 #'
 #' @import ggplot2
 #' @import scales
@@ -45,9 +44,9 @@
 #' @export
 #'
 #' @examples
-#' # Set things up by creating an iwillsurvive x
+#' # Set things up by creating an iwillsurvive object
 #'
-#' cohort <- cohort_raw %>%
+#' cohort <- ez_cohort %>%
 #'   derive_followup_date(
 #'     event_date = "dateofdeath",
 #'     censor_date = "lastvisitdate"
@@ -87,7 +86,7 @@
 #'   subtitle = "My Subttitle",
 #'   risk_table_title = "My Risk Table Title"
 #' )
-plot.iwillsurvive <- function(x = NULL,
+plot.iwillsurvive <- function(object = NULL,
                               ggtheme = ggplot2::theme_bw(),
                               palette = "Set1",
                               simple = FALSE,
@@ -120,21 +119,20 @@ plot.iwillsurvive <- function(x = NULL,
                               event_title = NULL,
                               median_flag_size = 4,
                               event_nudge_y = .15,
-                              panel_heights = c(3, 1),
-                              ...) {
-  testthat::expect_is(x, "iwillsurvive")
+                              panel_heights = c(3, 1)) {
+  testthat::expect_is(object, "iwillsurvive")
 
-  plot_df <- broom::tidy(x$fit)
-  cohort <- x$cohort
+  plot_df <- broom::tidy(object$fit)
+  cohort <- object$cohort
 
   patient_n <- nrow(cohort)
 
   if (is.null(event_title)) {
-    event_title <- x$event_title
+    event_title <- object$event_title
   }
 
   if (is.null(index_title)) {
-    index_title <- x$index_title
+    index_title <- object$index_title
   }
 
   if (simple) {
@@ -245,7 +243,7 @@ plot.iwillsurvive <- function(x = NULL,
     }
 
     if (add_median) {
-      surv_median <- x$fit_summary %>%
+      surv_median <- object$fit_summary %>%
         dplyr::select(strata, median) %>%
         dplyr::mutate(strata = stringr::str_remove_all(strata, pattern = "condition=")) %>%
         dplyr::mutate(y = .5) %>%
@@ -353,10 +351,10 @@ plot.iwillsurvive <- function(x = NULL,
             )
           )
 
-        median_diff <- diff(range(x$fit_summary$median))
+        median_diff <- diff(range(object$fit_summary$median))
 
         delta_text <- paste0(round(median_diff, 0))
-        # delta_text <- paste0(round(median_diff, 1), x$followup_time_units)
+        # delta_text <- paste0(round(median_diff, 1), object$followup_time_units)
 
         p_km <- p_km +
           ggplot2::annotate("text",
@@ -381,7 +379,6 @@ plot.iwillsurvive <- function(x = NULL,
       }
     }
 
-
     # Set title
 
     if (!is.null(title)) {
@@ -400,8 +397,8 @@ plot.iwillsurvive <- function(x = NULL,
       my_subtitle <- paste0("N = ", scales::comma(patient_n))
     }
 
-    if (!is.null(x$followup_time_units)) {
-      x_lab <- paste0("Time (", stringr::str_to_title(x$followup_time_units), ")")
+    if (!is.null(object$followup_time_units)) {
+      x_lab <- paste0("Time (", stringr::str_to_title(object$followup_time_units), ")")
     } else {
       x_lab <- "Time"
     }
@@ -483,7 +480,6 @@ plot.iwillsurvive <- function(x = NULL,
           )
       }
 
-
       my_arrow <- if (anchor_arrow) {
         arrow(length = unit(0.02, "npc"))
       } else {
@@ -559,7 +555,6 @@ plot.iwillsurvive <- function(x = NULL,
       dplyr::arrange(strata, time) %>%
       dplyr::mutate(lab = paste0(risk_n, " (", censored_n, ")")) %>%
       dplyr::mutate(strata_y = as.numeric(factor(strata)) * -.1 - .2)
-
 
     p_risk <- ggplot2::ggplot(
       data = risk_df,
@@ -709,7 +704,6 @@ plot.iwillsurvive <- function(x = NULL,
   #   # Create final plot -----------------------
   #
 
-
   if (is.null(xlim)) {
     my_limits <- time_lims
   } else {
@@ -722,10 +716,8 @@ plot.iwillsurvive <- function(x = NULL,
     my_breaks <- x_breaks
   }
 
-
   p_km <- p_km +
     ggplot2::theme(plot.margin = ggplot2::unit(c(1, 1, .5, 2), "lines"))
-
 
   if (add_gridlines == FALSE) {
     p_km <- p_km +
@@ -741,8 +733,6 @@ plot.iwillsurvive <- function(x = NULL,
     ggplot2::scale_colour_brewer(palette = palette)
 
   g_km <- ggplot2::ggplotGrob(p_km)
-
-
 
   if (risk_table) {
     if (is.null(risk_table_title)) {
@@ -777,7 +767,6 @@ plot.iwillsurvive <- function(x = NULL,
     g_risk <- ggplot2::ggplotGrob(p_risk)
   }
 
-
   if (risk_table) {
     maxWidth <- grid::unit.pmax(
       g_km$widths[2:5],
@@ -790,7 +779,6 @@ plot.iwillsurvive <- function(x = NULL,
   }
 
   g_km$widths[2:5] <- as.list(maxWidth)
-
 
   if (risk_table) {
     gridExtra::grid.arrange(g_km, g_risk,

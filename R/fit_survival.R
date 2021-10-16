@@ -1,15 +1,16 @@
 #' Create an iwillsurvive object
 #'
 #' @param cohort dataframe. A one-row-per-patient dataframe
-#' @param followup_time character. The column representing followup time.
-#' @param event_status character. The column representing event status -- must be logical.
-#' @param patient_id character. ... uniquep patientid.
-#' @param terms character. A vector of model terms.
+#' @param followup_time character.
+#' @param event_status character.
+#' @param patient_id character.
+#' @param terms character.
 #' @param type character. See ?survival::survfit.formula
-#' @param fit survfit. An optional survfit object created from survival:survfit(). If specified, no additional model(s) will be fit.
-#' @param event_title character. An optional name of
+#' @param fit survfit. An optional survfit object created from
+#' survival:survfit(). If specified, no additional model(s) will be fit.
+#' @param event_title character.
 #' @param index_title character.
-#' @param title character. An optional title of the analysis that is passed to print() and plot() methods.
+#' @param title character.
 #' @param followup_time_units character. Units used in followup time
 #' @param verbose logical. If TRUE, return messages
 #'
@@ -22,22 +23,29 @@
 #'
 #' @examples
 #'
-#' cohort_survival
-#'
-#' # No Terms
-#'
-#' cohort_fit <- iwillsurvive(cohort_survival,
-#'   followup_time = "followup_days"
+#' cohort <- data.frame(
+#'   patientid = 1:20,
+#'   followup_months = c(
+#'     6.1, 15.4, 22, 24.6, 25.6, 26.1, 28.7, 46.9, 54.5, 55, 62.2,
+#'     65.5, 88.1, 108.5, 116, 119.1, 119.6, 169.1, 317.8, 381.7
+#'   ),
+#'   event_status = c(
+#'     FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE,
+#'     TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE
+#'   ),
+#'   group = c(
+#'     "a", "b", "a", "b", "a", "b", "a", "b", "a", "b",
+#'     "a", "b", "a", "b", "a", "b", "a", "b", "a", "b"
+#'   )
 #' )
-#' cohort_fit
 #'
-#' # Now including a term
+#' # Ignoring group term
+#' cohort_fit <- iwillsurvive(cohort)
 #'
-#' cohort_fit <- iwillsurvive(cohort_survival,
-#'   followup_time = "followup_days",
-#'   terms = "condition"
+#' # Now including some covariates
+#' cohort_fit <- iwillsurvive(cohort,
+#'   terms = "group"
 #' )
-#' cohort_fit
 iwillsurvive <- function(cohort,
                          followup_time = "followup_months",
                          event_status = "event_status",
@@ -45,8 +53,8 @@ iwillsurvive <- function(cohort,
                          terms = NULL,
                          type = "right",
                          fit = NULL,
-                         event_title = "<event>",
-                         index_title = "<index>",
+                         event_title = NULL,
+                         index_title = NULL,
                          title = NULL,
                          followup_time_units = NULL,
                          verbose = TRUE) {
@@ -112,26 +120,9 @@ iwillsurvive <- function(cohort,
     )]
   }
 
-  # Extract fit_summary
-
-  fit_summary_table <- summary(fit)$table
-
-  if (is.null(dim(fit_summary_table))) {
-    fit_summary_table <- purrr::map_df(fit_summary_table, .f = function(x) {
-      x
-    }) %>%
-      dplyr::mutate(strata = "all") %>%
-      dplyr::select(strata, dplyr::everything())
-  } else {
-    fit_summary_table <- tibble::as_tibble(fit_summary_table,
-      rownames = "strata"
-    )
-  }
-
   out <- list(
     cohort = cohort,
     fit = fit,
-    fit_summary = fit_summary_table,
     terms = terms,
     event_title = event_title,
     index_title = index_title,
