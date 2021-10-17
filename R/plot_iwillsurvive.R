@@ -1,6 +1,6 @@
 #' Plot an iwillsurvive x.
 #'
-#' @param x iwillsurvive. An iwillsurvive x created from \code{iwillsurvive()}
+#' @param x iwillsurvive. An iwillsurvive object created from \code{iwillsurvive()}
 #' @param ggtheme theme. A ggplot2 theme
 #' @param palette character. The name of a paleete. See ?ggplot2::scale_colour_brewer for examples
 #' @param simple logical. If TRUE, only plot the Kaplan-Meier estimate
