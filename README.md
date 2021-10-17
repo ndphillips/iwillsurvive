@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# iwillsurvive 0.1.4.9000 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
+# iwillsurvive 0.1.5 <img src="https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/iwillsurvive_hex.png" align="right" height="139"/>
 
 <!-- badges: start -->
 

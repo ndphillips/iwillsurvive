@@ -1,4 +1,4 @@
-# iwillsurvive 0.1.4.9000
+# iwillsurvive 0.1.5
 
 * Renamed `ez_cohort` to `cohort_raw`
 * Created new `cohort_survival` with pre-calculated survival derived variables
