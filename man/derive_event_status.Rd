@@ -5,21 +5,21 @@
 \title{Calculate event_status, a logical column indicating whether or not an event occured.}
 \usage{
 derive_event_status(
-  cohort = NULL,
+  data = NULL,
   event_date = NULL,
   event_status_rename = "event_status"
 )
 
 derive_event_status(
-  cohort = NULL,
+  data = NULL,
   event_date = NULL,
   event_status_rename = "event_status"
 )
 }
 \arguments{
-\item{cohort}{dataframe. A one-row-per-patient dataframe.}
+\item{data}{dataframe. A one-row-per-patient dataframe.}
 
-\item{event_date}{character. The name of a column in cohort indicating event dates.}
+\item{event_date}{character. The name of a column in data indicating event dates.}
 
 \item{event_status_rename}{character. (Optional) Name of the resulting event_status column}
 }

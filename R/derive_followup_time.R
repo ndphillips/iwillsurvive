@@ -1,6 +1,6 @@
 #' Calculate followup_time, the number of days from index to follow up in days
 #'
-#' @param cohort dataframe. A one-row-per-patient dataframe.
+#' @param data dataframe. A one-row-per-patient dataframe.
 #' @param index_date character. The name of a column in cohort indicating index dates.
 #' @param followup_date character. The name of a column in cohort indicating follow up dates.
 #'
@@ -11,15 +11,15 @@
 #'
 #' @examples
 #'
-#' cohort <- cohort_raw %>%
+#' data <- cohort_raw %>%
 #'   derive_followup_date(
 #'     event_date = "dateofdeath",
 #'     censor_date = "lastvisitdate"
 #'   )
 #'
-#' # Derive follow up time from index to follow upin days, months and years.
+#' # Derive follow up time from index to follow up in days, months and years.
 #'
-#' cohort %>%
+#' data %>%
 #'   derive_followup_time(
 #'     index_date = "lotstartdate",
 #'     followup_date = "followup_date"
@@ -28,25 +28,25 @@
 #'
 #' https://pumas.nasa.gov/examples/index.php?id=46
 #'
-derive_followup_time <- function(cohort,
+derive_followup_time <- function(data,
                                  index_date = "index_date",
                                  followup_date = "followup_date") {
 
   days_in_month = 30.44
   days_in_year = 365.24
 
-  testthat::expect_true(!is.null(cohort))
-  testthat::expect_true(index_date %in% names(cohort))
-  testthat::expect_true(followup_date %in% names(cohort))
+  testthat::expect_true(!is.null(data))
+  testthat::expect_true(index_date %in% names(data))
+  testthat::expect_true(followup_date %in% names(data))
 
   index_date_sym <- rlang::sym(index_date)
   followup_date_sym <- rlang::sym(followup_date)
 
-  cohort <- cohort %>%
+  data <- data %>%
     dplyr::mutate(followup_days := as.numeric(!!followup_date_sym - !!index_date_sym),
       followup_months = followup_days / days_in_month,
       followup_years = followup_days / days_in_year
     )
 
-  cohort
+  data
 }

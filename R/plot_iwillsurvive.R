@@ -109,7 +109,7 @@ plot.iwillsurvive <- function(x = NULL,
                               xlim = NULL,
                               x_breaks = NULL,
                               label_size = 3,
-                              label_color = gray(0),
+                              label_color = grDevices::gray(0),
                               median_flag_nudge_y = .1,
                               median_flag_thickness = .7,
                               risk_table = TRUE,
@@ -125,7 +125,7 @@ plot.iwillsurvive <- function(x = NULL,
   testthat::expect_is(x, "iwillsurvive")
 
   plot_df <- broom::tidy(x$fit)
-  cohort <- x$cohort
+  cohort <- x$data
 
   patient_n <- nrow(cohort)
 
@@ -275,7 +275,7 @@ plot.iwillsurvive <- function(x = NULL,
           xend = max(surv_median$value),
           y = .5,
           yend = .5,
-          col = gray(.2),
+          col = grDevices::gray(.2),
           lty = 3
         )
 
@@ -319,7 +319,7 @@ plot.iwillsurvive <- function(x = NULL,
             xend = max(surv_median$value),
             y = horizontal_bar_y,
             yend = horizontal_bar_y,
-            col = gray(.8)
+            col = grDevices::gray(.8)
           )
 
         # Add dotted connectors

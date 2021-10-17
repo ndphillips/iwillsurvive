@@ -116,7 +116,7 @@ used in the model.
 
 <!-- * Note: If we were using `survival::survfit()` we'd need to specify this nasty  -->
 <!-- looking formula `survival::survfit(survival::Surv(followup_days, event_status,  -->
-<!-- type = 'right') ~ group, data = cohort)` directly, With `iwillsurvive()`, we can  -->
+<!-- type = 'right') ~ group, data = cohort)` ddirectly, With `iwillsurvive()`, we can  -->
 <!-- simply specify the column names of interest and let the function take care of  -->
 <!-- the formula -->
 

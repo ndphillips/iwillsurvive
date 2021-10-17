@@ -27,7 +27,7 @@
   xlim = NULL,
   x_breaks = NULL,
   label_size = 3,
-  label_color = gray(0),
+  label_color = grDevices::gray(0),
   median_flag_nudge_y = 0.1,
   median_flag_thickness = 0.7,
   risk_table = TRUE,

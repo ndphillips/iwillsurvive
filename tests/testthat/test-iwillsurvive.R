@@ -1,6 +1,6 @@
 # Create a basic cohort
 
-cohort <- cohort_raw %>%
+data <- cohort_raw %>%
   derive_followup_date(
     event_date = "dateofdeath",
     censor_date = "lastvisitdate"
@@ -8,9 +8,8 @@ cohort <- cohort_raw %>%
   derive_followup_time(index_date = "lotstartdate") %>%
   derive_event_status(event_date = "dateofdeath")
 
-
 test_that("iwillsurvive works with standard inputs", {
-  object <- iwillsurvive(cohort,
+  object <- iwillsurvive(data,
     followup_time = "followup_days",
     event_status = "event_status"
   )
@@ -25,10 +24,10 @@ test_that("iwillsurvive works with existing survfit object", {
   fit <- survival::survfit(survival::Surv(followup_days, event_status,
     type = "right"
   ) ~ 1,
-  data = cohort
+  data = data
   )
 
-  object <- iwillsurvive(cohort,
+  object <- iwillsurvive(data,
     fit = fit,
     followup_time = "followup_days"
   )
@@ -46,10 +45,10 @@ test_that("iwillsurvive gives the same results as survfit", {
   fit <- survival::survfit(survival::Surv(followup_days, event_status,
     type = "right"
   ) ~ 1,
-  data = cohort
+  data = data
   )
 
-  object_iws <- iwillsurvive(cohort,
+  object_iws <- iwillsurvive(data,
     followup_time = "followup_days",
     event_status = "event_status"
   )
@@ -61,10 +60,10 @@ test_that("iwillsurvive gives the same results as survfit", {
   fit <- survival::survfit(survival::Surv(followup_days, event_status,
     type = "right"
   ) ~ condition,
-  data = cohort
+  data = data
   )
 
-  object_iws <- iwillsurvive(cohort,
+  object_iws <- iwillsurvive(data,
     terms = "condition",
     followup_time = "followup_days",
     event_status = "event_status"

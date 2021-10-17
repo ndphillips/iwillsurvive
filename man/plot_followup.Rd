@@ -17,9 +17,9 @@ plot_followup(
 
 \item{add_median}{logical. If TRUE, add a line showing median.}
 
-\item{point_size}{numeric.}
+\item{point_size}{numeric. Width of points}
 
-\item{line_size}{numeric.}
+\item{line_size}{numeric. Width of lines}
 
 \item{theme}{A ggplot2 theme}
 }
@@ -30,5 +30,14 @@ ggplot2
 Plot a patient timeline containing
 }
 \examples{
+
+cohort_iws <- iwillsurvive(cohort_survival,
+  followup_time = "followup_days",
+  index_title = "LOT1 Start Date",
+  event_title = "Death",
+  terms = "condition"
+)
+
+plot_followup(cohort_iws)
 
 }

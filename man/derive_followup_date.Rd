@@ -5,23 +5,23 @@
 \title{Calculate follow up date from event_date and censor_date columns}
 \usage{
 derive_followup_date(
-  cohort = NULL,
+  data = NULL,
   event_date = NULL,
   censor_date = "censor_date"
 )
 
 derive_followup_date(
-  cohort = NULL,
+  data = NULL,
   event_date = NULL,
   censor_date = "censor_date"
 )
 }
 \arguments{
-\item{cohort}{dataframe. A one-row-per-patient dataframe.}
+\item{data}{dataframe. A one-row-per-patient dataframe.}
 
-\item{event_date}{character. The name of a column in cohort indicating event dates.}
+\item{event_date}{character. The name of a column in data indicating event dates.}
 
-\item{censor_date}{character. The name of a date column in cohort indicating censor dates.}
+\item{censor_date}{character. The name of a date column in data indicating censor dates.}
 }
 \value{
 dataframe.

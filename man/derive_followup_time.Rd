@@ -5,25 +5,25 @@
 \title{Calculate followup_time, the number of days from index to follow up in days}
 \usage{
 derive_followup_time(
-  cohort,
+  data,
   index_date = "index_date",
   followup_date = "followup_date",
   followup_time_rename = "followup_days"
 )
 
 derive_followup_time(
-  cohort,
+  data,
   index_date = "index_date",
   followup_date = "followup_date",
   followup_time_rename = "followup_days"
 )
 }
 \arguments{
-\item{cohort}{dataframe. A one-row-per-patient dataframe.}
+\item{data}{dataframe. A one-row-per-patient dataframe.}
 
-\item{index_date}{character. The name of a column in cohort indicating index dates.}
+\item{index_date}{character. The name of a column in data indicating index dates.}
 
-\item{followup_date}{character. The name of a column in cohort indicating follow up dates.}
+\item{followup_date}{character. The name of a column in data indicating follow up dates.}
 
 \item{followup_time_rename}{character. (Optional) Name of the resulting follow up days column.}
 }
@@ -40,15 +40,15 @@ Calculate followup_time, the number of days from index to follow up in days
 }
 \examples{
 
-cohort <- cohort_raw \%>\%
+data <- cohort_raw \%>\%
   derive_followup_date(
     event_date = "dateofdeath",
     censor_date = "lastvisitdate"
   )
 
-# Derive follow up time from index to follow upin days, months and years.
+# Derive follow up time from index to follow up in days, months and years.
 
-cohort \%>\%
+data \%>\%
   derive_followup_time(
     index_date = "lotstartdate",
     followup_date = "followup_date"

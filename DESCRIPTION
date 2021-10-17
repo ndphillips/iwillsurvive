@@ -33,7 +33,8 @@ Imports:
     tidyr,
     gridExtra,
     RColorBrewer,
-    crayon
+    crayon,
+    grDevices
 Suggests: 
     testthat,
     knitr,

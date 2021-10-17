@@ -1,6 +1,6 @@
 #' Create an iwillsurvive object
 #'
-#' @param cohort dataframe. A one-row-per-patient dataframe
+#' @param data dataframe. A one-row-per-patient dataframe
 #' @param followup_time character. The column representing followup time.
 #' @param event_status character. The column representing event status -- must be logical.
 #' @param patient_id character. ... uniquep patientid.
@@ -38,7 +38,7 @@
 #'   terms = "condition"
 #' )
 #' cohort_fit
-iwillsurvive <- function(cohort,
+iwillsurvive <- function(data,
                          followup_time = "followup_months",
                          event_status = "event_status",
                          patient_id = "patientid",
@@ -50,14 +50,14 @@ iwillsurvive <- function(cohort,
                          title = NULL,
                          followup_time_units = NULL,
                          verbose = TRUE) {
-  testthat::expect_true(followup_time %in% names(cohort))
-  testthat::expect_true(event_status %in% names(cohort))
-  testthat::expect_is(cohort[[event_status]], "logical")
+  testthat::expect_true(followup_time %in% names(data))
+  testthat::expect_true(event_status %in% names(data))
+  testthat::expect_is(data[[event_status]], "logical")
 
-  patient_n <- nrow(cohort)
-  event_n <- sum(cohort[[event_status]])
+  patient_n <- nrow(data)
+  event_n <- sum(data[[event_status]])
 
-  patientid_col <- names(cohort)[tolower(names(cohort)) == "patientid"]
+  patientid_col <- names(data)[tolower(names(data)) == "patientid"]
 
   if (verbose) {
     cli::cli_rule(left = "iwillsurvive")
@@ -75,7 +75,7 @@ iwillsurvive <- function(cohort,
       my_expr <- paste0(
         "survival::survfit(survival::Surv(",
         followup_time, ", ",
-        event_status, ", type = '", type, "') ~ 1, data = cohort)"
+        event_status, ", type = '", type, "') ~ 1, data = data)"
       )
     } else {
       my_expr <- paste0(
@@ -83,7 +83,7 @@ iwillsurvive <- function(cohort,
         followup_time, ", ",
         event_status, ", type = '", type, "') ~ ",
         paste(terms, collapse = " + "),
-        ", data = cohort)"
+        ", data = data)"
       )
     }
 
@@ -129,7 +129,7 @@ iwillsurvive <- function(cohort,
   }
 
   out <- list(
-    cohort = cohort,
+    data = data,
     fit = fit,
     fit_summary = fit_summary_table,
     terms = terms,
