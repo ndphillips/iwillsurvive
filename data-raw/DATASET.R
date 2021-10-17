@@ -58,7 +58,7 @@ lastcontactdate[eventdate <= data_cutoff_date] <- eventdate[eventdate <= data_cu
 cohort_raw <- tibble::tibble(
   patientid = sprintf("F%05d", 1:patient_n),
   sex = sample(c("m", "f"), size = patient_n, replace = TRUE),
-  age = rnorm(patient_n, mean = 45, sd = 10),
+  age = round(rnorm(patient_n, mean = 45, sd = 10), 1),
   condition = condition,
   lotstartdate = index_date,
   lastvisitdate = lastcontactdate,

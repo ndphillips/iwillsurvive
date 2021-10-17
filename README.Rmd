@@ -58,19 +58,26 @@ cohort_raw %>%
   knitr::kable()
 ```
 
-Here's what each column means:
+Here's what the key columns mean:
 
 |Column|Definition|
 |:-----|:---------|
 |`patientid`|A character referring to an individual patient in the form "FXXXXX"|
 |`condition`|A character indicating which condition the patient was in, unique values are: `r paste(unique(cohort_raw$condition), collapse = ", ")`|
-|`lotstartdate`|A date indicating when a patient started their first line of therapy after diagnosis|
-|`lastvisitdate`|A date indicating the last known date that a patient was alive|
-|`dateofdeath`|A date indicating the date of death of patients who died during the study period|
+|`lotstartdate`|A date indicating when a patient started their first line of therapy after diagnosis (will be used as the *index date*)|
+|`lastvisitdate`|A date indicating the last known date that a patient was alive (will be used as the *censor date*)|
+|`dateofdeath`|A date indicating the date of death of patients who died during the study period (will be used as the *event date*)|
+
+### Research Question
+
+Below is our main research question:
+
+> What is the difference in median survival from lot1start to
+ death (or censor) for patients in the placebo versus drug condition?
 
 ### Survival data
 
-Once we have our trial data, we now need to define some key survival data:
+Before we can estimate the survival model, we need to define some key columns:
 
 |Variable|Definition|
 |:----|:-----|
@@ -98,15 +105,15 @@ cohort <- cohort_raw %>%
   derive_event_status(event_date = "dateofdeath")
 ```
 
-
 Here's how the new columns look for the first 8 patients:
 
 ```{r, echo = FALSE}
 cohort %>% 
-  select(patientid, condition, followup_date:event_status) %>%
+  select(patientid, followup_date:event_status) %>%
   slice(1:8) %>%
   knitr::kable()
 ```
+
 
 ### Fitting survival models
 
@@ -128,6 +135,8 @@ cohort_iws <- iwillsurvive(cohort,
                            index_title = "LOT1 Start")
 ```
 
+#### print method
+
 Print the object to see summary information:
 
 ```{r, eval = FALSE}
@@ -138,6 +147,9 @@ cohort_iws
 knitr::include_graphics("https://raw.githubusercontent.com/ndphillips/iwillsurvive/master/inst/figures/print_iwillsurvive.png")
 ```
 
+#### Plotting followup times
+
+
 Use `plot_followup()` to visualize the observed follow-up times for each patient 
 ordered by the length of their follow-up and colored by their event status (not
  by condition)
@@ -145,6 +157,8 @@ ordered by the length of their follow-up and colored by their event status (not
 ```{r, fig.width = 7, fig.height = 5.5, out.width = "100%"}
 plot_followup(cohort_iws)
 ```
+
+#### Plotting Kaplan-Meier curves (the plot method)
 
 Use `plot()` to plot the Kaplan-Meier survival curve. If you don't include any 
 arguments, you'll get the 'default' curve options.
@@ -182,13 +196,14 @@ Internally, it is a list containing many objects from the original data, to a
 names(cohort_iws)
 ```
 
-The `.$cohort` object contains the original data
+The `.$data` object contains the original data
 
 ```{r}
-cohort_iws$cohort
+cohort_iws$data
 ```
 
-The `.$fit` object contains the `survival` object
+The `.$fit` object contains the `survival` object (created using the 
+`survival::survfit()` function)
 
 ```{r}
 cohort_iws$fit
@@ -199,4 +214,26 @@ The `.$fit_summary` object contains summary information:
 ```{r}
 cohort_iws$fit_summary
 ```
+
+### iwillsurvive and the survival paackage
+
+`iwillsurvive` uses the `survival` package under the hood for all model estimation. 
+For that reason, you should always be able to get the 'same result' using the
+ `survival` package as you would using the `iwillsurvive` package.
+ 
+For example, here's how to directly replicate the same result we got using 
+ `survival`:
+
+```{r}
+library(survival)
+
+# Fit the model
+fit_survival <- survival::survfit(survival::Surv(followup_days, event_status, 
+                                                 type = 'right') ~ condition, 
+                                  data = cohort)
+
+# Print method
+fit_survival
+```
+
 
