@@ -55,33 +55,26 @@ lastcontactdate[eventdate <= data_cutoff_date] <- eventdate[eventdate <= data_cu
   sd = 5
 )
 
-ez_cohort <- tibble::tibble(
+cohort_raw <- tibble::tibble(
   patientid = sprintf("F%05d", 1:patient_n),
+  sex = sample(c("m", "f"), size = patient_n, replace = TRUE),
+  age = round(rnorm(patient_n, mean = 45, sd = 10), 1),
   condition = condition,
   lotstartdate = index_date,
   lastvisitdate = lastcontactdate,
   dateofdeath = event_date_obs
 )
-#
-cohort <- ez_cohort %>%
+
+usethis::use_data(cohort_raw, overwrite = TRUE)
+
+cohort_survival <- cohort_raw %>%
   derive_followup_date(
     event_date = "dateofdeath",
     censor_date = "lastvisitdate"
   ) %>%
   derive_followup_time(index_date = "lotstartdate") %>%
-  derive_event_status(event_date = "dateofdeath")
+  derive_event_status(event_date = "dateofdeath") %>%
+  select(patientid, sex, age, condition, followup_days, event_status)
 
-cohort_fit <- iwillsurvive(cohort,
-  followup_time = "followup_days",
-  terms = "condition"
-)
 
-plot(cohort_fit,
-  cohort = cohort,
-  index_title = "LOT1 Start",
-  event_title = "Death"
-)
-
-surv_pvalue(cohort_fit)
-
-usethis::use_data(ez_cohort, overwrite = TRUE)
+usethis::use_data(cohort_survival, overwrite = TRUE)

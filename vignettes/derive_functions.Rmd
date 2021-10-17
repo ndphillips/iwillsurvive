@@ -1,0 +1,21 @@
+---
+title: "derive_functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{derive_functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(iwillsurvive)
+```
+
+A placeholder to describe all derive functions...d

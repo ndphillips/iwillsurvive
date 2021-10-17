@@ -1,16 +1,15 @@
 #' Create an iwillsurvive object
 #'
-#' @param cohort dataframe. A one-row-per-patient dataframe
-#' @param followup_time character.
-#' @param event_status character.
-#' @param patient_id character.
-#' @param terms character.
+#' @param data dataframe. A one-row-per-patient dataframe
+#' @param followup_time character. The column representing followup time.
+#' @param event_status character. The column representing event status -- must be logical.
+#' @param patient_id character. ... uniquep patientid.
+#' @param terms character. A vector of model terms.
 #' @param type character. See ?survival::survfit.formula
-#' @param fit survfit. An optional survfit object created from
-#' survival:survfit(). If specified, no additional model(s) will be fit.
-#' @param event_title character.
+#' @param fit survfit. An optional survfit object created from survival:survfit(). If specified, no additional model(s) will be fit.
+#' @param event_title character. An optional name of
 #' @param index_title character.
-#' @param title character.
+#' @param title character. An optional title of the analysis that is passed to print() and plot() methods.
 #' @param followup_time_units character. Units used in followup time
 #' @param verbose logical. If TRUE, return messages
 #'
@@ -23,35 +22,23 @@
 #'
 #' @examples
 #'
-#' cohort <- data.frame(
-#'   patientid = 1:20,
-#'   followup_months = c(
-#'     6.1, 15.4, 22, 24.6, 25.6, 26.1, 28.7, 46.9, 54.5, 55, 62.2,
-#'     65.5, 88.1, 108.5, 116, 119.1, 119.6, 169.1, 317.8, 381.7
-#'   ),
-#'   event_status = c(
-#'     FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE,
-#'     TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE
-#'   ),
-#'   group = c(
-#'     "a", "b", "a", "b", "a", "b", "a", "b", "a", "b",
-#'     "a", "b", "a", "b", "a", "b", "a", "b", "a", "b"
-#'   )
+#' cohort_survival
+#'
+#' # No Terms
+#'
+#' cohort_fit <- iwillsurvive(cohort_survival,
+#'   followup_time = "followup_days"
 #' )
-#'
-#' # Ignoring group term
-#'
-#' cohort_fit <- iwillsurvive(cohort)
 #' cohort_fit
 #'
-#' # Now including some covariates
+#' # Now including a term
 #'
-#' cohort_fit <- iwillsurvive(cohort,
-#'   terms = "group"
+#' cohort_fit <- iwillsurvive(cohort_survival,
+#'   followup_time = "followup_days",
+#'   terms = "condition"
 #' )
-#'
 #' cohort_fit
-iwillsurvive <- function(cohort,
+iwillsurvive <- function(data,
                          followup_time = "followup_months",
                          event_status = "event_status",
                          patient_id = "patientid",
@@ -63,14 +50,14 @@ iwillsurvive <- function(cohort,
                          title = NULL,
                          followup_time_units = NULL,
                          verbose = TRUE) {
-  testthat::expect_true(followup_time %in% names(cohort))
-  testthat::expect_true(event_status %in% names(cohort))
-  testthat::expect_is(cohort[[event_status]], "logical")
+  testthat::expect_true(followup_time %in% names(data))
+  testthat::expect_true(event_status %in% names(data))
+  testthat::expect_is(data[[event_status]], "logical")
 
-  patient_n <- nrow(cohort)
-  event_n <- sum(cohort[[event_status]])
+  patient_n <- nrow(data)
+  event_n <- sum(data[[event_status]])
 
-  patientid_col <- names(cohort)[tolower(names(cohort)) == "patientid"]
+  patientid_col <- names(data)[tolower(names(data)) == "patientid"]
 
   if (verbose) {
     cli::cli_rule(left = "iwillsurvive")
@@ -88,7 +75,7 @@ iwillsurvive <- function(cohort,
       my_expr <- paste0(
         "survival::survfit(survival::Surv(",
         followup_time, ", ",
-        event_status, ", type = '", type, "') ~ 1, data = cohort)"
+        event_status, ", type = '", type, "') ~ 1, data = data)"
       )
     } else {
       my_expr <- paste0(
@@ -96,7 +83,7 @@ iwillsurvive <- function(cohort,
         followup_time, ", ",
         event_status, ", type = '", type, "') ~ ",
         paste(terms, collapse = " + "),
-        ", data = cohort)"
+        ", data = data)"
       )
     }
 
@@ -125,7 +112,6 @@ iwillsurvive <- function(cohort,
     )]
   }
 
-
   # Extract fit_summary
 
   fit_summary_table <- summary(fit)$table
@@ -142,9 +128,8 @@ iwillsurvive <- function(cohort,
     )
   }
 
-
   out <- list(
-    cohort = cohort,
+    data = data,
     fit = fit,
     fit_summary = fit_summary_table,
     terms = terms,
