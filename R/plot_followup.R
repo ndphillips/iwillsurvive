@@ -38,7 +38,6 @@ plot_followup <- function(object = NULL,
       levels = !!patientid_sym
     )))
 
-
   if (!is.null(object$followup_time_units)) {
     x_lab <- paste0("Time at Risk (", stringr::str_to_title(object$followup_time_units), ")")
   } else {
@@ -72,7 +71,8 @@ plot_followup <- function(object = NULL,
     ) +
     ggplot2::geom_point(size = point_size) +
     ggplot2::scale_shape_manual(values = c(3, 16)) +
-    ggplot2::scale_color_manual(values = c("#1ECBB7", "#4941D1")) +
+    ggplot2::scale_color_manual(values = c(gray(.7, alpha = .8),
+                                           gray(.2, alpha = .8))) +
     ggplot2::labs(
       y = "Patients",
       title = my_title,
@@ -84,12 +84,10 @@ plot_followup <- function(object = NULL,
       panel.grid.minor.y = ggplot2::element_blank()
     )
 
-
   if (!is.null(event_title)) {
     p <- p +
       ggplot2::labs(color = event_title, shape = event_title)
   }
-
 
   if (add_median) {
     median_followup_time <- stats::median(cohort$t_followup_time)
@@ -107,7 +105,6 @@ plot_followup <- function(object = NULL,
         label = "Median Time at Risk", size = 3
       )
   }
-
 
   p <- p + theme + ggplot2::theme(legend.position = "top")
 
