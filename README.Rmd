@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![R build status](https://github.com/ndphillips/iwillsurvive/workflows/R-CMD-check/badge.svg)](https://github.com/ndphillips/iwillsurvive/actions)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Codecov test coverage](https://codecov.io/gh/ndphillips/iwillsurvive/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ndphillips/iwillsurvive?branch=master)
 [![Codename: shuffled](https://img.shields.io/badge/version-0.1_'Gloria'-yellow.svg)](https://en.wikipedia.org/wiki/Gloria_Gaynor)
   <!-- badges: end -->
 
