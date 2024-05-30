@@ -1,3 +1,7 @@
+# develop
+
+* Exported `print_ascii_survival()`
+
 # iwillsurvive 0.1.5
 
 * Renamed `ez_cohort` to `cohort_raw`
