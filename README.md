@@ -27,8 +27,10 @@ statistical methods.
 <https://github.com/ndphillips/iwillsurvive>. Here is how to install it:
 
 ``` r
-devtools::install_github(repo = "https://github.com/ndphillips/iwillsurvive",
-                         build_vignettes = TRUE)
+devtools::install_github(
+  repo = "https://github.com/ndphillips/iwillsurvive",
+  build_vignettes = TRUE
+)
 ```
 
 ## Example
@@ -103,12 +105,11 @@ columns:
 
 ``` r
 cohort <- cohort_raw %>%
-  
-  derive_followup_date(event_date = "dateofdeath",
-                       censor_date = "lastvisitdate") %>%
-  
+  derive_followup_date(
+    event_date = "dateofdeath",
+    censor_date = "lastvisitdate"
+  ) %>%
   derive_followup_time(index_date = "lotstartdate") %>%
-  
   derive_event_status(event_date = "dateofdeath")
 ```
 
@@ -138,11 +139,12 @@ covariate) to be used in the model.
 <!-- the formula -->
 
 ``` r
-cohort_iws <- iwillsurvive(cohort, 
-                           followup_time = "followup_days",
-                           terms = "condition",
-                           event_title = "Death", 
-                           index_title = "LOT1 Start")
+cohort_iws <- iwillsurvive(cohort,
+  followup_time = "followup_days",
+  terms = "condition",
+  event_title = "Death",
+  index_title = "LOT1 Start"
+)
 #> ── iwillsurvive ────────────────────────────────────────────────────────────────
 #> - 202 of 250 (81%) patient(s) experienced the event.
 #> - survival::survfit(survival::Surv(followup_days, event_status, type = 'right') ~ condition, data = data)
@@ -185,19 +187,20 @@ You can fully customize the look of your Kaplan-Meier curve (see
 `?plot.iwillsurvive`) to see all the optional arguments:
 
 ``` r
-plot(cohort_iws, 
-     add_confidence = FALSE, 
-     add_median_delta = FALSE, 
-     censor_pch = 3,
-     censor_size = 5,
-     legend_position_x = c(600, 400),
-     legend_nudge_y =  c(.25, .3), 
-     median_flag_nudge_y = .15,
-     anchor_arrow = TRUE,
-     palette = "Dark2",
-     title = "My Title",
-     subtitle = "My Subttitle",
-     risk_table_title = "My Risk Table Title")
+plot(cohort_iws,
+  add_confidence = FALSE,
+  add_median_delta = FALSE,
+  censor_pch = 3,
+  censor_size = 5,
+  legend_position_x = c(600, 400),
+  legend_nudge_y = c(.25, .3),
+  median_flag_nudge_y = .15,
+  anchor_arrow = TRUE,
+  palette = "Dark2",
+  title = "My Title",
+  subtitle = "My Subttitle",
+  risk_table_title = "My Risk Table Title"
+)
 ```
 
 <img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
@@ -263,7 +266,7 @@ cohort_iws$fit_summary
 #> # ℹ 1 more variable: `0.95UCL` <dbl>
 ```
 
-### iwillsurvive and the survival paackage
+### iwillsurvive and the survival package
 
 `iwillsurvive` uses the `survival` package under the hood for all model
 estimation. For that reason, you should always be able to get the ‘same
@@ -277,9 +280,12 @@ using `survival`:
 library(survival)
 
 # Fit the model
-fit_survival <- survival::survfit(survival::Surv(followup_days, event_status, 
-                                                 type = 'right') ~ condition, 
-                                  data = cohort)
+fit_survival <- survival::survfit(
+  survival::Surv(followup_days, event_status,
+    type = "right"
+  ) ~ condition,
+  data = cohort
+)
 
 # Print method
 fit_survival
