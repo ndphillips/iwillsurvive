@@ -38,11 +38,12 @@ print.iwillsurvive <- function(x, ...) {
   cat("\nMedian Survival (", x$followup_time_units, "):\n", sep = "")
 
   for (row_i in 1:strata_n) {
-    cat(stringr::str_remove_all(x$fit_summary$strata[row_i],
-      pattern = "condition="
-    ), " = ",
-    round(x$fit_summary$median[row_i], 1),
-    sep = ""
+    cat(
+      stringr::str_remove_all(x$fit_summary$strata[row_i],
+        pattern = "condition="
+      ), " = ",
+      round(x$fit_summary$median[row_i], 1),
+      sep = ""
     )
 
     if (row_i < nrow(x$fit_summary)) {
@@ -131,10 +132,11 @@ print.iwillsurvive <- function(x, ...) {
     if (length(spaces) > 1) {
       for (j in 2:length(spaces)) {
         if (at_median) {
-          cat(crayon::bold(crayon::green(rep("=", length = spaces[j]),
+          cat(crayon::bold(
+            crayon::green(rep("=", length = spaces[j]),
+              sep = ""
+            ),
             sep = ""
-          ),
-          sep = ""
           ), sep = "")
           cat(char[j])
         } else {

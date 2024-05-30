@@ -21,10 +21,11 @@ test_that("iwillsurvive works with standard inputs", {
 })
 
 test_that("iwillsurvive works with existing survfit object", {
-  fit <- survival::survfit(survival::Surv(followup_days, event_status,
-    type = "right"
-  ) ~ 1,
-  data = data
+  fit <- survival::survfit(
+    survival::Surv(followup_days, event_status,
+      type = "right"
+    ) ~ 1,
+    data = data
   )
 
   object <- iwillsurvive(data,
@@ -39,13 +40,13 @@ test_that("iwillsurvive works with existing survfit object", {
 })
 
 test_that("iwillsurvive gives the same results as survfit", {
-
   # No terms -----------------------------------------------
 
-  fit <- survival::survfit(survival::Surv(followup_days, event_status,
-    type = "right"
-  ) ~ 1,
-  data = data
+  fit <- survival::survfit(
+    survival::Surv(followup_days, event_status,
+      type = "right"
+    ) ~ 1,
+    data = data
   )
 
   object_iws <- iwillsurvive(data,
@@ -57,10 +58,11 @@ test_that("iwillsurvive gives the same results as survfit", {
 
   # 1 Term -----------------------------------------------
 
-  fit <- survival::survfit(survival::Surv(followup_days, event_status,
-    type = "right"
-  ) ~ condition,
-  data = data
+  fit <- survival::survfit(
+    survival::Surv(followup_days, event_status,
+      type = "right"
+    ) ~ condition,
+    data = data
   )
 
   object_iws <- iwillsurvive(data,

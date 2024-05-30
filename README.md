@@ -95,12 +95,11 @@ To calculate these variables, we can use `iwillsurvive`’s *derive*
 functions: Use the `derive_*()` functions to calculate key derived
 columns:
 
--   `followup_date`: `dateofdeath`, if known, and `censordate`,
-    otherwise
--   `followup_days`: Days from `index_date` (in our case,
-    `lotstartdate`) to `followup_date`
--   `event_status`: A logical column indicating whether or not the event
-    (`dateofdeath`) is known.
+- `followup_date`: `dateofdeath`, if known, and `censordate`, otherwise
+- `followup_days`: Days from `index_date` (in our case, `lotstartdate`)
+  to `followup_date`
+- `event_status`: A logical column indicating whether or not the event
+  (`dateofdeath`) is known.
 
 ``` r
 cohort <- cohort_raw %>%
@@ -222,22 +221,21 @@ The `.$data` object contains the original data
 ``` r
 cohort_iws$data
 #> # A tibble: 250 × 10
-#>    patientid sex     age condition lotstartdate lastvisi…¹ dateofde…² followup…³
-#>    <chr>     <chr> <dbl> <chr>     <date>       <date>     <date>     <date>    
-#>  1 F00001    m      41.8 placebo   2016-05-17   2020-12-01 NA         2020-12-01
-#>  2 F00002    m      45.3 placebo   2020-07-27   2020-08-25 2020-10-05 2020-10-05
-#>  3 F00003    m      52.9 drug      2016-04-14   2017-02-16 2017-03-13 2017-03-13
-#>  4 F00004    m      48.4 drug      2020-06-12   2020-11-25 NA         2020-11-25
-#>  5 F00005    f      54.4 placebo   2019-03-20   2020-01-13 2020-02-21 2020-02-21
-#>  6 F00006    f      50.7 placebo   2017-04-02   2017-10-18 2017-11-19 2017-11-19
-#>  7 F00007    f      47.6 placebo   2018-01-26   2019-01-12 2019-02-17 2019-02-17
-#>  8 F00008    f      42.7 placebo   2015-07-02   2015-11-20 2015-12-23 2015-12-23
-#>  9 F00009    m      48.1 drug      2019-03-08   2020-07-18 2020-08-17 2020-08-17
-#> 10 F00010    m      28.9 placebo   2018-08-23   2019-02-14 2019-03-08 2019-03-08
-#> # … with 240 more rows, 2 more variables: followup_days <dbl>,
-#> #   event_status <lgl>, and abbreviated variable names ¹​lastvisitdate,
-#> #   ²​dateofdeath, ³​followup_date
-#> # ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names
+#>    patientid sex     age condition lotstartdate lastvisitdate dateofdeath
+#>    <chr>     <chr> <dbl> <chr>     <date>       <date>        <date>     
+#>  1 F00001    m      41.8 placebo   2016-05-17   2020-12-01    NA         
+#>  2 F00002    m      45.3 placebo   2020-07-27   2020-08-25    2020-10-05 
+#>  3 F00003    m      52.9 drug      2016-04-14   2017-02-16    2017-03-13 
+#>  4 F00004    m      48.4 drug      2020-06-12   2020-11-25    NA         
+#>  5 F00005    f      54.4 placebo   2019-03-20   2020-01-13    2020-02-21 
+#>  6 F00006    f      50.7 placebo   2017-04-02   2017-10-18    2017-11-19 
+#>  7 F00007    f      47.6 placebo   2018-01-26   2019-01-12    2019-02-17 
+#>  8 F00008    f      42.7 placebo   2015-07-02   2015-11-20    2015-12-23 
+#>  9 F00009    m      48.1 drug      2019-03-08   2020-07-18    2020-08-17 
+#> 10 F00010    m      28.9 placebo   2018-08-23   2019-02-14    2019-03-08 
+#> # ℹ 240 more rows
+#> # ℹ 3 more variables: followup_date <date>, followup_days <dbl>,
+#> #   event_status <lgl>
 ```
 
 The `.$fit` object contains the `survival` object (created using the
@@ -258,11 +256,11 @@ The `.$fit_summary` object contains summary information:
 ``` r
 cohort_iws$fit_summary
 #> # A tibble: 2 × 10
-#>   strata       records n.max n.start events rmean se(rm…¹ median 0.95L…² 0.95U…³
-#>   <chr>          <dbl> <dbl>   <dbl>  <dbl> <dbl>   <dbl>  <dbl>   <dbl>   <dbl>
-#> 1 condition=d…     132   132     132    105  542.    40.9   410.    329.    590.
-#> 2 condition=p…     118   118     118     97  349.    39.4   232.    184.    313.
-#> # … with abbreviated variable names ¹​`se(rmean)`, ²​`0.95LCL`, ³​`0.95UCL`
+#>   strata         records n.max n.start events rmean `se(rmean)` median `0.95LCL`
+#>   <chr>            <dbl> <dbl>   <dbl>  <dbl> <dbl>       <dbl>  <dbl>     <dbl>
+#> 1 condition=drug     132   132     132    105  542.        40.9   410.      329.
+#> 2 condition=pla…     118   118     118     97  349.        39.4   232.      184.
+#> # ℹ 1 more variable: `0.95UCL` <dbl>
 ```
 
 ### iwillsurvive and the survival paackage

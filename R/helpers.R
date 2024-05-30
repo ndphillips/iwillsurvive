@@ -1,6 +1,3 @@
-
-
-
 #' Get the index name from an iwillsurvive object
 #'
 #' @param object iwillsurvive.

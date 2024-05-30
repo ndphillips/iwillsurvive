@@ -3,12 +3,13 @@ set.seed(100)
 
 patient_n <- 250
 
-index_date <- sample(seq(as.Date("2015/01/01"),
-  as.Date("2020/10/31"),
-  by = "day"
-),
-size = patient_n,
-replace = TRUE
+index_date <- sample(
+  seq(as.Date("2015/01/01"),
+    as.Date("2020/10/31"),
+    by = "day"
+  ),
+  size = patient_n,
+  replace = TRUE
 )
 
 # Patient condition

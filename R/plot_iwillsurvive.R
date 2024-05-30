@@ -193,7 +193,6 @@ plot.iwillsurvive <- function(x = NULL,
 
 
       if (add_confidence) {
-
         # Add conf.low
 
         p_km <- p_km +
@@ -423,7 +422,6 @@ plot.iwillsurvive <- function(x = NULL,
 
     if (legend_position == "inside") {
       if (is.null(legend_position_x)) {
-
         # Put first
         legend_position_x <- rev(c(
           max(plot_df$time) * .05,

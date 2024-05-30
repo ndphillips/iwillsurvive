@@ -70,18 +70,21 @@ plot_followup <- function(object = NULL,
     shape = t_event_status,
     col = t_event_status
   )) +
-    ggplot2::geom_segment(ggplot2::aes(
-      x = 0,
-      y = t_patientid,
-      xend = t_followup_time,
-      yend = t_patientid
-    ),
-    size = line_size
+    ggplot2::geom_segment(
+      ggplot2::aes(
+        x = 0,
+        y = t_patientid,
+        xend = t_followup_time,
+        yend = t_patientid
+      ),
+      size = line_size
     ) +
     ggplot2::geom_point(size = point_size) +
     ggplot2::scale_shape_manual(values = c(3, 16)) +
-    ggplot2::scale_color_manual(values = c(grDevices::gray(.7, alpha = .8),
-                                           grDevices::gray(.2, alpha = .8))) +
+    ggplot2::scale_color_manual(values = c(
+      grDevices::gray(.7, alpha = .8),
+      grDevices::gray(.2, alpha = .8)
+    )) +
     ggplot2::labs(
       y = "Patients",
       title = my_title,

@@ -1,4 +1,3 @@
-
 .onLoad <- function(libname = find.package("patientjourney"), # nolint
                     pkgname = "patientjourney") {
   utils::globalVariables(

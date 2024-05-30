@@ -31,7 +31,6 @@
 derive_followup_time <- function(data,
                                  index_date = "index_date",
                                  followup_date = "followup_date") {
-
   testthat::expect_true(!is.null(data))
   testthat::expect_true(index_date %in% names(data))
   testthat::expect_true(followup_date %in% names(data))
@@ -40,10 +39,14 @@ derive_followup_time <- function(data,
   followup_date_sym <- rlang::sym(followup_date)
 
   data <- data %>%
-    dplyr::mutate(followup_days := as.numeric(difftime(!!followup_date_sym, !!index_date_sym,
-                                            units = "days")),
-                  followup_weeks = as.numeric(difftime(!!followup_date_sym, !!index_date_sym,
-                                                        units = "weeks")))
+    dplyr::mutate(
+      followup_days := as.numeric(difftime(!!followup_date_sym, !!index_date_sym,
+        units = "days"
+      )),
+      followup_weeks = as.numeric(difftime(!!followup_date_sym, !!index_date_sym,
+        units = "weeks"
+      ))
+    )
 
   data
 }
